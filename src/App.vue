@@ -1,9 +1,11 @@
 <script setup>
 import { RouterView } from "vue-router";
-import NavBar from "./components/frontend/NavBar.vue";
+import NavBar from "./components/frontend/layout/Navbar.vue";
+import Footer from "./components/frontend/layout/Footer.vue";
 </script>
 
 <template>
   <NavBar />
-  <RouterView />
+  <RouterView class="bg-background" />
+  <Footer />
 </template>

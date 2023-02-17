@@ -24,6 +24,7 @@ module.exports = {
       },
       dropShadow: {
         navlink: "4px 4px 0px rgba(0,0,0,1)",
+        items: "6px 6px 0px rgba(0,0,0,1)",
       },
     },
   },
