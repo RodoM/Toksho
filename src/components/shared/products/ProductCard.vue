@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  title: {
+  name: {
     type: String,
     required: true,
   },
@@ -46,7 +46,7 @@ function newPrice(price, discount) {
       >
     </div>
     <div class="flex flex-col items-center gap-1">
-      <span class="font-bold max-w-[130px] text-center">{{ props.title }}</span>
+      <span class="font-bold max-w-[130px] text-center">{{ props.name }}</span>
       <div>
         <span class="font-medium" :class="{ 'line-through': props.discount }">
           ${{ props.price }}

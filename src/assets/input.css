@@ -1,3 +1,8 @@
 @tailwind base;
+@layer base {
+  html {
+    @apply text-tertiary-dark;
+  } 
+}
 @tailwind components;
 @tailwind utilities;

@@ -14,7 +14,7 @@ const props = defineProps({
     <ProductCard
       v-for="(comic, i) in props.products"
       :key="i"
-      :title="comic.title"
+      :name="comic.name"
       :price="comic.price"
       :image="comic.image"
       :discount="comic.discount"

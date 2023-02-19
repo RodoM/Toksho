@@ -5,13 +5,17 @@ import Footer from "./components/frontend/layout/Footer.vue";
 </script>
 
 <template>
-  <NavBar />
-  <router-view v-slot="{ Component }">
-    <transition name="fade" mode="out-in">
-      <component :is="Component"></component>
-    </transition>
-  </router-view>
-  <Footer />
+  <div class="flex flex-col justify-between h-screen">
+    <div>
+      <NavBar />
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component"></component>
+        </transition>
+      </router-view>
+    </div>
+    <Footer />
+  </div>
 </template>
 
 <style>
