@@ -1,7 +1,32 @@
+<script setup>
+import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
+import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
+</script>
+
 <template>
-  <div class="h-screen bg-background grid items-center contec">
-    <h1 class="text-primary text-2xl font-bold text-center">
-      {{ $route.name }}
-    </h1>
+  <div class="container mx-auto my-5">
+    <div class="flex flex-col gap-5">
+      <content-block>
+        <header-title class="">
+          <span class="text-2xl font-bold">¿HACEN ENVIOS?</span>
+        </header-title>
+        <span class="font-medium">
+          De momento no contamos con envios, en caso de realizar una compra se
+          le reservara el/los productos y deberá retirarlos en el local.
+        </span>
+      </content-block>
+      <content-block>
+        <header-title class="">
+          <span class="text-2xl font-bold">¿COMPRAN COMICS?</span>
+        </header-title>
+        <span class="font-medium"> No compramos comics de segunda mano. </span>
+      </content-block>
+      <content-block>
+        <header-title class="">
+          <span class="text-2xl font-bold">¿HAY DESCUENTOS?</span>
+        </header-title>
+        <span class="font-medium"> jajajajaja. </span>
+      </content-block>
+    </div>
   </div>
 </template>

@@ -6,6 +6,21 @@ import Footer from "./components/frontend/layout/Footer.vue";
 
 <template>
   <NavBar />
-  <RouterView class="bg-background" />
+  <router-view v-slot="{ Component }">
+    <transition name="fade" mode="out-in">
+      <component :is="Component"></component>
+    </transition>
+  </router-view>
   <Footer />
 </template>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

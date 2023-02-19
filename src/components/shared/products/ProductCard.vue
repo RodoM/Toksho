@@ -8,6 +8,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  image: {
+    type: String,
+    required: true,
+  },
   discount: {
     type: Number,
     default: 0,
@@ -27,11 +31,9 @@ function newPrice(price, discount) {
 <template>
   <div class="flex flex-col items-center gap-3">
     <div class="relative">
-      <img
-        src="@/assets/images/portada.jpg"
-        class="border-2 w-36 border-tertiary-dark drop-shadow-items"
-        alt="asd"
-      />
+      <div class="border-2 h-52 lg:h-64 border-tertiary-dark drop-shadow-items">
+        <img :src="props.image" class="object-cover w-full h-full" alt="asd" />
+      </div>
       <span
         v-if="props.discount"
         class="absolute p-2 font-medium border-2 rounded-full -top-3 -right-3 bg-primary-light border-tertiary-dark drop-shadow-navlink"
@@ -44,7 +46,7 @@ function newPrice(price, discount) {
       >
     </div>
     <div class="flex flex-col items-center gap-1">
-      <span class="font-bold">{{ props.title }}</span>
+      <span class="font-bold max-w-[130px] text-center">{{ props.title }}</span>
       <div>
         <span class="font-medium" :class="{ 'line-through': props.discount }">
           ${{ props.price }}
