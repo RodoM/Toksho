@@ -1,11 +1,20 @@
 <script setup>
+import { onMounted, ref } from "vue";
+
+import sbHelpers from "@/supabase/helpers.js";
+
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import ProductList from "@/components/shared/products/ProductList.vue";
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 
-import { productStore } from "@/stores/db-test";
+const products = ref([]);
+const loading = ref(false);
 
-const store = productStore();
+onMounted(async () => {
+  loading.value = true;
+  products.value = await sbHelpers.getAllProducts();
+  loading.value = false;
+});
 </script>
 
 <template>
@@ -34,12 +43,12 @@ const store = productStore();
       <header-title>
         <span class="text-2xl font-bold">NOVEDADES</span>
       </header-title>
-      <ProductList :products="store.news" />
+      <ProductList :products="products.splice(0, 4)" />
       <content-block>
         <header-title class="self-center">
           <span class="text-2xl font-bold">PREVENTA</span>
         </header-title>
-        <ProductList :products="store.preSale" class="mt-5" />
+        <ProductList :products="products" class="mt-5" />
       </content-block>
       <header-title>
         <span class="text-2xl font-bold">NUESTRO LOCAL</span>
