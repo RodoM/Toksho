@@ -19,7 +19,9 @@ async function fetchProducts() {
 onMounted(async () => {
   loading.value = true;
   fetchProducts();
-  loading.value = false;
+  setTimeout(() => {
+    loading.value = false;
+  }, 500);
 });
 
 const searchInput = ref("");
@@ -52,7 +54,7 @@ async function orderProducts(order, isAscending) {
 </script>
 
 <template>
-  <div class="container mx-auto my-5 overflow-y-hidden">
+  <div class="container py-5 mx-auto">
     <div class="flex mx-5 border-2 border-tertiary-dark drop-shadow-items">
       <input
         v-model="searchInput"

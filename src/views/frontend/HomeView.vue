@@ -39,27 +39,27 @@ onMounted(async () => {
         </button>
       </div>
     </div>
-    <div class="container flex flex-col items-center mx-auto my-5 gap-y-5">
+    <div class="container flex flex-col items-center px-5 mx-auto my-5 gap-y-5">
       <header-title>
         <span class="text-2xl font-bold">NOVEDADES</span>
       </header-title>
-      <ProductList :products="products.splice(0, 4)" />
+      <ProductList :products="products.splice(0, 6)" />
       <content-block>
         <header-title class="self-center">
           <span class="text-2xl font-bold">PREVENTA</span>
         </header-title>
-        <ProductList :products="products" class="mt-5" />
+        <ProductList :products="products.splice(0, 6)" class="mt-5" />
       </content-block>
       <header-title>
         <span class="text-2xl font-bold">NUESTRO LOCAL</span>
       </header-title>
-      <div class="w-full px-5">
+      <div class="w-full">
         <iframe
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3355.85120910867!2d-60.73914318441111!3d-32.74314138098227!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b65b5764fd94f3%3A0xf1c310865ef199a8!2sTOKSHO%20COMIC!5e0!3m2!1ses-419!2sar!4v1676674481705!5m2!1ses-419!2sar"
           allowfullscreen="false"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
-          class="w-full border-2 h-96 border-tertiary-dark drop-shadow-items"
+          class="w-full border-2 h-96 lg:h-[600px] border-tertiary-dark drop-shadow-items"
         ></iframe>
       </div>
     </div>

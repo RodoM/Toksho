@@ -14,7 +14,7 @@ const links = reactive([
 </script>
 
 <template>
-  <nav class="sticky top-0 z-50">
+  <nav class="fixed top-0 z-50 w-full">
     <div
       class="flex flex-wrap items-center justify-between px-2 py-3 border-b-2 bg-primary sm:px-4 border-b-tertiary-dark"
     >

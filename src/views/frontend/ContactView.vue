@@ -4,7 +4,7 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 </script>
 
 <template>
-  <div class="container mx-auto my-5">
+  <div class="container px-5 py-5 mx-auto">
     <div class="flex flex-col gap-5">
       <content-block>
         <header-title class="">

@@ -47,9 +47,29 @@ async function orderProductsBy(order, isAscending) {
   }
 }
 
+// async function filterOrderProducts(order, filter) {
+//   if (!order) {
+//     const { data, error } = await supabase.from("Products").select("*").;
+//   }
+// }
+
+async function getRelatedProducts(categories, name) {
+  const { data, error } = await supabase
+    .from("Products")
+    .select("id, name, image, price, discount, stock")
+    .overlaps("categories", categories)
+    .neq("name", name);
+  if (error) {
+    console.log(error);
+  } else {
+    return data;
+  }
+}
+
 export default {
   getAllProducts,
   searchProducts,
   getProductDetails,
   orderProductsBy,
+  getRelatedProducts,
 };
