@@ -42,7 +42,7 @@ onMounted(async () => {
       :modules="[Autoplay, Navigation, Pagination]"
     >
       <SwiperSlide v-for="(photo, i) in photos" :key="i">
-        <div class="relative h-96">
+        <div class="relative h-[600px] lg:h-[700px]">
           <span
             class="absolute p-5 text-5xl font-bold -translate-x-1/2 -translate-y-1/2 border-2 border-tertiary-dark drop-shadow-items bg-primary top-1/2 left-1/2"
             >Slide {{ i + 1 }}</span

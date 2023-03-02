@@ -6,6 +6,7 @@ import Faq from "@/views/frontend/FaqView.vue";
 import Contact from "@/views/frontend/ContactView.vue";
 import Login from "@/views/LoginView.vue";
 import Register from "@/views/RegisterView.vue";
+import Cart from "@/views/frontend/CartView.vue";
 import NotFound from "@/views/404View.vue";
 
 const router = createRouter({
@@ -45,6 +46,11 @@ const router = createRouter({
       path: "/registro",
       name: "Registrarse",
       component: Register,
+    },
+    {
+      path: "/carrito",
+      name: "Carrito",
+      component: Cart,
     },
     {
       path: "/:pathMatch(.*)*",
