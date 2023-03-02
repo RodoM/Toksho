@@ -3,12 +3,24 @@ import { onMounted, ref } from "vue";
 
 import sbHelpers from "@/supabase/helpers.js";
 
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/css";
+
+import { Autoplay, Navigation, Pagination } from "swiper";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import ProductList from "@/components/shared/products/ProductList.vue";
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 
 const products = ref([]);
 const loading = ref(false);
+const photos = [
+  "https://images.unsplash.com/photo-1588497859490-85d1c17db96d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+  "https://images.unsplash.com/photo-1620336655052-b57986f5a26a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+  "https://images.unsplash.com/photo-1628426912206-d88e22da5c76?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+];
 
 onMounted(async () => {
   loading.value = true;
@@ -19,7 +31,26 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="w-full bg-slate-400 h-96">slider</div>
+    <Swiper
+      :centeredslides="true"
+      :autoplay="{ delay: 4000, disableOnInteraction: false }"
+      :navigation="true"
+      :pagination="{
+        clickable: true,
+      }"
+      :loop="true"
+      :modules="[Autoplay, Navigation, Pagination]"
+    >
+      <SwiperSlide v-for="(photo, i) in photos" :key="i">
+        <div class="relative h-96">
+          <span
+            class="absolute p-5 text-5xl font-bold -translate-x-1/2 -translate-y-1/2 border-2 border-tertiary-dark drop-shadow-items bg-primary top-1/2 left-1/2"
+            >Slide {{ i + 1 }}</span
+          >
+          <img :src="photo" alt="" class="z-40 object-cover w-full h-full" />
+        </div>
+      </SwiperSlide>
+    </Swiper>
     <div
       class="flex justify-center p-5 bg-secondary-light border-y-2 border-tertiary-dark"
     >
@@ -65,3 +96,28 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style>
+.swiper-button-prev,
+.swiper-button-next {
+  color: #0f0f0f;
+}
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  background-color: #eeba5e;
+  padding: 4px 10px;
+  border: 2px solid #0f0f0f;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.swiper-pagination-bullet {
+  background: #eeba5e;
+  border: 2px solid #0f0f0f;
+  width: 12px;
+  height: 12px;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+}
+</style>
