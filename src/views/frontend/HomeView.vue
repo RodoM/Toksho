@@ -70,7 +70,7 @@ onMounted(async () => {
         </button>
       </div>
     </div>
-    <div class="container flex flex-col items-center px-5 mx-auto my-5 gap-y-5">
+    <div class="container flex flex-col items-center mx-auto my-5 gap-y-5">
       <header-title>
         <span class="text-2xl font-bold">NOVEDADES</span>
       </header-title>
