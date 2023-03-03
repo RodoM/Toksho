@@ -5,7 +5,7 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 
 <template>
   <div class="flex items-center justify-center bg-comic">
-    <content-block class="flex flex-col items-center justify-center !w-[500px]">
+    <content-block class="flex flex-col px-5 items-center justify-center !w-[500px]">
       <header-title class="text-5xl font-bold">PARA LOKITO</header-title>
       <span class="font-medium">Todavía no termine esta vista</span>
       <img src="https://pbs.twimg.com/media/Fp_hqYlWAAINLfR.jpg" alt="" class="border-2 border-tertiary-dark">

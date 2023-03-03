@@ -6,7 +6,7 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 <template>
   <div class="container px-5 py-5 mx-auto">
     <div class="flex flex-col gap-5">
-      <content-block>
+      <content-block class="px-5">
         <header-title class="">
           <span class="text-2xl font-bold">CONTACTO</span>
         </header-title>

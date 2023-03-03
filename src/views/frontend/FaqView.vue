@@ -6,7 +6,7 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 <template>
   <div class="container px-5 py-5 mx-auto">
     <div class="flex flex-col gap-5">
-      <content-block>
+      <content-block class="px-5">
         <header-title class="">
           <span class="text-2xl font-bold">¿HACEN ENVIOS?</span>
         </header-title>
@@ -15,13 +15,13 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
           le reservara el/los productos y deberá retirarlos en el local.
         </span>
       </content-block>
-      <content-block>
+      <content-block class="px-5">
         <header-title class="">
           <span class="text-2xl font-bold">¿COMPRAN COMICS?</span>
         </header-title>
         <span class="font-medium"> No compramos comics de segunda mano. </span>
       </content-block>
-      <content-block>
+      <content-block class="px-5">
         <header-title class="">
           <span class="text-2xl font-bold">¿HAY DESCUENTOS?</span>
         </header-title>

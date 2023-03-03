@@ -71,6 +71,8 @@ async function orderProducts(order, isAscending) {
       </button>
     </div>
     <ProductSearchOptions
+      :productsInView="products.length"
+      :totalProducts="products.length"
       :order="initialOrder"
       @orderOptions="orderProducts"
       @clearOrderOptio="fetchProducts"
