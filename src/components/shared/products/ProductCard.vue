@@ -14,7 +14,7 @@ function newPrice(price, discount) {
 <template>
   <router-link
     :to="{
-      name: 'Producto',
+      name: 'Product',
       params: { id: props.product.id, name: props.product.name },
     }"
     class="flex flex-col items-center gap-3"

@@ -1,4 +1,7 @@
+import { computed } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
+import { userStore } from "@/stores/index.js";
+
 import Home from "@/views/frontend/HomeView.vue";
 import Products from "@/views/frontend/ProductsView.vue";
 import ProductDetail from "@/views/frontend/ProductDetail.vue";
@@ -7,6 +10,7 @@ import Contact from "@/views/frontend/ContactView.vue";
 import Login from "@/views/LoginView.vue";
 import Register from "@/views/RegisterView.vue";
 import Cart from "@/views/frontend/CartView.vue";
+import Profile from "@/views/frontend/ProfileView.vue";
 import NotFound from "@/views/404View.vue";
 
 const router = createRouter({
@@ -14,53 +18,110 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "Inicio",
+      name: "Home",
       component: Home,
+      meta: {
+        label: "Inicio",
+        auth: false,
+      },
     },
     {
       path: "/productos",
-      name: "Productos",
+      name: "Products",
       component: Products,
+      meta: {
+        label: "Productos",
+        auth: false,
+      },
     },
     {
       path: "/productos/:id:/:name",
-      name: "Producto",
+      name: "Product",
       component: ProductDetail,
+      meta: {
+        label: "Producto",
+        auth: false,
+      },
     },
     {
       path: "/preguntas",
-      name: "Preguntas",
+      name: "Questions",
       component: Faq,
+      meta: {
+        label: "Preguntas",
+        auth: false,
+      },
     },
     {
       path: "/contacto",
-      name: "Contacto",
+      name: "Contact",
       component: Contact,
+      meta: {
+        label: "Contacto",
+        auth: false,
+      },
     },
     {
       path: "/ingresar",
-      name: "Ingresar",
+      name: "Login",
       component: Login,
+      meta: {
+        label: "Ingresar",
+        auth: false,
+      },
     },
     {
       path: "/registro",
-      name: "Registrarse",
+      name: "Register",
       component: Register,
+      meta: {
+        label: "Registrarse",
+        auth: false,
+      },
+    },
+    {
+      path: "/perfil",
+      name: "Profile",
+      component: Profile,
+      meta: {
+        label: "Perfil",
+        auth: true,
+      },
     },
     {
       path: "/carrito",
-      name: "Carrito",
+      name: "Cart",
       component: Cart,
+      meta: {
+        label: "Carrito",
+        auth: false,
+      },
     },
     {
       path: "/:pathMatch(.*)*",
-      name: "Sin resultado",
+      name: "NoResult",
       component: NotFound,
+      meta: {
+        label: "Sin Resultado",
+        auth: false,
+      },
     },
   ],
   scrollBehavior() {
     return { top: 0 };
   },
+});
+
+router.beforeEach(async (to, from, next) => {
+  const store = userStore();
+  const user = computed(() => store.user);
+  if ((to.meta.label === "Ingresar" || to.meta.label === "Registrarse") && user.value) {
+    next("/");
+  } else if (to.meta.auth && !user.value) {
+    next("/ingresar");
+  } else {
+    next();
+  }
 });
 
 export default router;

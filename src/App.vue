@@ -1,18 +1,23 @@
 <script setup>
 import { RouterView } from "vue-router";
+import { supabase } from "@/supabase/supabase.js";
+import { userStore } from "@/stores/index.js";
+
 import NavBar from "./components/frontend/layout/Navbar.vue";
+
+const store = userStore();
+
+supabase.auth.onAuthStateChange((_, session) => {
+  store.setUser(session);
+});
 </script>
 
 <template>
   <main class="flex flex-col h-screen">
     <NavBar />
-    <router-view
-      v-slot="{ Component }"
-      :key="$route.path"
-      class="flex-1 mt-[66px]"
-    >
+    <router-view v-slot="{ Component }" class="flex-1 mt-[66px]">
       <transition name="fade" mode="out-in">
-        <component :is="Component"></component>
+        <component :key="$route.path" :is="Component"></component>
       </transition>
     </router-view>
   </main>

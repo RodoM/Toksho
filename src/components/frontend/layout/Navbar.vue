@@ -1,16 +1,23 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, computed } from "vue";
+import { userStore } from "@/stores/index.js";
+import { supabase } from "@/supabase/supabase.js";
+
+const store = userStore();
+const user = computed(() => store.user);
 
 //navbar
 const isOpen = ref(false);
-const links = reactive([
-  { name: "INICIO", path: "/", icon: "home" },
-  { name: "PRODUCTOS", path: "/productos", icon: "shopping_bag" },
-  { name: "PREGUNTAS", path: "/preguntas", icon: "help_outline" },
-  { name: "CONTACTO", path: "/contacto", icon: "place" },
-  { name: "INGRESAR", path: "/ingresar", icon: "login" },
-]);
+
+const signOut = async () => {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
 
 <template>
@@ -23,24 +30,49 @@ const links = reactive([
           menu
         </button>
       </div>
-      <a class="p-1" href="#"><span class="text-2xl font-bold">TOKSHO</span></a>
+      <router-link to="/" class="p-1"><span class="text-2xl font-bold">TOKSHO</span></router-link>
       <ul class="hidden gap-6 md:flex">
         <li
-          v-for="link in links.slice(0, 4)"
-          :key="link.name"
           class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
         >
-          <router-link class="font-medium" :to="link.path">
-            {{ link.name }}
+          <router-link class="font-medium" to="/">
+            INICIO
+          </router-link>
+        </li>
+        <li
+          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
+        >
+          <router-link class="font-medium" to="/productos">
+            PRODUCTOS
+          </router-link>
+        </li>
+        <li
+          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
+        >
+          <router-link class="font-medium" to="/preguntas">
+            PREGUNTAS
+          </router-link>
+        </li>
+        <li
+          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
+        >
+          <router-link class="font-medium" to="/contacto">
+            CONTACTO
           </router-link>
         </li>
       </ul>
       <div class="flex items-center gap-2">
-        <router-link to="/ingresar" class="material-icons-outlined">
+        <router-link to="/perfil" class="material-icons-outlined">
           person
         </router-link>
         <router-link to="/carrito" class="material-icons-outlined">
           shopping_cart
+        </router-link>
+        <router-link v-if="!user" to="/ingresar" class="!hidden md:!block material-icons-outlined">
+          login
+        </router-link>
+        <router-link v-else to="/" class="!hidden md:!block material-icons-outlined" @click="signOut()">
+          logout
         </router-link>
       </div>
     </div>
@@ -50,17 +82,77 @@ const links = reactive([
     >
       <ul class="flex flex-col gap-4 p-5">
         <li
-          v-for="link in links"
-          :key="link.name"
           class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
         >
           <router-link
             class="flex items-center gap-2 font-medium"
-            :to="link.path"
+            to="/"
             @click="isOpen = !isOpen"
           >
-            <span class="material-icons-outlined">{{ link.icon }}</span>
-            {{ link.name }}
+            <span class="material-icons-outlined">home</span>
+            INICIO
+          </router-link>
+        </li>
+        <li
+          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
+        >
+          <router-link
+            class="flex items-center gap-2 font-medium"
+            to="/productos"
+            @click="isOpen = !isOpen"
+          >
+            <span class="material-icons-outlined">shopping_bag</span>
+            PRODUCTOS
+          </router-link>
+        </li>
+        <li
+          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
+        >
+          <router-link
+            class="flex items-center gap-2 font-medium"
+            to="/preguntas"
+            @click="isOpen = !isOpen"
+          >
+            <span class="material-icons-outlined">help_outline</span>
+            PREGUNTAS
+          </router-link>
+        </li>
+        <li
+          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
+        >
+          <router-link
+            class="flex items-center gap-2 font-medium"
+            to="/contacto"
+            @click="isOpen = !isOpen"
+          >
+            <span class="material-icons-outlined">place</span>
+            CONTACTO
+          </router-link>
+        </li>
+        <li
+          v-if="!user"
+          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
+        >
+          <router-link
+            class="flex items-center gap-2 font-medium"
+            to="/ingresar"
+            @click="isOpen = !isOpen"
+          >
+            <span class="material-icons-outlined">login</span>
+            INGRESAR
+          </router-link>
+        </li>
+        <li
+          v-if="user"
+          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
+        >
+          <router-link
+            class="flex items-center gap-2 font-medium"
+            to="/"
+            @click="(isOpen = !isOpen), signOut()"
+          >
+            <span class="material-icons-outlined">logout</span>
+            SALIR
           </router-link>
         </li>
       </ul>
