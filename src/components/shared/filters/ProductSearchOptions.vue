@@ -49,9 +49,9 @@ function clearOrderOption() {
 
 <template>
   <div
-    class="flex justify-between p-3 m-5 border-2 bg-secondary-light border-tertiary-dark drop-shadow-items"
+    class="flex justify-between p-3 border-2 bg-secondary-light border-tertiary-dark drop-shadow-items"
   >
-    <span class="font-medium">{{ productsInView }} de {{ totalProducts }}</span>
+    <span v-if="productsInView && totalProducts" class="font-medium">{{ productsInView }} de {{ totalProducts }}</span>
     <div class="flex gap-2">
       <div class="flex items-center" @click="openModal('order')">
         <span class="font-medium">Ordenar</span>

@@ -13,6 +13,8 @@ import Cart from "@/views/frontend/CartView.vue";
 import Profile from "@/views/frontend/ProfileView.vue";
 import NotFound from "@/views/404View.vue";
 
+import ProductStockView from "@/views/admin/ProductStockView.vue";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -106,6 +108,16 @@ const router = createRouter({
         auth: false,
       },
     },
+    {
+      path: "/listado",
+      name: "Stock",
+      component: ProductStockView,
+      meta: {
+        label: "Perfil",
+        auth: true,
+        adminAuth: true,
+      },
+    },
   ],
   scrollBehavior() {
     return { top: 0 };
@@ -116,6 +128,8 @@ router.beforeEach(async (to, from, next) => {
   const store = userStore();
   const user = computed(() => store.user);
   if ((to.meta.label === "Ingresar" || to.meta.label === "Registrarse") && user.value) {
+    next("/");
+  } else if (to.meta.auth && to.meta.adminAuth && !user.value?.user_metadata.isAdmin) {
     next("/");
   } else if (to.meta.auth && !user.value) {
     next("/ingresar");

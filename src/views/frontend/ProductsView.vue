@@ -70,13 +70,15 @@ async function orderProducts(order, isAscending) {
         search
       </button>
     </div>
-    <ProductSearchOptions
-      :productsInView="products.length"
-      :totalProducts="products.length"
-      :order="initialOrder"
-      @orderOptions="orderProducts"
-      @clearOrderOptio="fetchProducts"
-    />
+    <div class="m-5">
+      <ProductSearchOptions
+        :productsInView="products.length"
+        :totalProducts="products.length"
+        :order="initialOrder"
+        @orderOptions="orderProducts"
+        @clearOrderOptio="fetchProducts"
+      />
+    </div>
     <LoadingSpinner v-if="loading" />
     <ProductList
       v-if="!loading && products"
