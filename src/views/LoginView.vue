@@ -1,3 +1,33 @@
+<script setup>
+import { ref } from "vue";
+import { supabase } from "@/supabase/supabase.js";
+import { useRouter } from "vue-router";
+
+import CustomButton from "@/lib/components/CustomButton.vue";
+
+const email = ref("");
+const password = ref("");
+// const confirmPassword = ref("");
+
+const router = useRouter();
+
+const signInWithPassword = async (e) => {
+  e.preventDefault();
+  try {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.value,
+      password: password.value,
+    });
+    if (error) throw error;
+    else {
+      router.push({ name: "Home" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+</script>
+
 <template>
   <div class="flex items-center bg-comic">
     <div
@@ -5,18 +35,20 @@
     >
       <form action="" class="flex flex-col px-5 gap-9">
         <input
+          v-model="email"
           type="email"
           placeholder="Email"
           class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
         />
         <input
+          v-model="password"
           type="password"
           placeholder="Contraseña"
           class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
         />
-        <button class="p-3 text-sm font-bold border-2 bg-secondary-light border-tertiary-dark drop-shadow-items">
+        <CustomButton primary @click="signInWithPassword">
           INICIAR SESIÓN
-        </button>
+        </CustomButton>
       </form>
       <span class="text-sm font-bold text-center">O</span>
       <div class="flex flex-col gap-6 px-5 lg:flex-row">
