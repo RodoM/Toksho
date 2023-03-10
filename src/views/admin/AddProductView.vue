@@ -38,7 +38,6 @@ const addProduct = async (e) => {
       name: name.value,
       type: type.value,
       categories: getCategories(),
-      // No esta funcionando el url será el await? no creo
       image: imageURL.value,
       price: price.value,
       discount: discount.value,

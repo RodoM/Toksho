@@ -32,18 +32,17 @@ const getFile = () => {
 };
 
 const uploadFile = async () => {
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from("products")
     .upload("images/prueba.png", file.value, {
       cacheControl: "3600",
       upsert: false,
     });
   if (error) console.log(error);
-  else console.log(data);
 };
 
 const getURL = async () => {
-  const res = await sbHelpers.getFileURL("prueba");
+  const res = await sbHelpers.getFileURL("prueba.png");
   console.log(res);
 };
 </script>

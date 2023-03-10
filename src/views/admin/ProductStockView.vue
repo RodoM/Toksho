@@ -1,6 +1,8 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import { supabase } from "@/supabase/supabase.js";
 import sbHelpers from "@/supabase/helpers.js";
+
 import ProductSearchOptions from "@/components/shared/filters/ProductSearchOptions.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
@@ -13,6 +15,16 @@ onMounted(async () => {
   products.value = await sbHelpers.getAllProducts();
   loading.value = false;
 });
+
+const deleteImageFile = async (name) => {
+  await sbHelpers.deleteFile(name);
+};
+
+const deleteProduct = async (id, name) => {
+  deleteImageFile(name);
+  const { error } = await supabase.from("Products").delete().eq("id", id);
+  if (error) console.log(error);
+};
 </script>
 
 <template>
@@ -65,9 +77,22 @@ onMounted(async () => {
               {{ product.discount ? product.discount : "0" }}%
             </td>
             <td class="flex justify-center gap-3 px-5 py-2">
-              <button class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink">edit</button>
-              <button class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink">delete</button>
-              <button class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink">visibility</button>
+              <button
+                class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+              >
+                edit
+              </button>
+              <button
+                class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+                @click="deleteProduct(product.id, product.name)"
+              >
+                delete
+              </button>
+              <button
+                class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+              >
+                visibility
+              </button>
             </td>
           </tr>
         </tbody>

@@ -29,7 +29,6 @@ async function getPresales() {
   if (error) {
     console.log(error);
   } else {
-    console.log(data);
     return data;
   }
 }
@@ -92,18 +91,24 @@ async function getRelatedProducts(categories, name) {
 async function uploadFile(name, file) {
   const { error } = await supabase.storage
     .from("products")
-    .upload(`images/${name}.png`, file, {
+    .upload("images/" + name, file, {
       cacheControl: "3600",
       upsert: false,
     });
   if (error) console.log(error);
 }
 
+async function deleteFile(name) {
+  const { error } = await supabase.storage
+    .from("products")
+    .remove(["images/" + name]);
+  if (error) console.log(error);
+}
+
 async function getFileURL(name) {
   const { data } = supabase.storage
     .from("products")
-    .getPublicUrl(`images/${name}.png`);
-  console.log(data.publicUrl);
+    .getPublicUrl("images/" + name);
   return data.publicUrl;
 }
 
@@ -116,5 +121,6 @@ export default {
   orderProductsBy,
   getRelatedProducts,
   uploadFile,
+  deleteFile,
   getFileURL,
 };
