@@ -79,19 +79,19 @@ const signOut = async () => {
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-primary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="dropdown = false"
             >
-              <router-link to="/listado" class="font-medium"> LISTADO </router-link>
+              <router-link to="/admin/listado" class="font-medium"> LISTADO </router-link>
             </li>
             <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-primary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="dropdown = false"
             >
-              <router-link to="/listado" class="font-medium"> PEDIDOS </router-link>
+              <router-link to="/admin/listado" class="font-medium"> PEDIDOS </router-link>
             </li>
             <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-primary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="dropdown = false"
             >
-              <router-link to="/listado" class="font-medium"> CONFIGURACIÓN </router-link>
+              <router-link to="/admin/listado" class="font-medium"> CONFIGURACIÓN </router-link>
             </li>
           </ul>
         </li>
@@ -113,7 +113,7 @@ const signOut = async () => {
     </div>
     <div
       class="absolute w-1/2 h-screen transition-all duration-500 border-r-2 lg:w-1/4 bg-background border-r-tertiary-dark lg:hidden"
-      :class="isOpen ? 'translate-x-0' : '-translate-x-96'"
+      :class="isOpen ? 'translate-x-0' : '-translate-x-[510px]'"
     >
       <ul class="flex flex-col gap-4 p-5">
         <li
@@ -178,19 +178,19 @@ const signOut = async () => {
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="isOpen = false, dropdown = false"
             >
-              <router-link to="/listado" class="font-medium"> LISTADO </router-link>
+              <router-link to="/admin/listado" class="font-medium"> LISTADO </router-link>
             </li>
             <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="isOpen = false, dropdown = false"
             >
-              <router-link to="/listado" class="font-medium"> PEDIDOS </router-link>
+              <router-link to="/admin/listado" class="font-medium"> PEDIDOS </router-link>
             </li>
             <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="isOpen = false, dropdown = false"
             >
-              <router-link to="/listado" class="font-medium"> CONFIGURACIÓN </router-link>
+              <router-link to="/admin/listado" class="font-medium"> CONFIGURACIÓN </router-link>
             </li>
           </ul>
         </li>

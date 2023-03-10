@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { supabase } from "@/supabase/supabase.js";
+import sbHelpers from "@/supabase/helpers.js";
 
 const noPermissionsErr = ref(false);
 
@@ -21,11 +22,41 @@ const addProduct = async () => {
     noPermissionsErr.value = true;
   }
 };
+
+const file = ref();
+
+const getFile = () => {
+  const selectedFile = event.target.files[0];
+  console.log(selectedFile);
+  file.value = selectedFile;
+};
+
+const uploadFile = async () => {
+  const { data, error } = await supabase.storage
+    .from("products")
+    .upload("images/prueba.png", file.value, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+  if (error) console.log(error);
+  else console.log(data);
+};
+
+const getURL = async () => {
+  const res = await sbHelpers.getFileURL("prueba");
+  console.log(res);
+};
 </script>
 
 <template>
   <div class="container py-5 mx-auto">
     <button class="p-4 border-2 bg-primary-light border-tertiary-dark drop-shadow-items" @click="addProduct">añadir producto</button>
     <div v-if="noPermissionsErr" class="mt-5 text-4xl font-bold text-red-600">NO PODES AGREGAR PRODUCTOS, NO SOS AGUSTIN IBARRA BERNERI PELOTUDOOO</div>
+
+    <div class="flex flex-col gap-3 m-5">
+      <input id="fileInput" type="file" accept="image/png, image/jpeg" @change="getFile" />
+      <button class="p-2 border-2 w-fit bg-primary-light border-tertiary-dark" @click="uploadFile">SUBIR ARCHIVO</button>
+      <button class="p-2 border-2 w-fit bg-primary-light border-tertiary-dark" @click="getURL">URL</button>
+    </div>
   </div>
 </template>

@@ -44,7 +44,7 @@ function newPrice(price, discount) {
         <img
           :src="product.value[0].image"
           alt=""
-          class="border-2 border-tertiary-dark drop-shadow-items lg:min-w-[500px] lg:w-[500px]"
+          class="border-2 border-tertiary-dark drop-shadow-items lg:min-w-[450px] lg:w-[450px]"
         />
         <div class="flex flex-col justify-between gap-3">
           <header-title class="">

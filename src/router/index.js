@@ -14,6 +14,7 @@ import Profile from "@/views/frontend/ProfileView.vue";
 import NotFound from "@/views/404View.vue";
 
 import ProductStockView from "@/views/admin/ProductStockView.vue";
+import AddProductView from "@/views/admin/AddProductView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -109,11 +110,21 @@ const router = createRouter({
       },
     },
     {
-      path: "/listado",
+      path: "/admin/listado",
       name: "Stock",
       component: ProductStockView,
       meta: {
-        label: "Perfil",
+        label: "Listado",
+        auth: true,
+        adminAuth: true,
+      },
+    },
+    {
+      path: "/admin/agregar-producto",
+      name: "AddProduct",
+      component: AddProductView,
+      meta: {
+        label: "Agregar producto",
         auth: true,
         adminAuth: true,
       },

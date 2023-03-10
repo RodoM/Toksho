@@ -89,6 +89,24 @@ async function getRelatedProducts(categories, name) {
   }
 }
 
+async function uploadFile(name, file) {
+  const { error } = await supabase.storage
+    .from("products")
+    .upload(`images/${name}.png`, file, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+  if (error) console.log(error);
+}
+
+async function getFileURL(name) {
+  const { data } = supabase.storage
+    .from("products")
+    .getPublicUrl(`images/${name}.png`);
+  console.log(data.publicUrl);
+  return data.publicUrl;
+}
+
 export default {
   getAllProducts,
   getNovelties,
@@ -97,4 +115,6 @@ export default {
   getProductDetails,
   orderProductsBy,
   getRelatedProducts,
+  uploadFile,
+  getFileURL,
 };
