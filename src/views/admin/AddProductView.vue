@@ -1,10 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import { supabase } from "@/supabase/supabase.js";
+import { useRouter } from "vue-router";
 import sbHelpers from "@/supabase/helpers.js";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
+
+const router = useRouter();
 
 const type = ref("manga");
 const name = ref("");
@@ -47,6 +50,15 @@ const addProduct = async (e) => {
     },
   ]);
   if (error) console.log(error);
+  else {
+    // Disparar emit para mostrar un alert de que se creo correctamente el producto
+    router.push({ name: "Stock" });
+  }
+};
+
+const goBack = (e) => {
+  e.preventDefault();
+  router.push({ name: "Stock" });
 };
 </script>
 
@@ -147,7 +159,9 @@ const addProduct = async (e) => {
         <CustomButton class="px-36 md:order-2" primary @click="addProduct">
           AGREGAR
         </CustomButton>
-        <CustomButton class="px-36 md:order-1" secondary>VOLVER</CustomButton>
+        <CustomButton class="px-36 md:order-1" secondary @click="goBack">
+          VOLVER
+        </CustomButton>
       </div>
     </form>
   </div>

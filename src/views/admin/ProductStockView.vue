@@ -5,14 +5,20 @@ import sbHelpers from "@/supabase/helpers.js";
 
 import ProductSearchOptions from "@/components/shared/filters/ProductSearchOptions.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
+import CustomModal from "../../lib/components/CustomModal.vue";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 
 const products = ref([]);
 const loading = ref(false);
+const showModal = ref(false);
+
+const getProducts = async () => {
+  products.value = await sbHelpers.getAllProducts();
+};
 
 onMounted(async () => {
   loading.value = true;
-  products.value = await sbHelpers.getAllProducts();
+  await getProducts();
   loading.value = false;
 });
 
@@ -20,10 +26,21 @@ const deleteImageFile = async (name) => {
   await sbHelpers.deleteFile(name);
 };
 
-const deleteProduct = async (id, name) => {
-  deleteImageFile(name);
-  const { error } = await supabase.from("Products").delete().eq("id", id);
+const currentProduct = ref();
+
+const deleteProduct = async () => {
+  deleteImageFile(currentProduct.value.name);
+  const { error } = await supabase
+    .from("Products")
+    .delete()
+    .eq("id", currentProduct.value.id);
   if (error) console.log(error);
+  else {
+    showModal.value = false;
+    loading.value = true;
+    getProducts();
+    loading.value = false;
+  }
 };
 </script>
 
@@ -84,7 +101,7 @@ const deleteProduct = async (id, name) => {
               </button>
               <button
                 class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
-                @click="deleteProduct(product.id, product.name)"
+                @click="showModal = true, currentProduct = product"
               >
                 delete
               </button>
@@ -98,5 +115,22 @@ const deleteProduct = async (id, name) => {
         </tbody>
       </table>
     </div>
+    <CustomModal :show="showModal">
+      <div class="relative border-2 drop-shadow-items border-tertiary-dark bg-background">
+        <button type="button" class="absolute top-3 right-2.5" @click="showModal = false">
+          <span class="material-icons-outlined text-tertiary-dark">
+            close
+          </span>
+        </button>
+        <div class="p-6 text-center">
+          <span class="material-icons-outlined text-primary !text-7xl"> warning_amber </span>
+          <h3 class="mb-5 font-medium">¿Está seguro que desea eliminar este producto?</h3>
+          <div class="flex justify-between">
+            <CustomButton secondary @click="showModal = false">CANCELAR</CustomButton>
+            <CustomButton primary @click="deleteProduct()">ELIMINAR</CustomButton>
+          </div>
+        </div>
+      </div>
+    </CustomModal>
   </div>
 </template>
