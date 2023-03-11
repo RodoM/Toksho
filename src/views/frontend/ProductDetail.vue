@@ -7,6 +7,7 @@ import sbHelpers from "@/supabase/helpers.js";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import ProductList from "@/components/shared/products/ProductList.vue";
+import CustomButton from "@/lib/components/CustomButton.vue";
 
 const route = useRoute();
 
@@ -41,7 +42,7 @@ function newPrice(price, discount) {
         <img
           :src="product.image"
           alt=""
-          class="border-2 border-tertiary-dark drop-shadow-items lg:min-w-[450px] lg:w-[450px]"
+          class="border-2 border-tertiary-dark drop-shadow-items lg:h-[685px] lg:min-w-[450px] lg:w-[450px]"
         />
         <div class="flex flex-col justify-between gap-3">
           <header-title class="">
@@ -70,12 +71,15 @@ function newPrice(price, discount) {
             <span class="font-bold">Autor: </span>
             {{ product.author }}
           </span>
-          <button
+          <!-- <button
             v-if="product.stock > 0"
             class="p-3 text-sm font-bold border-2 bg-primary-light border-tertiary-dark drop-shadow-items"
           >
             AÑADIR AL CARRITO
-          </button>
+          </button> -->
+          <CustomButton primary>
+            {{ product.stock > 0 ? "AÑADIR AL CARRITO" : "SIN STOCK" }}
+          </CustomButton>
         </div>
       </div>
       <div class="flex flex-col gap-y-5">

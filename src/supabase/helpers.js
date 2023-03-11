@@ -89,9 +89,12 @@ async function getRelatedProducts(categories, name) {
 }
 
 async function uploadFile(name, file) {
+  let date = String(new Date().toLocaleDateString('es-ES'));
+  date = date.replace(/\s/g, '');
+  console.log(name + date);
   const { error } = await supabase.storage
     .from("products")
-    .upload("images/" + name, file, {
+    .upload("images/" + name + date, file, {
       cacheControl: "3600",
       upsert: false,
     });
@@ -106,6 +109,7 @@ async function deleteFile(name) {
 }
 
 async function getFileURL(name) {
+  console.log(name);
   const { data } = supabase.storage
     .from("products")
     .getPublicUrl("images/" + name);

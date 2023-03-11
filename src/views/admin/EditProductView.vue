@@ -8,13 +8,14 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const router = useRouter();
-const route = useRoute()
+const route = useRoute();
 
 const product = ref();
 
 const type = ref();
 const name = ref();
 const image = ref();
+const imageReader = ref();
 const imageURL = ref();
 const author = ref();
 const categories = ref();
@@ -22,6 +23,7 @@ const price = ref();
 const discount = ref();
 const description = ref();
 const stock = ref();
+const updated_at = ref();
 
 onMounted(async () => {
   product.value = await sbHelpers.getProductDetails(route.params.id);
@@ -33,25 +35,39 @@ onMounted(async () => {
   discount.value = product.value.discount;
   description.value = product.value.description;
   stock.value = product.value.stock;
+  updated_at.value = product.value.updated_at;
 });
 
 const getCategories = () => {
   return categories.value.split(/\s*,\s*/);
 };
 
+const deleteImageFile = async (name) => {
+  await sbHelpers.deleteFile(name);
+};
+
 const getFile = () => {
   const selectedFile = event.target.files[0];
   image.value = selectedFile;
+
+  const inputValue = document.querySelector("#fileInput");
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    imageReader.value = reader.result;
+  });
+  reader.readAsDataURL(inputValue.files[0]);
 };
 
 const editProduct = async (e) => {
   e.preventDefault();
+  const date = new Date();
   if (image.value) {
     const results = await Promise.all([
-      sbHelpers.uploadFile(name.value, image.value),
-      sbHelpers.getFileURL(name.value),
+      deleteImageFile(name.value + updated_at.value),
+      sbHelpers.uploadFile(name.value + date, image.value),
+      sbHelpers.getFileURL(name.value + date),
     ]);
-    imageURL.value = results[1];
+    imageURL.value = results[2];
   }
   const { error } = await supabase
     .from("Products")
@@ -67,6 +83,7 @@ const editProduct = async (e) => {
       stock: stock.value,
       author: author.value,
       description: description.value,
+      updated_at: date,
     })
     .eq("id", product.value.id);
   if (error) console.log(error);
@@ -89,7 +106,7 @@ const goBack = (e) => {
     </header-title>
     <form v-if="product" class="flex flex-col gap-4 mx-5">
       <div class="flex flex-col gap-4 md:flex-row">
-        <img :src="product.image" alt="" class="md:h-[680px] lg:h-[656px] border-2 border-tertiary-dark drop-shadow-items" />
+        <img :src="imageReader ? imageReader : product.image" alt="" class="md:h-[680px] md:w-[503px] lg:h-[656px] lg:min-w-[468px] border-2 border-tertiary-dark drop-shadow-items" />
         <div class="flex flex-col w-full gap-4">
           <div class="w-full">
             <label for="">Tipo de producto</label>
@@ -112,6 +129,7 @@ const goBack = (e) => {
           <div class="w-full">
             <label for="">Imagen (No seleccionar nada si no se actualiza)</label>
             <input
+              id="fileInput"
               type="file"
               accept="image/png, image/jpeg"
               class="block w-full bg-white border-2 cursor-pointer drop-shadow-items border-tertiary-dark focus:outline-none"
