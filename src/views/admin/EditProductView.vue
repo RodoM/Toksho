@@ -1,24 +1,39 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { supabase } from "@/supabase/supabase.js";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import sbHelpers from "@/supabase/helpers.js";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const router = useRouter();
+const route = useRoute()
 
-const type = ref("manga");
-const name = ref("");
-const image = ref(null);
-const imageURL = ref("");
-const author = ref("");
-const categories = ref("");
-const price = ref("");
-const discount = ref(null);
-const description = ref("");
+const product = ref();
+
+const type = ref();
+const name = ref();
+const image = ref();
+const imageURL = ref();
+const author = ref();
+const categories = ref();
+const price = ref();
+const discount = ref();
+const description = ref();
 const stock = ref();
+
+onMounted(async () => {
+  product.value = await sbHelpers.getProductDetails(route.params.id);
+  type.value = product.value.type;
+  name.value = product.value.name;
+  author.value = product.value.author;
+  categories.value = product.value.categories;
+  price.value = product.value.price;
+  discount.value = product.value.discount;
+  description.value = product.value.description;
+  stock.value = product.value.stock;
+});
 
 const getCategories = () => {
   return categories.value.split(/\s*,\s*/);
@@ -29,29 +44,34 @@ const getFile = () => {
   image.value = selectedFile;
 };
 
-const addProduct = async (e) => {
+const editProduct = async (e) => {
   e.preventDefault();
-  const results = await Promise.all([
-    sbHelpers.uploadFile(name.value, image.value),
-    sbHelpers.getFileURL(name.value),
-  ]);
-  imageURL.value = results[1];
-  const { error } = await supabase.from("Products").insert([
-    {
+  if (image.value) {
+    const results = await Promise.all([
+      sbHelpers.uploadFile(name.value, image.value),
+      sbHelpers.getFileURL(name.value),
+    ]);
+    imageURL.value = results[1];
+  }
+  const { error } = await supabase
+    .from("Products")
+    .update({
       name: name.value,
       type: type.value,
-      categories: getCategories(),
-      image: imageURL.value,
+      categories:
+        typeof(categories.value) === "object" ? categories.value : getCategories(),
+      // si tiene nueva imagen la actualice, de lo contrario, la mantenga.
+      image: image.value ? imageURL.value : product.value.image,
       price: price.value,
       discount: discount.value,
       stock: stock.value,
       author: author.value,
       description: description.value,
-    },
-  ]);
+    })
+    .eq("id", product.value.id);
   if (error) console.log(error);
   else {
-    // Disparar emit para mostrar un alert de que se creo correctamente el producto
+    // Disparar emit para mostrar un alert de que se edito correctamente el producto
     router.push({ name: "Stock" });
   }
 };
@@ -65,7 +85,7 @@ const goBack = (e) => {
 <template>
   <div class="container py-5 mx-auto">
     <header-title class="mx-5 mb-5">
-      <span class="text-2xl font-bold uppercase">AÑADIR PRODUCTO</span>
+      <span class="text-2xl font-bold uppercase">EDITAR PRODUCTO</span>
     </header-title>
     <form class="flex flex-col gap-4 mx-5">
       <div class="flex flex-col gap-4 md:flex-row">
@@ -90,7 +110,7 @@ const goBack = (e) => {
       </div>
       <div class="flex flex-col gap-4 md:flex-row">
         <div class="w-full">
-          <label for="">Imagen</label>
+          <label for="">Imagen (No seleccionar nada si no se actualiza)</label>
           <input
             type="file"
             accept="image/png, image/jpeg"
@@ -156,8 +176,8 @@ const goBack = (e) => {
         />
       </div>
       <div class="flex flex-col justify-between gap-3 md:flex-row">
-        <CustomButton class="md:px-36 md:order-2" primary @click="addProduct">
-          AGREGAR
+        <CustomButton class="md:px-36 md:order-2" primary @click="editProduct">
+          CONFIRMAR EDICIÓN
         </CustomButton>
         <CustomButton class="md:px-36 md:order-1" secondary @click="goBack">
           VOLVER

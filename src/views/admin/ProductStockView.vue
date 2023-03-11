@@ -58,7 +58,7 @@ const deleteProduct = async () => {
         search
       </button>
     </div>
-    <div class="flex gap-3 p-5 md:justify-between">
+    <div class="flex justify-between gap-3 p-5">
       <router-link to="/admin/agregar-producto">
         <CustomButton primary class="w-full md:px-10 md:w-fit">
           AGREGAR
@@ -94,11 +94,14 @@ const deleteProduct = async () => {
               {{ product.discount ? product.discount : "0" }}%
             </td>
             <td class="flex justify-center gap-3 px-5 py-2">
-              <button
+              <router-link
+                :to="{
+                  name: 'EditProduct',
+                  params: { id: product.id },
+                }"
                 class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+                >edit</router-link
               >
-                edit
-              </button>
               <button
                 class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
                 @click="showModal = true, currentProduct = product"

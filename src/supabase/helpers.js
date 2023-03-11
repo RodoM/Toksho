@@ -53,7 +53,7 @@ async function getProductDetails(id) {
   if (error) {
     console.log(error);
   } else {
-    return data;
+    return data[0];
   }
 }
 
