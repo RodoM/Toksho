@@ -16,6 +16,7 @@ import NotFound from "@/views/404View.vue";
 import ProductStockView from "@/views/admin/ProductStockView.vue";
 import AddProductView from "@/views/admin/AddProductView.vue";
 import EditProductView from "@/views/admin/EditProductView.vue";
+import SeeProductView from "@/views/admin/SeeProductView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -136,6 +137,16 @@ const router = createRouter({
       component: EditProductView,
       meta: {
         label: "Editar producto",
+        auth: true,
+        adminAuth: true,
+      },
+    },
+    {
+      path: "/admin/ver-producto/:id",
+      name: "SeeProduct",
+      component: SeeProductView,
+      meta: {
+        label: "Ver producto",
         auth: true,
         adminAuth: true,
       },

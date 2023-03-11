@@ -87,83 +87,82 @@ const goBack = (e) => {
     <header-title class="mx-5 mb-5">
       <span class="text-2xl font-bold uppercase">EDITAR PRODUCTO</span>
     </header-title>
-    <form class="flex flex-col gap-4 mx-5">
+    <form v-if="product" class="flex flex-col gap-4 mx-5">
       <div class="flex flex-col gap-4 md:flex-row">
-        <div class="w-full">
-          <label for="">Tipo de producto</label>
-          <input
-            v-model="type"
-            type="text"
-            placeholder="Tipo de producto"
-            class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
-        </div>
-        <div class="w-full">
-          <label for="">Nombre del producto</label>
-          <input
-            v-model="name"
-            type="text"
-            placeholder="Nombre del producto"
-            class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
-        </div>
-      </div>
-      <div class="flex flex-col gap-4 md:flex-row">
-        <div class="w-full">
-          <label for="">Imagen (No seleccionar nada si no se actualiza)</label>
-          <input
-            type="file"
-            accept="image/png, image/jpeg"
-            class="block w-full bg-white border-2 cursor-pointer drop-shadow-items border-tertiary-dark focus:outline-none"
-            @change="getFile"
-          />
-        </div>
-        <div class="w-full">
-          <label for="">Autor</label>
-          <input
-            v-model="author"
-            type="text"
-            placeholder="Autor"
-            class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
-        </div>
-      </div>
-      <div>
-        <label for="">Categorías (separadas por comas)</label>
-        <input
-          v-model="categories"
-          type="text"
-          placeholder="Categorías"
-          class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-        />
-      </div>
-      <div class="flex flex-col gap-4 md:flex-row">
-        <div class="w-full">
-          <label for="">Precio</label>
-          <input
-            v-model="price"
-            type="number"
-            placeholder="Precio"
-            class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
-        </div>
-        <div class="w-full">
-          <label for="">Descuento (opcional)</label>
-          <input
-            v-model="discount"
-            type="number"
-            placeholder="Descuento"
-            class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
-        </div>
-        <div class="w-full">
-          <label for="">Cantidad de stock</label>
-          <input
-            v-model="stock"
-            type="number"
-            placeholder="Cantidad de stock"
-            class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
+        <img :src="product.image" alt="" class="md:h-[680px] lg:h-[656px] border-2 border-tertiary-dark drop-shadow-items" />
+        <div class="flex flex-col w-full gap-4">
+          <div class="w-full">
+            <label for="">Tipo de producto</label>
+            <input
+              v-model="type"
+              type="text"
+              placeholder="Tipo de producto"
+              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
+          <div class="w-full">
+            <label for="">Nombre del producto</label>
+            <input
+              v-model="name"
+              type="text"
+              placeholder="Nombre del producto"
+              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
+          <div class="w-full">
+            <label for="">Imagen (No seleccionar nada si no se actualiza)</label>
+            <input
+              type="file"
+              accept="image/png, image/jpeg"
+              class="block w-full bg-white border-2 cursor-pointer drop-shadow-items border-tertiary-dark focus:outline-none"
+              @change="getFile"
+            />
+          </div>
+          <div class="w-full">
+            <label for="">Autor</label>
+            <input
+              v-model="author"
+              type="text"
+              placeholder="Autor"
+              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
+          <div>
+            <label for="">Categorías (separadas por comas)</label>
+            <input
+              v-model="categories"
+              type="text"
+              placeholder="Categorías"
+              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
+          <div class="w-full">
+            <label for="">Precio</label>
+            <input
+              v-model="price"
+              type="number"
+              placeholder="Precio"
+              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
+          <div class="w-full">
+            <label for="">Descuento (opcional)</label>
+            <input
+              v-model="discount"
+              type="number"
+              placeholder="Descuento"
+              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
+          <div class="w-full">
+            <label for="">Cantidad de stock</label>
+            <input
+              v-model="stock"
+              type="number"
+              placeholder="Cantidad de stock"
+              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
         </div>
       </div>
       <div>

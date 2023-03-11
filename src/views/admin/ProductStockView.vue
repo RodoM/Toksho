@@ -42,6 +42,13 @@ const deleteProduct = async () => {
     loading.value = false;
   }
 };
+
+const isEven = (n) => {
+  if (n % 2 === 0) {
+    return true;
+  }
+  return false;
+};
 </script>
 
 <template>
@@ -80,9 +87,9 @@ const deleteProduct = async () => {
         </thead>
         <tbody class="border-2 border-tertiary-dark">
           <tr
-            v-for="product in products"
+            v-for="(product, i) in products"
             :key="product.id"
-            class="bg-secondary-light"
+            :class="[isEven(i) ? 'bg-secondary-light' : 'bg-secondary']"
           >
             <td class="flex items-center gap-3 px-5 font-medium">
               {{ product.name }}
@@ -108,11 +115,14 @@ const deleteProduct = async () => {
               >
                 delete
               </button>
-              <button
+              <router-link
+                :to="{
+                  name: 'SeeProduct',
+                  params: { id: product.id },
+                }"
                 class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+                >visibility</router-link
               >
-                visibility
-              </button>
             </td>
           </tr>
         </tbody>
