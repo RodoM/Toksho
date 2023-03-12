@@ -32,7 +32,10 @@ const signOut = async () => {
           menu
         </button>
       </div>
-      <router-link to="/" class="p-1"><span class="text-2xl font-bold">TOKSHO</span></router-link>
+      <router-link to="/" class="flex items-center gap-2">
+        <img src="@/assets/images/toksho-logo.png" alt="" class="h-[37px]" />
+        <span class="text-2xl font-bold">TOKSHO</span>
+      </router-link>
       <ul class="items-center hidden gap-6 lg:flex">
         <li
           class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"

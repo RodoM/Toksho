@@ -33,6 +33,7 @@ const signInWithPassword = async (e) => {
     <div
       class="container flex flex-col max-w-3xl gap-6 px-5 py-10 mx-auto my-5 bg-white border-2 border-tertiary-dark drop-shadow-items"
     >
+      <img src="@/assets/images/toksho-logo.png" alt="" class="h-[200px] mx-auto" />
       <form action="" class="flex flex-col px-5 gap-9">
         <input
           v-model="email"
@@ -46,6 +47,10 @@ const signInWithPassword = async (e) => {
           placeholder="Contraseña"
           class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
         />
+        <div class="flex justify-between">
+          <span class="font-medium">Recordarme</span>
+          <router-link to="/olvide-contrasena" class="font-medium">Olvide mi contraseña</router-link>
+        </div>
         <CustomButton primary @click="signInWithPassword">
           INICIAR SESIÓN
         </CustomButton>

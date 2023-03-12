@@ -23,7 +23,6 @@ onMounted(async () => {
 });
 
 const deleteImageFile = async (name) => {
-  console.log(name);
   await sbHelpers.deleteFile(name);
 };
 

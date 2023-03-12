@@ -7,8 +7,12 @@ import Products from "@/views/frontend/ProductsView.vue";
 import ProductDetail from "@/views/frontend/ProductDetail.vue";
 import Faq from "@/views/frontend/FaqView.vue";
 import Contact from "@/views/frontend/ContactView.vue";
+
 import Login from "@/views/LoginView.vue";
 import Register from "@/views/RegisterView.vue";
+import ForgotPassword from "@/views/ForgotPasswordView.vue";
+import RestorePassword from "@/views/RestorePasswordView.vue";
+
 import Cart from "@/views/frontend/CartView.vue";
 import Profile from "@/views/frontend/ProfileView.vue";
 import NotFound from "@/views/404View.vue";
@@ -81,6 +85,24 @@ const router = createRouter({
       component: Register,
       meta: {
         label: "Registrarse",
+        auth: false,
+      },
+    },
+    {
+      path: "/olvide-contrasena",
+      name: "ForgotPassword",
+      component: ForgotPassword,
+      meta: {
+        label: "Olvide contraseña",
+        auth: false,
+      },
+    },
+    {
+      path: "/restablecer-contrasena",
+      name: "RestorePassword",
+      component: RestorePassword,
+      meta: {
+        label: "Restablecer contraseña",
         auth: false,
       },
     },

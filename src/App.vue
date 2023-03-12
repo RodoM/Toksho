@@ -15,7 +15,7 @@ supabase.auth.onAuthStateChange((_, session) => {
 <template>
   <main class="flex flex-col h-screen">
     <NavBar />
-    <router-view v-slot="{ Component }" class="flex-1 mt-[66px]">
+    <router-view v-slot="{ Component }" class="flex-1 mt-[63px]">
       <transition name="fade" mode="out-in">
         <component :key="$route.path" :is="Component"></component>
       </transition>

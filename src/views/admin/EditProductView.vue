@@ -64,7 +64,7 @@ const editProduct = async (e) => {
   date = String(date.getTime());
   if (image.value) {
     const results = await Promise.all([
-      deleteImageFile(name.value.concat(updated_at.value)),
+      deleteImageFile(product.value.name.concat(updated_at.value)),
       sbHelpers.uploadFile(name.value.concat(date), image.value),
       sbHelpers.getFileURL(name.value.concat(date)),
     ]);

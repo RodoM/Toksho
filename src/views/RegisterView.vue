@@ -30,6 +30,7 @@ const signUp = async (e) => {
     <div
       class="container flex flex-col max-w-3xl gap-6 px-5 py-10 mx-auto my-5 bg-white border-2 border-tertiary-dark drop-shadow-items"
     >
+      <img src="@/assets/images/toksho-logo.png" alt="" class="h-[200px] mx-auto" />
       <div
         v-if="successfulRegister"
         class="flex justify-between p-5 mx-5 transition-all bg-green-300 border-2 border-tertiary-dark"
