@@ -60,12 +60,13 @@ const getFile = () => {
 
 const editProduct = async (e) => {
   e.preventDefault();
-  const date = new Date();
+  let date = new Date();
+  date = String(date.getTime());
   if (image.value) {
     const results = await Promise.all([
-      deleteImageFile(name.value + updated_at.value),
-      sbHelpers.uploadFile(name.value + date, image.value),
-      sbHelpers.getFileURL(name.value + date),
+      deleteImageFile(name.value.concat(updated_at.value)),
+      sbHelpers.uploadFile(name.value.concat(date), image.value),
+      sbHelpers.getFileURL(name.value.concat(date)),
     ]);
     imageURL.value = results[2];
   }

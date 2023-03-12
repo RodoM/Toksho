@@ -39,10 +39,11 @@ const getFile = () => {
 
 const addProduct = async (e) => {
   e.preventDefault();
-  const date = new Date();
+  let date = new Date();
+  date = String(date.getTime());
   const results = await Promise.all([
-    sbHelpers.uploadFile(name.value, image.value),
-    sbHelpers.getFileURL(name.value + String(date)),
+    sbHelpers.uploadFile(name.value.concat(date), image.value),
+    sbHelpers.getFileURL(name.value.concat(date)),
   ]);
   imageURL.value = results[1];
   const { error } = await supabase.from("Products").insert([
