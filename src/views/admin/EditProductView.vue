@@ -164,7 +164,7 @@ const editProduct = async () => {
   } else {
     $toast.open({
       position: "top-right",
-      message: "Se editó el producto correctamente",
+      message: "Se editó el correctamente producto",
       type: "success",
       duration: 5000,
       dismissible: true,

@@ -111,13 +111,15 @@ const isEven = (n) => {
             :key="product.id"
             :class="[isEven(i) ? 'bg-secondary-light' : 'bg-secondary']"
           >
-            <td class="flex items-center gap-3 px-5 font-medium">
-              {{ product.name }}
-              <span
-                v-if="product.stock === 0"
-                class="border-2 rounded-full material-icons-outlined bg-primary border-tertiary-dark px-1 !text-base"
-              >
-                priority_high
+            <td class="px-5 font-medium">
+              <span class="flex items-center gap-2">
+                {{ product.name }}
+                <span
+                  v-if="product.stock === 0"
+                  class="border-2 rounded-full material-icons-outlined bg-primary border-tertiary-dark px-1 !text-base"
+                >
+                  priority_high
+                </span>
               </span>
             </td>
             <td class="px-5 font-medium text-center">{{ product.stock }}</td>
