@@ -1,12 +1,44 @@
 <script setup>
-import { ref } from "vue";
+import { ref, reactive, computed } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import {
+  required,
+  email,
+  minLength,
+  sameAs,
+  helpers,
+} from "@vuelidate/validators";
 import { supabase } from "@/supabase/supabase.js";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 
-const email = ref("");
-const password = ref("");
-// const confirmPassword = ref("");
+const state = reactive({
+  email: "",
+  password: "",
+  confirmPassword: "",
+});
+
+const rules = computed(() => {
+  return {
+    email: {
+      required: helpers.withMessage("Ingresa un correo electronico", required),
+      email: helpers.withMessage("Ingresa un correo electronico valido", email),
+    },
+    password: {
+      required: helpers.withMessage("Ingresa una contraseña", required),
+      minLength: helpers.withMessage("Mínimo 6 caracteres", minLength(6)),
+    },
+    confirmPassword: {
+      required: helpers.withMessage("Repite la contraseña", required),
+      sameAs: helpers.withMessage(
+        "Las contraseñas deben ser iguales",
+        sameAs(state.password)
+      ),
+    },
+  };
+});
+
+const v$ = useVuelidate(rules, state);
 
 const successfulRegister = ref(false);
 
@@ -14,14 +46,21 @@ const signUp = async (e) => {
   e.preventDefault();
   try {
     const { error } = await supabase.auth.signUp({
-      email: email.value,
-      password: password.value,
+      email: state.email,
+      password: state.password,
     });
     if (error) throw error;
     successfulRegister.value = true;
   } catch (error) {
     console.log(error);
   }
+};
+
+const submitForm = async (e) => {
+  e.preventDefault();
+  const result = await v$.value.$validate();
+  if (result) signUp();
+  else console.log("error");
 };
 </script>
 
@@ -40,26 +79,44 @@ const signUp = async (e) => {
         </span>
         <button class="mb-auto material-icons-outlined">close</button>
       </div>
-      <form action="" class="flex flex-col px-5 gap-9">
-        <input
-          v-model="email"
-          type="email"
-          placeholder="Email"
-          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-        />
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Contraseña"
-          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-        />
-        <!-- <input
-          v-model="confirmPassword"
-          type="password"
-          placeholder="Contraseña"
-          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-        /> -->
-        <CustomButton primary @click="signUp">REGISTRARSE</CustomButton>
+      <form action="" class="flex flex-col gap-5 px-5">
+        <div>
+          <div>
+            <label :for="state.email">Email</label>
+            <span v-if="v$.email.$error" class="pl-2 text-red-500">{{ v$.email.$errors[0].$message }}</span>
+          </div>
+          <input
+            v-model="state.email"
+            type="email"
+            placeholder="Email"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+          />
+        </div>
+        <div>
+          <div>
+            <label :for="state.password">Contraseña</label>
+            <span v-if="v$.password.$error" class="pl-2 text-red-500">{{ v$.password.$errors[0].$message }}</span>
+          </div>
+          <input
+            v-model="state.password"
+            type="password"
+            placeholder="Contraseña"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+          />
+        </div>
+        <div>
+          <div>
+            <label :for="state.confirmPassword">Confirmar contraseña</label>
+            <span v-if="v$.confirmPassword.$error" class="pl-2 text-red-500">{{ v$.confirmPassword.$errors[0].$message }}</span>
+          </div>
+          <input
+            v-model="state.confirmPassword"
+            type="password"
+            placeholder="Contraseña"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+          />
+        </div>
+        <CustomButton primary @click="submitForm">REGISTRARSE</CustomButton>
       </form>
       <span class="text-sm font-bold text-center">O</span>
       <div class="flex flex-col gap-6 px-5 lg:flex-row">

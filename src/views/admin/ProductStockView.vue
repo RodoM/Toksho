@@ -22,14 +22,16 @@ onMounted(async () => {
   loading.value = false;
 });
 
-const deleteImageFile = async (name) => {
-  await sbHelpers.deleteFile(name);
+const deleteImageFile = async (image) => {
+  await sbHelpers.deleteFile(
+    image.substring(image.lastIndexOf("/") + 1, image.length)
+  );
 };
 
 const currentProduct = ref();
 
 const deleteProduct = async () => {
-  deleteImageFile(currentProduct.value.name.concat(currentProduct.value.updated_at));
+  deleteImageFile(currentProduct.value.image);
   const { error } = await supabase
     .from("Products")
     .delete()

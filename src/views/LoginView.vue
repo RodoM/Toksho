@@ -1,22 +1,39 @@
 <script setup>
-import { ref } from "vue";
+import { reactive, computed } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import { required, email, helpers } from "@vuelidate/validators";
 import { supabase } from "@/supabase/supabase.js";
 import { useRouter } from "vue-router";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 
-const email = ref("");
-const password = ref("");
-// const confirmPassword = ref("");
-
 const router = useRouter();
 
-const signInWithPassword = async (e) => {
-  e.preventDefault();
+const state = reactive({
+  email: "",
+  password: "",
+  confirmPassword: "",
+});
+
+const rules = computed(() => {
+  return {
+    email: {
+      required: helpers.withMessage("Ingresa un correo electronico", required),
+      email: helpers.withMessage("Ingresa un correo electronico valido", email),
+    },
+    password: {
+      required: helpers.withMessage("Ingresa una contraseña", required),
+    },
+  };
+});
+
+const v$ = useVuelidate(rules, state);
+
+const signInWithPassword = async () => {
   try {
     const { error } = await supabase.auth.signInWithPassword({
-      email: email.value,
-      password: password.value,
+      email: state.email,
+      password: state.password,
     });
     if (error) throw error;
     else {
@@ -26,6 +43,13 @@ const signInWithPassword = async (e) => {
     console.log(error);
   }
 };
+
+const submitForm = async (e) => {
+  e.preventDefault();
+  const result = await v$.value.$validate();
+  if (result) signInWithPassword();
+  else console.log("error");
+};
 </script>
 
 <template>
@@ -33,25 +57,47 @@ const signInWithPassword = async (e) => {
     <div
       class="container flex flex-col max-w-3xl gap-6 px-5 py-10 mx-auto my-5 bg-white border-2 border-tertiary-dark drop-shadow-items"
     >
-      <img src="@/assets/images/toksho-logo.png" alt="" class="h-[200px] mx-auto" />
-      <form action="" class="flex flex-col px-5 gap-9">
-        <input
-          v-model="email"
-          type="email"
-          placeholder="Email"
-          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-        />
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Contraseña"
-          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-        />
+      <img
+        src="@/assets/images/toksho-logo.png"
+        alt=""
+        class="h-[200px] mx-auto"
+      />
+      <form action="" class="flex flex-col gap-5 px-5">
+        <div>
+          <div>
+            <label :for="state.email">Email</label>
+            <span v-if="v$.email.$error" class="pl-2 text-red-500">
+              {{ v$.email.$errors[0].$message }}
+            </span>
+          </div>
+          <input
+            v-model="state.email"
+            type="email"
+            placeholder="Email"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+          />
+        </div>
+        <div>
+          <div>
+            <label :for="state.password">Contraseña</label>
+            <span v-if="v$.password.$error" class="pl-2 text-red-500">
+              {{ v$.password.$errors[0].$message }}
+            </span>
+          </div>
+          <input
+            v-model="state.password"
+            type="password"
+            placeholder="Contraseña"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+          />
+        </div>
         <div class="flex justify-between">
           <span class="font-medium">Recordarme</span>
-          <router-link to="/olvide-contrasena" class="font-medium">Olvide mi contraseña</router-link>
+          <router-link to="/olvide-contrasena" class="font-medium">
+            Olvide mi contraseña
+          </router-link>
         </div>
-        <CustomButton primary @click="signInWithPassword">
+        <CustomButton primary @click="submitForm">
           INICIAR SESIÓN
         </CustomButton>
       </form>

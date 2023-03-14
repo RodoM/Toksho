@@ -12,12 +12,16 @@ const props = defineProps({
   google: {
     type: Boolean,
   },
+  disabled: {
+    type: Boolean,
+  },
 });
 </script>
 
 <template>
   <button
     v-if="facebook || google"
+    :disabled="props.disabled"
     :class="[
       'p-3',
       'border-2',
@@ -36,6 +40,7 @@ const props = defineProps({
   </button>
   <button
     v-else
+    :disabled="props.disabled"
     :class="[
       'p-3',
       'text-sm',

@@ -61,10 +61,9 @@ function newPrice(price, discount) {
           </div>
           <span>{{ product.description }}</span>
           <div>
-            <span class="font-bold">Categoría: </span>
-            <span v-for="(category, index) in product.categories" :key="index">
-              {{ category
-              }}<span v-if="index < product.categories.length - 1">, </span>
+            <span class="font-bold">Categorías: </span>
+            <span v-for="(category, index) in product.categories" :key="index" class="p-1 mr-2 border-2 bg-secondary-light border-tertiary-dark drop-shadow-navlink">
+              {{ category }}
             </span>
           </div>
           <span>
@@ -77,8 +76,8 @@ function newPrice(price, discount) {
           >
             AÑADIR AL CARRITO
           </button> -->
-          <CustomButton primary>
-            {{ product.stock > 0 ? "AÑADIR AL CARRITO" : "SIN STOCK" }}
+          <CustomButton primary :disabled="product.stock == 0">
+            {{ product.stock == 0 ? "SIN STOCK" : "AÑADIR AL CARRITO" }}
           </CustomButton>
         </div>
       </div>
