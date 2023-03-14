@@ -3,7 +3,9 @@
 import { ref, computed } from "vue";
 import { userStore } from "@/stores/index.js";
 import { supabase } from "@/supabase/supabase.js";
+import { useToast } from "vue-toast-notification";
 
+const $toast = useToast();
 const store = userStore();
 const user = computed(() => store.user);
 
@@ -16,6 +18,16 @@ const signOut = async () => {
   try {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+    else {
+      $toast.open({
+        position: "top-right",
+        message: "Cierre de sesión exitoso",
+        type: "success",
+        duration: 5000,
+        dismissible: true,
+        pauseOnHover: true,
+      });
+    }
   } catch (error) {
     console.log(error);
   }

@@ -4,12 +4,15 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, alpha, helpers } from "@vuelidate/validators";
 import { supabase } from "@/supabase/supabase.js";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
+
 import sbHelpers from "@/supabase/helpers.js";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const router = useRouter();
+const $toast = useToast();
 
 const state = reactive({
   type: "",
@@ -100,9 +103,24 @@ const addProduct = async () => {
       updated_at: date,
     },
   ]);
-  if (error) console.log(error);
-  else {
-    // Disparar emit para mostrar un alert de que se creo correctamente el producto
+  if (error) {
+    $toast.open({
+      position: "top-right",
+      message: "Error al agregar el producto",
+      type: "error",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
+  } else {
+    $toast.open({
+      position: "top-right",
+      message: "Se agrego correctamente el producto",
+      type: "success",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
     router.push({ name: "Stock" });
   }
 };
@@ -116,7 +134,6 @@ const submitForm = async (e) => {
   e.preventDefault();
   const result = await v$.value.$validate();
   if (result) addProduct();
-  else console.log("error");
 };
 </script>
 

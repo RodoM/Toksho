@@ -6,6 +6,7 @@ import router from "./router";
 
 import "./assets/input.css";
 import "material-icons/iconfont/material-icons.css";
+import "vue-toast-notification/dist/theme-sugar.css";
 
 const app = createApp(App);
 

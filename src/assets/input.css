@@ -6,3 +6,9 @@
 }
 @tailwind components;
 @tailwind utilities;
+
+.v-toast__item {
+  border-radius: 0px !important;
+  border: 2px solid #0F0F0F;
+  box-shadow: 6px 6px 0px rgba(0,0,0,1) !important;
+}

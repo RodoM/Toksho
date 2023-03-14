@@ -4,9 +4,11 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
 import { supabase } from "@/supabase/supabase.js";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 
+const $toast = useToast();
 const router = useRouter();
 
 const state = reactive({
@@ -38,8 +40,24 @@ const signInWithPassword = async () => {
     if (error) throw error;
     else {
       router.push({ name: "Home" });
+      $toast.open({
+        position: "top-right",
+        message: "Inicio de sesión exitoso",
+        type: "success",
+        duration: 5000,
+        dismissible: true,
+        pauseOnHover: true,
+      });
     }
   } catch (error) {
+    $toast.open({
+      position: "top-right",
+      message: "Error al iniciar sesión",
+      type: "error",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
     console.log(error);
   }
 };
@@ -48,7 +66,6 @@ const submitForm = async (e) => {
   e.preventDefault();
   const result = await v$.value.$validate();
   if (result) signInWithPassword();
-  else console.log("error");
 };
 </script>
 

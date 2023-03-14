@@ -1,12 +1,15 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { supabase } from "@/supabase/supabase.js";
+import { useToast } from "vue-toast-notification";
 import sbHelpers from "@/supabase/helpers.js";
 
 import ProductSearchOptions from "@/components/shared/filters/ProductSearchOptions.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 import CustomModal from "../../lib/components/CustomModal.vue";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
+
+const $toast = useToast();
 
 const products = ref([]);
 const loading = ref(false);
@@ -36,9 +39,24 @@ const deleteProduct = async () => {
     .from("Products")
     .delete()
     .eq("id", currentProduct.value.id);
-  if (error) console.log(error);
-  else {
+  if (error) {
+    $toast.open({
+      position: "top-right",
+      message: "Error al borrar el producto",
+      type: "error",
+      duration: 5000,
+      dismissible: true,
+    });
+    console.log(error);
+  } else {
     showModal.value = false;
+    $toast.open({
+      position: "top-right",
+      message: "Se eliminó correctamente el producto",
+      type: "success",
+      duration: 5000,
+      dismissible: true,
+    });
     loading.value = true;
     getProducts();
     loading.value = false;
@@ -95,7 +113,12 @@ const isEven = (n) => {
           >
             <td class="flex items-center gap-3 px-5 font-medium">
               {{ product.name }}
-              <span v-if="product.stock === 0" class="border-2 rounded-full material-icons-outlined bg-primary border-tertiary-dark px-1 !text-base"> priority_high </span>
+              <span
+                v-if="product.stock === 0"
+                class="border-2 rounded-full material-icons-outlined bg-primary border-tertiary-dark px-1 !text-base"
+              >
+                priority_high
+              </span>
             </td>
             <td class="px-5 font-medium text-center">{{ product.stock }}</td>
             <td class="px-5 font-medium text-center">${{ product.price }}</td>
@@ -131,18 +154,32 @@ const isEven = (n) => {
       </table>
     </div>
     <CustomModal :show="showModal">
-      <div class="relative border-2 drop-shadow-items border-tertiary-dark bg-background">
-        <button type="button" class="absolute top-3 right-2.5" @click="showModal = false">
+      <div
+        class="relative border-2 drop-shadow-items border-tertiary-dark bg-background"
+      >
+        <button
+          type="button"
+          class="absolute top-3 right-2.5"
+          @click="showModal = false"
+        >
           <span class="material-icons-outlined text-tertiary-dark">
             close
           </span>
         </button>
         <div class="p-6 text-center">
-          <span class="material-icons-outlined text-primary !text-7xl"> warning_amber </span>
-          <h3 class="mb-5 font-medium">¿Está seguro que desea eliminar este producto?</h3>
+          <span class="material-icons-outlined text-primary !text-7xl">
+            warning_amber
+          </span>
+          <h3 class="mb-5 font-medium">
+            ¿Está seguro que desea eliminar este producto?
+          </h3>
           <div class="flex justify-between">
-            <CustomButton secondary @click="showModal = false">CANCELAR</CustomButton>
-            <CustomButton primary @click="deleteProduct()">ELIMINAR</CustomButton>
+            <CustomButton secondary @click="showModal = false">
+              CANCELAR
+            </CustomButton>
+            <CustomButton primary @click="deleteProduct()">
+              ELIMINAR
+            </CustomButton>
           </div>
         </div>
       </div>

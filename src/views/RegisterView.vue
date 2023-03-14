@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { reactive, computed } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import {
   required,
@@ -9,8 +9,13 @@ import {
   helpers,
 } from "@vuelidate/validators";
 import { supabase } from "@/supabase/supabase.js";
+import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
+
+const router = useRouter();
+const $toast = useToast();
 
 const state = reactive({
   email: "",
@@ -40,18 +45,33 @@ const rules = computed(() => {
 
 const v$ = useVuelidate(rules, state);
 
-const successfulRegister = ref(false);
-
-const signUp = async (e) => {
-  e.preventDefault();
+const signUp = async () => {
   try {
     const { error } = await supabase.auth.signUp({
       email: state.email,
       password: state.password,
     });
     if (error) throw error;
-    successfulRegister.value = true;
+    else {
+      router.push({ name: "Home" });
+      $toast.open({
+        position: "top-right",
+        message: "Registro exitoso, revisa tu email",
+        type: "success",
+        duration: 5000,
+        dismissible: true,
+        pauseOnHover: true,
+      });
+    }
   } catch (error) {
+    $toast.open({
+      position: "top-right",
+      message: "Error al registrarse",
+      type: "error",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
     console.log(error);
   }
 };
@@ -60,7 +80,6 @@ const submitForm = async (e) => {
   e.preventDefault();
   const result = await v$.value.$validate();
   if (result) signUp();
-  else console.log("error");
 };
 </script>
 
@@ -69,21 +88,18 @@ const submitForm = async (e) => {
     <div
       class="container flex flex-col max-w-3xl gap-6 px-5 py-10 mx-auto my-5 bg-white border-2 border-tertiary-dark drop-shadow-items"
     >
-      <img src="@/assets/images/toksho-logo.png" alt="" class="h-[200px] mx-auto" />
-      <div
-        v-if="successfulRegister"
-        class="flex justify-between p-5 mx-5 transition-all bg-green-300 border-2 border-tertiary-dark"
-      >
-        <span class="font-medium">
-          Registro exitoso, revisa tu mail para continuar.
-        </span>
-        <button class="mb-auto material-icons-outlined">close</button>
-      </div>
+      <img
+        src="@/assets/images/toksho-logo.png"
+        alt=""
+        class="h-[200px] mx-auto"
+      />
       <form action="" class="flex flex-col gap-5 px-5">
         <div>
           <div>
             <label :for="state.email">Email</label>
-            <span v-if="v$.email.$error" class="pl-2 text-red-500">{{ v$.email.$errors[0].$message }}</span>
+            <span v-if="v$.email.$error" class="pl-2 text-red-500">
+              {{ v$.email.$errors[0].$message }}
+            </span>
           </div>
           <input
             v-model="state.email"
@@ -95,7 +111,9 @@ const submitForm = async (e) => {
         <div>
           <div>
             <label :for="state.password">Contraseña</label>
-            <span v-if="v$.password.$error" class="pl-2 text-red-500">{{ v$.password.$errors[0].$message }}</span>
+            <span v-if="v$.password.$error" class="pl-2 text-red-500">
+              {{ v$.password.$errors[0].$message }}
+            </span>
           </div>
           <input
             v-model="state.password"
@@ -107,7 +125,9 @@ const submitForm = async (e) => {
         <div>
           <div>
             <label :for="state.confirmPassword">Confirmar contraseña</label>
-            <span v-if="v$.confirmPassword.$error" class="pl-2 text-red-500">{{ v$.confirmPassword.$errors[0].$message }}</span>
+            <span v-if="v$.confirmPassword.$error" class="pl-2 text-red-500">
+              {{ v$.confirmPassword.$errors[0].$message }}
+            </span>
           </div>
           <input
             v-model="state.confirmPassword"
