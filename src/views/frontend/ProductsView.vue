@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import { supabase } from "@/supabase/supabase.js";
 
 import sbHelpers from "@/supabase/helpers.js";
 
@@ -10,15 +11,54 @@ import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 const products = ref([]);
 const loading = ref(false);
 
+const count = ref(0);
+
 async function fetchProducts() {
   loading.value = true;
   products.value = await sbHelpers.getAllProducts();
+  count.value = products.value.length;
   loading.value = false;
 }
+
+const categories = ref();
+
+const getAllCategories = async () => {
+  let categoriesArr = [];
+  const { data: Categories, error } = await supabase
+    .from("Products")
+    .select("categories");
+  if (error) console.log(error);
+  else {
+    Categories.forEach((cat) => {
+      cat.categories.forEach((c) => {
+        categoriesArr.push(c);
+      });
+    });
+    categories.value = [...new Set(categoriesArr)];
+  }
+};
+
+const authors = ref();
+
+const getAllAuthors = async () => {
+  let authorsArr = [];
+  const { data: Authors, error } = await supabase
+    .from("Products")
+    .select("author");
+  if (error) console.log(error);
+  else {
+    Authors.forEach((author) => {
+      authorsArr.push(author.author);
+    });
+    authors.value = [...new Set(authorsArr)];
+  }
+};
 
 onMounted(async () => {
   loading.value = true;
   fetchProducts();
+  getAllCategories();
+  getAllAuthors();
   setTimeout(() => {
     loading.value = false;
   }, 500);
@@ -36,21 +76,28 @@ async function searchProducts() {
   loading.value = false;
 }
 
-const initialOrder = ref({
-  orderOption: { name: "Ordernar por...", value: "id" },
-  ascOption: { name: "Descendiente", value: false },
-});
-
-async function orderProducts(order, isAscending) {
+const applyFilters = async (type, author, categorie, order, asc) => {
   loading.value = true;
-  initialOrder.value.orderOption = order;
-  initialOrder.value.ascOption = isAscending;
-  products.value = await sbHelpers.orderProductsBy(
-    initialOrder.value.orderOption.value,
-    initialOrder.value.ascOption.value
-  );
+  let query = supabase
+    .from("Products")
+    .select("id, name, image, price, discount, stock, updated_at");
+  if (type) query = query.eq("type", type);
+  if (author) query = query.eq("author", author);
+  if (categorie) query = query.overlaps("categories", [categorie]);
+  if (order) query = query.order(order, { ascending: asc });
+  const { data: Products, error } = await query;
+  if (error) console.log(error);
+  else {
+    products.value = Products;
+    loading.value = false;
+  }
+};
+
+const clearFilters = async () => {
+  loading.value = true;
+  await fetchProducts();
   loading.value = false;
-}
+};
 </script>
 
 <template>
@@ -70,13 +117,15 @@ async function orderProducts(order, isAscending) {
         search
       </button>
     </div>
-    <div class="m-5">
+    <div class="relative z-10 m-5">
       <ProductSearchOptions
+        v-if="categories && authors"
         :productsInView="products.length"
-        :totalProducts="products.length"
-        :order="initialOrder"
-        @orderOptions="orderProducts"
-        @clearOrderOptio="fetchProducts"
+        :totalProducts="count"
+        :categories="categories"
+        :authors="authors"
+        @applyFilter="applyFilters"
+        @clearFilter="clearFilters"
       />
     </div>
     <LoadingSpinner v-if="loading" />

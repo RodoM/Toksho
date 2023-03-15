@@ -1,75 +1,185 @@
 <script setup>
 import { ref } from "vue";
 
-import ProductOrder from "./ProductOrder.vue";
-import ProductFilter from "./ProductFilter.vue";
-
-const openOrderModal = ref(false);
-const openFilterModal = ref(false);
-
-function openModal(modal) {
-  const app = document.getElementById("app");
-  app.classList.add("overflow-y-hidden");
-
-  if (modal == "order") {
-    openOrderModal.value = true;
-  } else {
-    openFilterModal.value = true;
-  }
-}
-
-function closeModal(modal) {
-  const app = document.getElementById("app");
-  app.classList.remove("overflow-y-hidden");
-
-  if (modal == "order") {
-    openOrderModal.value = false;
-  } else {
-    openFilterModal.value = false;
-  }
-}
-
-const emit = defineEmits(["orderOptions", "clearOrderOptio"]);
+import CustomButton from "@/lib/components/CustomButton.vue";
 
 const props = defineProps({
-  order: Object,
-  filter: Object,
   totalProducts: Number,
   productsInView: Number,
+  categories: {
+    type: Array,
+    required: true,
+  },
+  authors: {
+    type: Array,
+    required: true,
+  },
 });
 
-function emitOrderOptions(order, isAscending) {
-  emit("orderOptions", order, isAscending);
-}
+const filterMenu = ref(false);
 
-function clearOrderOption() {
-  emit("clearOrderOptio");
-}
+const filterOptions = [
+  { label: "Mangas", value: "manga" },
+  { label: "Comics", value: "comic" },
+  { label: "Indumentaria", value: "indumentary" },
+  { label: "Todos", value: "all" },
+];
+
+const selectedFilterOpt = ref("");
+const selectedAuthor = ref("");
+const selectedCategorie = ref("");
+
+const orderOptions = [
+  { label: "Alfabéticamente", value: "name" },
+  { label: "Precio", value: "price" },
+  { label: "Fecha de publicación", value: "created_at" },
+];
+
+const isAscending = [
+  { label: "Ascendiente", value: true },
+  { label: "Descendiente", value: false },
+];
+
+const selectedOrder = ref("");
+const selectedAsc = ref(true);
+
+const emit = defineEmits(["applyFilter", "clearFilter"]);
+
+const applyFilter = (type, author, categorie, order, asc) => {
+  event.preventDefault();
+  emit("applyFilter", type, author, categorie, order, asc);
+};
+
+const clearFilter = () => {
+  event.preventDefault();
+  emit("clearFilter");
+  selectedFilterOpt.value = "";
+  selectedAuthor.value = "";
+  selectedCategorie.value = "";
+  selectedOrder.value = "";
+  selectedAsc.value = true;
+};
 </script>
 
 <template>
   <div
     class="flex justify-between p-3 border-2 bg-secondary-light border-tertiary-dark drop-shadow-items"
   >
-    <span v-if="productsInView && totalProducts" class="font-medium">{{ productsInView }} de {{ totalProducts }}</span>
-    <div class="flex gap-2">
-      <div class="flex items-center" @click="openModal('order')">
-        <span class="font-medium">Ordenar</span>
-        <span class="material-icons-outlined">swap_vert</span>
-      </div>
-      <div class="flex items-center" @click="openModal('filter')">
+    <span
+      v-if="props.productsInView && props.totalProducts"
+      class="font-medium"
+    >
+      {{ props.productsInView }} de {{ props.totalProducts }}
+    </span>
+    <div>
+      <button class="flex items-center" @click="filterMenu = !filterMenu">
         <span class="font-medium">Filtrar</span>
         <span class="material-icons-outlined">sort</span>
+      </button>
+      <div
+        v-if="filterMenu"
+        class="absolute p-3 border-2 -right-[2px] top-16 bg-background border-tertiary-dark min-w-[300px]"
+      >
+        <form class="flex flex-col gap-3">
+          <div>
+            <label for="">Filtrar por</label>
+            <v-select
+              v-model="selectedFilterOpt"
+              :options="filterOptions"
+              :reduce="(opt) => opt.value"
+              :clearSearchOnSelect="false"
+              class="border-2 border-tertiary-dark"
+            ></v-select>
+          </div>
+          <div
+            v-if="selectedFilterOpt == 'manga' || selectedFilterOpt == 'comic'"
+          >
+            <label for="">Autor</label>
+            <v-select
+              v-model="selectedAuthor"
+              :options="authors"
+              :clearSearchOnSelect="false"
+              class="border-2 border-tertiary-dark"
+            ></v-select>
+          </div>
+          <div
+            v-if="selectedFilterOpt == 'manga' || selectedFilterOpt == 'comic'"
+          >
+            <label for="">Categoría</label>
+            <v-select
+              v-model="selectedCategorie"
+              :options="props.categories"
+              :clearSearchOnSelect="false"
+              class="border-2 border-tertiary-dark"
+            ></v-select>
+          </div>
+          <div>
+            <label for="">Ordenar por</label>
+            <v-select
+              v-model="selectedOrder"
+              :options="orderOptions"
+              :reduce="(opt) => opt.value"
+              class="border-2 border-tertiary-dark"
+            ></v-select>
+          </div>
+          <div>
+            <label for="">Orden</label>
+            <v-select
+              v-model="selectedAsc"
+              :options="isAscending"
+              :reduce="(opt) => opt.value"
+              :clearSearchOnSelect="false"
+              class="border-2 border-tertiary-dark"
+            ></v-select>
+          </div>
+          <CustomButton
+            primary
+            @click="
+              applyFilter(
+                selectedFilterOpt,
+                selectedAuthor,
+                selectedCategorie,
+                selectedOrder,
+                selectedAsc
+              ),
+                (filterMenu = false)
+            "
+          >
+            APLICAR
+          </CustomButton>
+          <CustomButton secondary @click="clearFilter(), (filterMenu = false)">
+            LIMPIAR
+          </CustomButton>
+        </form>
       </div>
     </div>
   </div>
-
-  <ProductOrder
-    v-if="openOrderModal"
-    :order="props.order"
-    @closeModal="closeModal('order')"
-    @applyOrder="emitOrderOptions"
-    @clearOrderOptions="clearOrderOption"
-  />
-  <ProductFilter v-if="openFilterModal" @closeModal="closeModal('filter')" />
 </template>
+
+<style>
+.vs__dropdown-toggle {
+  border-radius: 0px !important;
+}
+
+.vs__dropdown-menu {
+  margin-top: 8px !important;
+  padding: 8px !important;
+  border: 2px solid #0f0f0f !important;
+  background-color: #f8f9fa !important;
+}
+
+.vs__dropdown-option {
+  border: 2px solid #f8f9fa !important;
+}
+
+.vs__dropdown-option--highlight {
+  background: #86bbd8 !important;
+  color: white !important;
+  border: 2px solid #0f0f0f !important;
+}
+
+.vs__clear,
+.vs__open-indicator {
+  fill: #0f0f0f !important;
+}
+</style>
