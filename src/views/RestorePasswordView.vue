@@ -2,11 +2,13 @@
 import { ref } from "vue";
 import { supabase } from "@/supabase/supabase.js";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
 
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const router = useRouter();
+const $toast = useToast();
 
 const newPassword = ref("");
 
@@ -15,9 +17,27 @@ const resetPassword = async (e) => {
   const { error } = await supabase.auth.updateUser({
     password: newPassword.value,
   });
-  if (error) console.log(error);
-  // Disparar alerta diciendo que se restableció la contraseña correctamente
-  else router.push({ name: "Home" });
+  if (error) {
+    $toast.open({
+      position: "top-right",
+      message: "Error al actualizar contraseña",
+      type: "error",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
+    console.log(error);
+  } else {
+    $toast.open({
+      position: "top-right",
+      message: "Contraseña actualizada correctamente",
+      type: "success",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
+    router.push({ name: "Home" });
+  }
 };
 </script>
 

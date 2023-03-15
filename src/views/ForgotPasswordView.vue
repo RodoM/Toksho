@@ -2,20 +2,40 @@
 import { ref } from "vue";
 import { supabase } from "@/supabase/supabase.js";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
 
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const router = useRouter();
+const $toast = useToast();
 
 const email = ref("");
 
 const forgotPassword = async (e) => {
   e.preventDefault();
   let { error } = await supabase.auth.resetPasswordForEmail(email.value);
-  if (error) console.log(error);
-  // Disparar alerta diciendo que se envio un correo para reestablecer la contraseña a {{ mail }}
-  else router.push({ name: "Home" });
+  if (error) {
+    $toast.open({
+      position: "top-right",
+      message: "Error recuperar contraseña",
+      type: "error",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
+    console.log(error);
+  } else {
+    $toast.open({
+      position: "top-right",
+      message: "Se te envió un correo para recuperar tu contraseña",
+      type: "success",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
+    router.push({ name: "Home" });
+  }
 };
 </script>
 

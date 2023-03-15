@@ -8,8 +8,8 @@ import { useToast } from "vue-toast-notification";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 
-const $toast = useToast();
 const router = useRouter();
+const $toast = useToast();
 
 const state = reactive({
   email: "",
