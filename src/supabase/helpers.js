@@ -57,24 +57,6 @@ async function getProductDetails(id) {
   }
 }
 
-async function orderProductsBy(order, isAscending) {
-  const { data, error } = await supabase
-    .from("Products")
-    .select("*")
-    .order(order, { ascending: isAscending });
-  if (error) {
-    console.log(error);
-  } else {
-    return data;
-  }
-}
-
-// async function filterOrderProducts(order, filter) {
-//   if (!order) {
-//     const { data, error } = await supabase.from("Products").select("*").;
-//   }
-// }
-
 async function getRelatedProducts(categories, name) {
   const { data, error } = await supabase
     .from("Products")
@@ -112,15 +94,24 @@ async function getFileURL(name) {
   return data.publicUrl;
 }
 
+async function userIsAdmin(id) {
+  const { data: isAdmin, error } = await supabase
+    .from("users")
+    .select("is_admin")
+    .eq("id", id);
+  if (error) console.log(error);
+  else return isAdmin[0].is_admin;
+}
+
 export default {
   getAllProducts,
   getNovelties,
   getPresales,
   searchProducts,
   getProductDetails,
-  orderProductsBy,
   getRelatedProducts,
   uploadFile,
   deleteFile,
   getFileURL,
+  userIsAdmin,
 };

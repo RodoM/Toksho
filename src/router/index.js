@@ -182,9 +182,12 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const store = userStore();
   const user = computed(() => store.user);
-  if ((to.meta.label === "Ingresar" || to.meta.label === "Registrarse") && user.value) {
+  if (
+    (to.meta.label === "Ingresar" || to.meta.label === "Registrarse") &&
+    user.value
+  ) {
     next("/");
-  } else if (to.meta.auth && to.meta.adminAuth && !user.value?.user_metadata.isAdmin) {
+  } else if (to.meta.auth && to.meta.adminAuth && !user.value?.isAdmin) {
     next("/");
   } else if (to.meta.auth && !user.value) {
     next("/ingresar");

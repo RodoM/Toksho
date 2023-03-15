@@ -7,8 +7,8 @@ import NavBar from "./components/frontend/layout/Navbar.vue";
 
 const store = userStore();
 
-supabase.auth.onAuthStateChange((_, session) => {
-  store.setUser(session);
+supabase.auth.onAuthStateChange(async (_, session) => {
+  await store.setUser(session);
 });
 </script>
 

@@ -45,16 +45,18 @@ const signOut = async () => {
         </button>
       </div>
       <router-link to="/" class="flex items-center gap-2">
-        <img src="@/assets/images/toksho-logo-clear.png" alt="" class="h-[37px]" />
+        <img
+          src="@/assets/images/toksho-logo-clear.png"
+          alt=""
+          class="h-[37px]"
+        />
         <span class="text-2xl font-bold">TOKSHO</span>
       </router-link>
       <ul class="items-center hidden gap-6 lg:flex">
         <li
           class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
         >
-          <router-link class="font-medium" to="/">
-            INICIO
-          </router-link>
+          <router-link class="font-medium" to="/"> INICIO </router-link>
         </li>
         <li
           class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
@@ -77,10 +79,18 @@ const signOut = async () => {
             CONTACTO
           </router-link>
         </li>
-        <li v-if="user && user.user_metadata.isAdmin">
+        <li v-if="user && user.isAdmin">
           <button
             class="flex items-center p-1 font-medium transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-            :class="[dropdown ? ['bg-secondary-light', '!border-tertiary-dark', 'drop-shadow-navlink'] : '']"
+            :class="[
+              dropdown
+                ? [
+                    'bg-secondary-light',
+                    '!border-tertiary-dark',
+                    'drop-shadow-navlink',
+                  ]
+                : '',
+            ]"
             @click="dropdown = !dropdown"
           >
             PANEL DE ADMIN
@@ -94,19 +104,25 @@ const signOut = async () => {
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-primary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="dropdown = false"
             >
-              <router-link to="/admin/listado" class="font-medium"> LISTADO </router-link>
+              <router-link to="/admin/listado" class="font-medium">
+                LISTADO
+              </router-link>
             </li>
             <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-primary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="dropdown = false"
             >
-              <router-link to="/admin/listado" class="font-medium"> PEDIDOS </router-link>
+              <router-link to="/admin/listado" class="font-medium">
+                PEDIDOS
+              </router-link>
             </li>
             <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-primary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="dropdown = false"
             >
-              <router-link to="/admin/listado" class="font-medium"> CONFIGURACIÓN </router-link>
+              <router-link to="/admin/listado" class="font-medium">
+                CONFIGURACIÓN
+              </router-link>
             </li>
           </ul>
         </li>
@@ -118,10 +134,19 @@ const signOut = async () => {
         <router-link to="/carrito" class="material-icons-outlined">
           shopping_cart
         </router-link>
-        <router-link v-if="!user" to="/ingresar" class="!hidden lg:!block material-icons-outlined">
+        <router-link
+          v-if="!user"
+          to="/ingresar"
+          class="!hidden lg:!block material-icons-outlined"
+        >
           login
         </router-link>
-        <router-link v-else to="/" class="!hidden lg:!block material-icons-outlined" @click="signOut()">
+        <router-link
+          v-else
+          to="/"
+          class="!hidden lg:!block material-icons-outlined"
+          @click="signOut()"
+        >
           logout
         </router-link>
       </div>
@@ -179,7 +204,7 @@ const signOut = async () => {
             CONTACTO
           </router-link>
         </li>
-        <li v-if="user && user.user_metadata.isAdmin">
+        <li v-if="user && user.isAdmin">
           <button
             class="flex items-center gap-2 p-1 font-medium transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
             @click="dropdown = !dropdown"
@@ -191,21 +216,27 @@ const signOut = async () => {
           <ul v-if="dropdown" class="flex flex-col gap-2 pt-2 pl-8">
             <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-              @click="isOpen = false, dropdown = false"
+              @click="(isOpen = false), (dropdown = false)"
             >
-              <router-link to="/admin/listado" class="font-medium"> LISTADO </router-link>
+              <router-link to="/admin/listado" class="font-medium">
+                LISTADO
+              </router-link>
             </li>
             <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-              @click="isOpen = false, dropdown = false"
+              @click="(isOpen = false), (dropdown = false)"
             >
-              <router-link to="/admin/listado" class="font-medium"> PEDIDOS </router-link>
+              <router-link to="/admin/listado" class="font-medium">
+                PEDIDOS
+              </router-link>
             </li>
             <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-              @click="isOpen = false, dropdown = false"
+              @click="(isOpen = false), (dropdown = false)"
             >
-              <router-link to="/admin/listado" class="font-medium"> CONFIGURACIÓN </router-link>
+              <router-link to="/admin/listado" class="font-medium">
+                CONFIGURACIÓN
+              </router-link>
             </li>
           </ul>
         </li>
