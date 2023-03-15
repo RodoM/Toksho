@@ -71,13 +71,12 @@ onMounted(async () => {
       class="flex justify-center p-5 bg-secondary-light border-y-2 border-tertiary-dark"
     >
       <div
-        class="flex items-center border-2 border-tertiary-dark drop-shadow-items"
+        class="flex items-center w-full border-2 border-tertiary-dark drop-shadow-items"
       >
-        <!-- Ver si se puede aislar en un componente el input, tener en cuenta el v-model -->
         <input
           type="text"
           placeholder="Busqueda..."
-          class="p-2 focus:outline-none"
+          class="w-full p-2 focus:outline-none"
         />
         <button
           class="p-2 border-l-2 material-icons-outlined border-tertiary-dark bg-primary-light"
