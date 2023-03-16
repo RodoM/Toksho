@@ -55,7 +55,6 @@ const rules = computed(() => {
     },
     author: {
       required: helpers.withMessage("Autor requerido", required),
-      alpha: helpers.withMessage("Solo caracteres alfabeticos", alpha),
     },
     categories: {
       required: helpers.withMessage("Categorías requeridas", required),
