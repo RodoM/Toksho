@@ -1,6 +1,8 @@
 <script setup>
 import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
+import { itemsStore } from "@/stores/shoppingCart.js";
+import { useToast } from "vue-toast-notification";
 
 import sbHelpers from "@/supabase/helpers.js";
 
@@ -10,10 +12,24 @@ import ProductList from "@/components/shared/products/ProductList.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const route = useRoute();
+const store = itemsStore();
+const $toast = useToast();
 
 const product = ref();
 const loading = ref(false);
 const related = ref();
+
+const addProduct = (id) => {
+  store.addItem(id);
+  $toast.open({
+    position: "top-right",
+    message: "Se agregó correctamente el producto del carrito",
+    type: "success",
+    duration: 5000,
+    dismissible: true,
+    pauseOnHover: true,
+  });
+};
 
 async function relatedProducts() {
   related.value = await sbHelpers.getRelatedProducts(
@@ -41,7 +57,7 @@ function newPrice(price, discount) {
       <div class="flex flex-col gap-5 lg:flex-row">
         <img
           :src="product.image"
-          alt=""
+          :alt="product.name"
           class="border-2 border-tertiary-dark drop-shadow-items lg:h-[685px] lg:min-w-[450px] lg:w-[450px]"
         />
         <div class="flex flex-col justify-between gap-3">
@@ -76,7 +92,11 @@ function newPrice(price, discount) {
           >
             AÑADIR AL CARRITO
           </button> -->
-          <CustomButton primary :disabled="product.stock == 0">
+          <CustomButton
+            primary
+            :disabled="product.stock == 0"
+            @click="addProduct(product.id)"
+          >
             {{ product.stock == 0 ? "SIN STOCK" : "AÑADIR AL CARRITO" }}
           </CustomButton>
         </div>

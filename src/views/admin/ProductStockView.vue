@@ -142,6 +142,14 @@ const clearFilters = async () => {
   await getProducts();
   loading.value = false;
 };
+
+const setAsNovelty = async (id, value) => {
+  await sbHelpers.setAsNovelty(id, !value);
+};
+
+const setAsPresale = async (id, value) => {
+  await sbHelpers.setAsPresale(id, !value);
+};
 </script>
 
 <template>
@@ -186,6 +194,8 @@ const clearFilters = async () => {
             <th class="px-5 text-center">UNIDADES</th>
             <th class="px-5 text-center">PRECIO</th>
             <th class="px-5 text-center">DESCUENTO</th>
+            <th class="px-5 text-center">NOVEDAD</th>
+            <th class="px-5 text-center">PREVENTA</th>
             <th class="px-5 text-center">ACCIONES</th>
           </tr>
         </thead>
@@ -201,6 +211,7 @@ const clearFilters = async () => {
                 <span
                   v-if="product.stock === 0"
                   class="border-2 rounded-full material-icons-outlined bg-primary border-tertiary-dark px-1 !text-base"
+                  title="SIN STOCK"
                 >
                   priority_high
                 </span>
@@ -210,6 +221,26 @@ const clearFilters = async () => {
             <td class="px-5 font-medium text-center">${{ product.price }}</td>
             <td class="px-5 font-medium text-center">
               {{ product.discount ? product.discount : "0" }}%
+            </td>
+            <td class="px-5 font-medium text-center">
+              <input
+                v-model="product.isNovelty"
+                type="checkbox"
+                class="w-6 h-6"
+                :name="product.name"
+                :id="product.id"
+                @click="setAsNovelty(product.id, product.isNovelty)"
+              />
+            </td>
+            <td class="px-5 font-medium text-center">
+              <input
+                v-model="product.isPresale"
+                type="checkbox"
+                class="w-6 h-6"
+                :name="product.name"
+                :id="product.id"
+                @click="setAsPresale(product.id, product.isPresale)"
+              />
             </td>
             <td class="flex justify-center gap-3 px-5 py-2">
               <router-link

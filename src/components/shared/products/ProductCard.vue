@@ -24,7 +24,7 @@ function newPrice(price, discount) {
         <img
           :src="props.product.image"
           class="object-cover w-full h-full"
-          alt="asd"
+          :alt="props.product.name"
         />
       </div>
       <span

@@ -3,7 +3,9 @@ import { supabase } from "@/supabase/supabase.js";
 async function getAllProducts() {
   const { data, error } = await supabase
     .from("Products")
-    .select("id, name, image, price, discount, stock, updated_at");
+    .select(
+      "id, name, image, price, discount, stock, updated_at, isNovelty, isPresale"
+    );
   if (error) {
     console.log(error);
   } else {
@@ -11,10 +13,11 @@ async function getAllProducts() {
   }
 }
 
-async function getNovelties() {
-  let { data, error } = await supabase
-    .from("Novelties")
-    .select("Products(id, name, image, price, discount, stock)");
+async function getCartItems(ids) {
+  const { data, error } = await supabase
+    .from("Products")
+    .select("id, name, image, author, price, discount, stock")
+    .in("id", ids);
   if (error) {
     console.log(error);
   } else {
@@ -22,15 +25,20 @@ async function getNovelties() {
   }
 }
 
-async function getPresales() {
-  let { data, error } = await supabase
-    .from("Presales")
-    .select("Products(id, name, image, price, discount, stock)");
-  if (error) {
-    console.log(error);
-  } else {
-    return data;
-  }
+async function setAsNovelty(id, value) {
+  const { error } = await supabase
+    .from("Products")
+    .update({ isNovelty: value })
+    .eq("id", id);
+  if (error) console.log(error);
+}
+
+async function setAsPresale(id, value) {
+  const { error } = await supabase
+    .from("Products")
+    .update({ isPresale: value })
+    .eq("id", id);
+  if (error) console.log(error);
 }
 
 async function searchProducts(value) {
@@ -105,8 +113,9 @@ async function userIsAdmin(id) {
 
 export default {
   getAllProducts,
-  getNovelties,
-  getPresales,
+  getCartItems,
+  setAsNovelty,
+  setAsPresale,
   searchProducts,
   getProductDetails,
   getRelatedProducts,
