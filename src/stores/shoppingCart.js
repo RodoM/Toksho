@@ -6,8 +6,8 @@ export const itemsStore = defineStore(
   () => {
     const items = ref([]);
 
-    const addItem = (item) => {
-      items.value.push(item);
+    const addItem = (id, amount) => {
+      items.value.push({ id, amount });
     };
 
     const deleteItem = (item) => {

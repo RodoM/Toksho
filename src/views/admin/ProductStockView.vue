@@ -2,7 +2,13 @@
 import { onMounted, ref } from "vue";
 import { supabase } from "@/supabase/supabase.js";
 import { useToast } from "vue-toast-notification";
-import sbHelpers from "@/supabase/helpers.js";
+import {
+  getAllProducts,
+  searchProducts,
+  deleteFile,
+  setAsNovelty,
+  setAsPresale,
+} from "@/supabase/helpers.js";
 
 import ProductSearchOptions from "@/components/shared/filters/ProductSearchOptions.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
@@ -17,16 +23,16 @@ const showModal = ref(false);
 const count = ref(0);
 
 const getProducts = async () => {
-  products.value = await sbHelpers.getAllProducts();
+  products.value = await getAllProducts();
   count.value = products.value.length;
 };
 
 const searchInput = ref("");
 
-const searchProducts = async () => {
+const inputSearchProducts = async () => {
   loading.value = true;
   if (searchInput.value.length > 0) {
-    products.value = await sbHelpers.searchProducts(searchInput.value);
+    products.value = await searchProducts(searchInput.value);
   } else {
     getProducts();
   }
@@ -76,9 +82,7 @@ onMounted(async () => {
 });
 
 const deleteImageFile = async (image) => {
-  await sbHelpers.deleteFile(
-    image.substring(image.lastIndexOf("/") + 1, image.length)
-  );
+  await deleteFile(image.substring(image.lastIndexOf("/") + 1, image.length));
 };
 
 const currentProduct = ref();
@@ -143,12 +147,12 @@ const clearFilters = async () => {
   loading.value = false;
 };
 
-const setAsNovelty = async (id, value) => {
-  await sbHelpers.setAsNovelty(id, !value);
+const setProductAsNovelty = async (id, value) => {
+  await setAsNovelty(id, !value);
 };
 
-const setAsPresale = async (id, value) => {
-  await sbHelpers.setAsPresale(id, !value);
+const setProductAsPresale = async (id, value) => {
+  await setAsPresale(id, !value);
 };
 </script>
 
@@ -163,7 +167,7 @@ const setAsPresale = async (id, value) => {
       />
       <button
         class="p-2 border-l-2 material-icons-outlined border-tertiary-dark bg-primary-light"
-        @click="searchProducts"
+        @click="inputSearchProducts"
       >
         search
       </button>
@@ -229,7 +233,7 @@ const setAsPresale = async (id, value) => {
                 class="w-6 h-6"
                 :name="product.name"
                 :id="product.id"
-                @click="setAsNovelty(product.id, product.isNovelty)"
+                @click="setProductAsNovelty(product.id, product.isNovelty)"
               />
             </td>
             <td class="px-5 font-medium text-center">
@@ -239,7 +243,7 @@ const setAsPresale = async (id, value) => {
                 class="w-6 h-6"
                 :name="product.name"
                 :id="product.id"
-                @click="setAsPresale(product.id, product.isPresale)"
+                @click="setProductAsPresale(product.id, product.isPresale)"
               />
             </td>
             <td class="flex justify-center gap-3 px-5 py-2">

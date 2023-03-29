@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import sbHelpers from "@/supabase/helpers.js";
+import { userIsAdmin } from "@/supabase/helpers.js";
 
 export const userStore = defineStore("user", () => {
   const user = ref(null);
@@ -9,7 +9,7 @@ export const userStore = defineStore("user", () => {
     if (payload) {
       user.value = payload.user;
       const id = payload.user.id;
-      user.value.isAdmin = await sbHelpers.userIsAdmin(id);
+      user.value.isAdmin = await userIsAdmin(id);
     } else {
       user.value = null;
     }

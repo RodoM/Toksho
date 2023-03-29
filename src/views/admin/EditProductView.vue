@@ -11,7 +11,12 @@ import {
 import { supabase } from "@/supabase/supabase.js";
 import { useRouter, useRoute } from "vue-router";
 import { useToast } from "vue-toast-notification";
-import sbHelpers from "@/supabase/helpers.js";
+import {
+  getProductDetails,
+  deleteFile,
+  uploadFile,
+  getFileURL,
+} from "@/supabase/helpers.js";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
@@ -79,7 +84,7 @@ const rules = computed(() => {
 const v$ = useVuelidate(rules, state);
 
 onMounted(async () => {
-  const product = await sbHelpers.getProductDetails(route.params.id);
+  const product = await getProductDetails(route.params.id);
   state.id = product.id;
   state.type = product.type;
   state.name = product.name;
@@ -98,7 +103,7 @@ const getCategories = () => {
 };
 
 const deleteImageFile = async (name) => {
-  await sbHelpers.deleteFile(name);
+  await deleteFile(name);
 };
 
 const getFile = () => {
@@ -125,8 +130,8 @@ const editProduct = async () => {
           originalImg.length
         )
       ),
-      sbHelpers.uploadFile(state.name.concat(date), state.image.image),
-      sbHelpers.getFileURL(state.name.concat(date)),
+      uploadFile(state.name.concat(date), state.image.image),
+      getFileURL(state.name.concat(date)),
     ]);
     state.image.imageURL = results[2];
   }

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import sbHelpers from "@/supabase/helpers.js";
+import { getProductDetails } from "@/supabase/helpers.js";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
@@ -12,7 +12,7 @@ const route = useRoute();
 const product = ref();
 
 onMounted(async () => {
-  product.value = await sbHelpers.getProductDetails(route.params.id);
+  product.value = await getProductDetails(route.params.id);
 });
 
 const goBack = (e) => {
@@ -28,7 +28,11 @@ const goBack = (e) => {
     </header-title>
     <form v-if="product" class="flex flex-col gap-4 mx-5">
       <div class="flex flex-col gap-4 md:flex-row">
-        <img :src="product.image" alt="" class="md:h-[596px] md:w-[503px] lg:h-[572px] lg:min-w-[468px] border-2 border-tertiary-dark drop-shadow-items" />
+        <img
+          :src="product.image"
+          alt=""
+          class="md:h-[596px] md:w-[503px] lg:h-[572px] lg:min-w-[468px] border-2 border-tertiary-dark drop-shadow-items"
+        />
         <div class="flex flex-col w-full gap-4">
           <div class="w-full">
             <label for="">Tipo de producto</label>

@@ -3,8 +3,7 @@ import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 import { itemsStore } from "@/stores/shoppingCart.js";
 import { useToast } from "vue-toast-notification";
-
-import sbHelpers from "@/supabase/helpers.js";
+import { getRelatedProducts, getProductDetails } from "@/supabase/helpers.js";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
@@ -19,8 +18,22 @@ const product = ref();
 const loading = ref(false);
 const related = ref();
 
+const amount = ref(1);
+
+const lessAmount = () => {
+  if (amount.value > 0) {
+    amount.value -= 1;
+  }
+};
+
+const moreAmount = () => {
+  if (amount.value < product.value.stock) {
+    amount.value += 1;
+  }
+};
+
 const addProduct = (id) => {
-  store.addItem(id);
+  store.addItem(id, amount.value);
   $toast.open({
     position: "top-right",
     message: "Se agregó correctamente el producto del carrito",
@@ -32,7 +45,7 @@ const addProduct = (id) => {
 };
 
 async function relatedProducts() {
-  related.value = await sbHelpers.getRelatedProducts(
+  related.value = await getRelatedProducts(
     product.value.categories,
     product.value.name
   );
@@ -40,7 +53,7 @@ async function relatedProducts() {
 
 onBeforeMount(async () => {
   loading.value = true;
-  product.value = await sbHelpers.getProductDetails(route.params.id);
+  product.value = await getProductDetails(route.params.id);
   await relatedProducts();
   loading.value = false;
 });
@@ -84,9 +97,9 @@ function newPrice(price, discount) {
               <span
                 v-for="(category, index) in product.categories"
                 :key="index"
-                class="p-1 mr-2 border-2 bg-secondary-light border-tertiary-dark drop-shadow-navlink"
               >
-                {{ category }}
+                {{ category
+                }}{{ index + 1 < product.categories.length ? ", " : "" }}
               </span>
             </div>
             <span>
@@ -94,17 +107,35 @@ function newPrice(price, discount) {
               {{ product.author }}
             </span>
           </div>
-          <!-- <div class="flex justify-between">
-            <span class="p-2 border-2 bg-primary-light border-tertiary-dark drop-shadow-items">SELECCIONAR TOMO</span>
-            <span class="p-2 border-2 bg-primary-light border-tertiary-dark drop-shadow-items">CANTIDAD</span>
-          </div> -->
-          <CustomButton
-            primary
-            :disabled="product.stock == 0"
-            @click="addProduct(product.id)"
-          >
-            {{ product.stock == 0 ? "SIN STOCK" : "AÑADIR AL CARRITO" }}
-          </CustomButton>
+          <div class="flex flex-col gap-3 md:flex-row">
+            <div class="flex drop-shadow-items">
+              <button
+                class="w-1/3 font-bold border-2 bg-primary-light border-tertiary-dark"
+                @click="lessAmount"
+              >
+                -
+              </button>
+              <input
+                v-model="amount"
+                type="number"
+                class="w-1/3 p-3 text-center border-y-2 border-tertiary-dark focus:outline-none"
+              />
+              <button
+                class="w-1/3 font-bold border-2 bg-primary-light border-tertiary-dark"
+                @click="moreAmount"
+              >
+                +
+              </button>
+            </div>
+            <CustomButton
+              primary
+              class="w-full"
+              :disabled="product.stock == 0"
+              @click="addProduct(product.id)"
+            >
+              {{ product.stock == 0 ? "SIN STOCK" : "AÑADIR AL CARRITO" }}
+            </CustomButton>
+          </div>
         </div>
       </div>
       <div class="flex flex-col gap-y-5">
@@ -116,3 +147,17 @@ function newPrice(price, discount) {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>

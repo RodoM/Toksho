@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 
-import sbHelpers from "@/supabase/helpers.js";
+import { getAllProducts } from "@/supabase/helpers.js";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
@@ -24,7 +24,7 @@ const photos = [
 
 onMounted(async () => {
   loading.value = true;
-  products.value = await sbHelpers.getAllProducts();
+  products.value = await getAllProducts();
   loading.value = false;
 });
 

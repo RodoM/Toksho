@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { supabase } from "@/supabase/supabase.js";
 
-import sbHelpers from "@/supabase/helpers.js";
+import { getAllProducts, searchProducts } from "@/supabase/helpers.js";
 
 import ProductList from "@/components/shared/products/ProductList.vue";
 import ProductSearchOptions from "@/components/shared/filters/ProductSearchOptions.vue";
@@ -15,7 +15,7 @@ const count = ref(0);
 
 async function fetchProducts() {
   loading.value = true;
-  products.value = await sbHelpers.getAllProducts();
+  products.value = await getAllProducts();
   count.value = products.value.length;
   loading.value = false;
 }
@@ -66,12 +66,12 @@ onMounted(async () => {
 
 const searchInput = ref("");
 
-async function searchProducts() {
+async function inputSearchProducts() {
   loading.value = true;
   if (searchInput.value.length > 0) {
-    products.value = await sbHelpers.searchProducts(searchInput.value);
+    products.value = await searchProducts(searchInput.value);
   } else {
-    products.value = await sbHelpers.getAllProducts();
+    products.value = await getAllProducts();
   }
   loading.value = false;
 }
@@ -108,11 +108,11 @@ const clearFilters = async () => {
         type="text"
         placeholder="Busqueda..."
         class="w-full p-2 focus:outline-none"
-        @keyup.enter="searchProducts()"
+        @keyup.enter="inputSearchProducts()"
       />
       <button
         class="p-2 border-l-2 material-icons-outlined border-tertiary-dark bg-primary-light"
-        @click="searchProducts()"
+        @click="inputSearchProducts()"
       >
         search
       </button>

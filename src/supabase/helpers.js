@@ -1,6 +1,6 @@
 import { supabase } from "@/supabase/supabase.js";
 
-async function getAllProducts() {
+export async function getAllProducts() {
   const { data, error } = await supabase
     .from("Products")
     .select(
@@ -13,7 +13,8 @@ async function getAllProducts() {
   }
 }
 
-async function getCartItems(ids) {
+export async function getCartItems(items) {
+  const ids = items.map((item) => item.id);
   const { data, error } = await supabase
     .from("Products")
     .select("id, name, image, author, price, discount, stock")
@@ -21,11 +22,18 @@ async function getCartItems(ids) {
   if (error) {
     console.log(error);
   } else {
+    data.forEach((item) => {
+      items.find((i) => {
+        if (i.id === item.id) {
+          item.amount = i.amount;
+        }
+      });
+    });
     return data;
   }
 }
 
-async function setAsNovelty(id, value) {
+export async function setAsNovelty(id, value) {
   const { error } = await supabase
     .from("Products")
     .update({ isNovelty: value })
@@ -33,7 +41,7 @@ async function setAsNovelty(id, value) {
   if (error) console.log(error);
 }
 
-async function setAsPresale(id, value) {
+export async function setAsPresale(id, value) {
   const { error } = await supabase
     .from("Products")
     .update({ isPresale: value })
@@ -41,7 +49,7 @@ async function setAsPresale(id, value) {
   if (error) console.log(error);
 }
 
-async function searchProducts(value) {
+export async function searchProducts(value) {
   const { data, error } = await supabase
     .from("Products")
     .select()
@@ -53,7 +61,7 @@ async function searchProducts(value) {
   }
 }
 
-async function getProductDetails(id) {
+export async function getProductDetails(id) {
   const { data, error } = await supabase
     .from("Products")
     .select("*")
@@ -65,7 +73,7 @@ async function getProductDetails(id) {
   }
 }
 
-async function getRelatedProducts(categories, name) {
+export async function getRelatedProducts(categories, name) {
   const { data, error } = await supabase
     .from("Products")
     .select("id, name, image, price, discount, stock")
@@ -78,7 +86,7 @@ async function getRelatedProducts(categories, name) {
   }
 }
 
-async function uploadFile(name, file) {
+export async function uploadFile(name, file) {
   const { error } = await supabase.storage
     .from("products")
     .upload("images/" + name, file, {
@@ -88,21 +96,21 @@ async function uploadFile(name, file) {
   if (error) console.log(error);
 }
 
-async function deleteFile(name) {
+export async function deleteFile(name) {
   const { error } = await supabase.storage
     .from("products")
     .remove(["images/" + name]);
   if (error) console.log(error);
 }
 
-async function getFileURL(name) {
+export async function getFileURL(name) {
   const { data } = supabase.storage
     .from("products")
     .getPublicUrl("images/" + name);
   return data.publicUrl;
 }
 
-async function userIsAdmin(id) {
+export async function userIsAdmin(id) {
   const { data: isAdmin, error } = await supabase
     .from("users")
     .select("is_admin")
@@ -110,17 +118,3 @@ async function userIsAdmin(id) {
   if (error) console.log(error);
   else return isAdmin[0].is_admin;
 }
-
-export default {
-  getAllProducts,
-  getCartItems,
-  setAsNovelty,
-  setAsPresale,
-  searchProducts,
-  getProductDetails,
-  getRelatedProducts,
-  uploadFile,
-  deleteFile,
-  getFileURL,
-  userIsAdmin,
-};

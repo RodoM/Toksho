@@ -6,7 +6,7 @@ import { supabase } from "@/supabase/supabase.js";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toast-notification";
 
-import sbHelpers from "@/supabase/helpers.js";
+import { uploadFile, getFileURL } from "@/supabase/helpers.js";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
@@ -84,8 +84,8 @@ const addProduct = async () => {
   let date = new Date();
   date = String(date.getTime());
   const results = await Promise.all([
-    sbHelpers.uploadFile(state.name.concat(date), state.image.image),
-    sbHelpers.getFileURL(state.name.concat(date)),
+    uploadFile(state.name.concat(date), state.image.image),
+    getFileURL(state.name.concat(date)),
   ]);
   state.image.imageURL = results[1];
   const { error } = await supabase.from("Products").insert([

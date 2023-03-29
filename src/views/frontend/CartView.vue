@@ -2,10 +2,11 @@
 import { ref, onBeforeMount } from "vue";
 import { itemsStore } from "@/stores/shoppingCart.js";
 import { useToast } from "vue-toast-notification";
-import sbHelpers from "@/supabase/helpers.js";
+import { getCartItems } from "@/supabase/helpers.js";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CartList from "@/components/shared/cart/CartList.vue";
+import CartSummary from "@/components/shared/cart/CartSummary.vue";
 
 const store = itemsStore();
 const $toast = useToast();
@@ -15,7 +16,7 @@ const items = ref();
 
 const deleteItem = async (id) => {
   store.deleteItem(id);
-  items.value = await sbHelpers.getCartItems(store.items);
+  items.value = await getCartItems(store.items);
   $toast.open({
     position: "top-right",
     message: "Se eliminó correctamente el producto al carrito",
@@ -28,7 +29,7 @@ const deleteItem = async (id) => {
 
 onBeforeMount(async () => {
   loading.value = true;
-  items.value = await sbHelpers.getCartItems(store.items);
+  items.value = await getCartItems(store.items);
   loading.value = false;
 });
 </script>
@@ -40,15 +41,11 @@ onBeforeMount(async () => {
       <header-title>
         <span class="text-2xl font-bold">CARRITO</span>
       </header-title>
-      <div class="flex flex-col gap-6 my-5 lg:gap-60 lg:flex-row">
+      <div class="flex flex-col gap-6 my-5 lg:gap-40 lg:flex-row">
         <div class="w-full">
           <CartList :items="items" @deleteItem="deleteItem" />
         </div>
-        <div class="p-4 border-2 bg-secondary-light border-tertiary-dark">
-          <header-title>
-            <span class="text-2xl font-bold">RESUMEN</span>
-          </header-title>
-        </div>
+        <CartSummary :items="items" />
       </div>
     </div>
   </div>
