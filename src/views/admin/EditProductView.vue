@@ -203,7 +203,8 @@ const submitForm = async (e) => {
               ? state.image.imageReader
               : state.image.originalImage
           "
-          alt=""
+          alt="imagen del producto"
+          loading="lazy"
           class="md:h-[680px] md:w-[503px] lg:h-[656px] lg:min-w-[468px] border-2 border-tertiary-dark drop-shadow-items"
         />
         <div class="flex flex-col w-full gap-4">

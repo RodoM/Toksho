@@ -34,6 +34,7 @@ const getPrice = (item) => {
         class="w-24 border-2 border-tertiary-dark"
         :src="item.image"
         :alt="item.name"
+        loading="lazy"
       />
       <div class="flex flex-col justify-between flex-grow">
         <div class="flex flex-col gap-1">

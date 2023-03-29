@@ -48,6 +48,7 @@ const signOut = async () => {
         <img
           src="@/assets/images/toksho-logo-clear.png"
           alt=""
+          loading="lazy"
           class="h-[37px]"
         />
         <span class="text-2xl font-bold">TOKSHO</span>

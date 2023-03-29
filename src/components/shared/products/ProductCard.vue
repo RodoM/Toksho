@@ -25,6 +25,7 @@ function newPrice(price, discount) {
           :src="props.product.image"
           class="object-cover w-full h-full"
           :alt="props.product.name"
+          loading="lazy"
         />
       </div>
       <span

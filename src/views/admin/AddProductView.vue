@@ -145,7 +145,8 @@ const submitForm = async (e) => {
       <div class="flex flex-col gap-4 md:flex-row">
         <img
           :src="state.image.imageReader"
-          alt=""
+          alt="placeholder de imagen"
+          loading="lazy"
           class="md:h-[680px] md:w-[503px] lg:h-[656px] lg:min-w-[468px] bg-slate-400 border-2 border-tertiary-dark drop-shadow-items"
         />
         <div class="flex flex-col w-full gap-4">

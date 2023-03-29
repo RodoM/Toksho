@@ -78,6 +78,7 @@ const submitForm = async (e) => {
         src="@/assets/images/toksho-logo.png"
         alt=""
         class="h-[200px] mx-auto"
+        loading="lazy"
       />
       <form action="" class="flex flex-col gap-5 px-5">
         <div>
@@ -121,13 +122,21 @@ const submitForm = async (e) => {
       <span class="text-sm font-bold text-center">O</span>
       <div class="flex flex-col gap-6 px-5 lg:flex-row">
         <CustomButton facebook>
-          <img src="@/assets/svgs/facebook-icon.svg" alt="" />
+          <img
+            src="@/assets/svgs/facebook-icon.svg"
+            alt="facebook logo"
+            loading="lazy"
+          />
           <span class="text-sm font-bold text-white">
             INGRESAR CON FACEBOOK
           </span>
         </CustomButton>
         <CustomButton google>
-          <img src="@/assets/svgs/google-icon.svg" alt="" />
+          <img
+            src="@/assets/svgs/google-icon.svg"
+            alt="google logo"
+            loading="lazy"
+          />
           <span class="text-sm font-bold text-slate-500">
             INGRESAR CON GOOGLE
           </span>

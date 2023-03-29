@@ -55,7 +55,7 @@ const getPreSales = () => {
             class="absolute p-5 text-5xl font-bold -translate-x-1/2 -translate-y-1/2 border-2 border-tertiary-dark drop-shadow-items bg-primary top-1/2 left-1/2"
             >Slide {{ i + 1 }}</span
           >
-          <img :src="photo" alt="" class="z-40 object-cover w-full h-full" />
+          <img :src="photo" alt="" class="z-40 object-cover w-full h-full" loading="lazy" />
         </div>
       </SwiperSlide>
     </Swiper>

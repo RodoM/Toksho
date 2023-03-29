@@ -30,7 +30,8 @@ const goBack = (e) => {
       <div class="flex flex-col gap-4 md:flex-row">
         <img
           :src="product.image"
-          alt=""
+          :alt="product.name"
+          loading="lazy"
           class="md:h-[596px] md:w-[503px] lg:h-[572px] lg:min-w-[468px] border-2 border-tertiary-dark drop-shadow-items"
         />
         <div class="flex flex-col w-full gap-4">
