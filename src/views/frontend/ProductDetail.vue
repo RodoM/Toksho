@@ -61,37 +61,43 @@ function newPrice(price, discount) {
           class="border-2 border-tertiary-dark drop-shadow-items lg:h-[685px] lg:min-w-[450px] lg:w-[450px]"
         />
         <div class="flex flex-col justify-between gap-3">
-          <header-title class="">
-            <span class="text-2xl font-bold uppercase">{{ product.name }}</span>
-          </header-title>
-          <div>
-            <span
-              class="text-2xl font-bold"
-              :class="{ 'line-through': product.discount }"
-            >
-              ${{ product.price }}
-            </span>
-            <span v-if="product.discount" class="text-2xl font-bold">
-              ${{ newPrice(product.price, product.discount) }}
+          <div class="flex flex-col gap-5">
+            <header-title class="">
+              <span class="text-2xl font-bold uppercase">
+                {{ product.name }}
+              </span>
+            </header-title>
+            <div>
+              <span
+                class="text-2xl font-bold"
+                :class="{ 'line-through': product.discount }"
+              >
+                ${{ product.price }}
+              </span>
+              <span v-if="product.discount" class="text-2xl font-bold">
+                ${{ newPrice(product.price, product.discount) }}
+              </span>
+            </div>
+            <span>{{ product.description }}</span>
+            <div>
+              <span class="font-bold">Categorías: </span>
+              <span
+                v-for="(category, index) in product.categories"
+                :key="index"
+                class="p-1 mr-2 border-2 bg-secondary-light border-tertiary-dark drop-shadow-navlink"
+              >
+                {{ category }}
+              </span>
+            </div>
+            <span>
+              <span class="font-bold">Autor: </span>
+              {{ product.author }}
             </span>
           </div>
-          <span>{{ product.description }}</span>
-          <div>
-            <span class="font-bold">Categorías: </span>
-            <span v-for="(category, index) in product.categories" :key="index" class="p-1 mr-2 border-2 bg-secondary-light border-tertiary-dark drop-shadow-navlink">
-              {{ category }}
-            </span>
-          </div>
-          <span>
-            <span class="font-bold">Autor: </span>
-            {{ product.author }}
-          </span>
-          <!-- <button
-            v-if="product.stock > 0"
-            class="p-3 text-sm font-bold border-2 bg-primary-light border-tertiary-dark drop-shadow-items"
-          >
-            AÑADIR AL CARRITO
-          </button> -->
+          <!-- <div class="flex justify-between">
+            <span class="p-2 border-2 bg-primary-light border-tertiary-dark drop-shadow-items">SELECCIONAR TOMO</span>
+            <span class="p-2 border-2 bg-primary-light border-tertiary-dark drop-shadow-items">CANTIDAD</span>
+          </div> -->
           <CustomButton
             primary
             :disabled="product.stock == 0"
