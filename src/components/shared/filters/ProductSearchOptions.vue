@@ -155,31 +155,3 @@ const clearFilter = () => {
     </div>
   </div>
 </template>
-
-<style>
-.vs__dropdown-toggle {
-  border-radius: 0px !important;
-}
-
-.vs__dropdown-menu {
-  margin-top: 8px !important;
-  padding: 8px !important;
-  border: 2px solid #0f0f0f !important;
-  background-color: #f8f9fa !important;
-}
-
-.vs__dropdown-option {
-  border: 2px solid #f8f9fa !important;
-}
-
-.vs__dropdown-option--highlight {
-  background: #86bbd8 !important;
-  color: white !important;
-  border: 2px solid #0f0f0f !important;
-}
-
-.vs__clear,
-.vs__open-indicator {
-  fill: #0f0f0f !important;
-}
-</style>

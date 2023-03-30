@@ -48,6 +48,7 @@ const getPreSales = () => {
       }"
       :loop="true"
       :modules="[Autoplay, Navigation, Pagination]"
+      class="border-b-2 border-tertiary-dark"
     >
       <SwiperSlide v-for="(photo, i) in photos" :key="i">
         <div class="relative h-[600px] lg:h-[700px]">
@@ -59,7 +60,7 @@ const getPreSales = () => {
         </div>
       </SwiperSlide>
     </Swiper>
-    <div
+    <!-- <div
       class="flex justify-center p-5 bg-secondary-light border-y-2 border-tertiary-dark"
     >
       <div
@@ -76,7 +77,7 @@ const getPreSales = () => {
           search
         </button>
       </div>
-    </div>
+    </div> -->
     <div class="container flex flex-col items-center mx-auto my-5 gap-y-5">
       <header-title>
         <span class="text-2xl font-bold">NOVEDADES</span>

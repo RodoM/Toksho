@@ -37,7 +37,7 @@ onBeforeMount(async () => {
 <template>
   <div class="container p-5 mx-auto">
     <LoadingSpinner v-if="loading" />
-    <div v-else-if="!loading && items">
+    <div v-else-if="!loading && items.length > 0">
       <header-title>
         <span class="text-2xl font-bold">CARRITO</span>
       </header-title>
@@ -47,6 +47,25 @@ onBeforeMount(async () => {
         </div>
         <CartSummary :items="items" />
       </div>
+    </div>
+    <div
+      v-else
+      class="absolute flex flex-col items-center gap-3 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+    >
+      <span class="material-icons-outlined !text-9xl text-primary">
+        production_quantity_limits
+      </span>
+      <span class="text-xl font-medium">Carrito vacío</span>
+      <span class="font-medium text-center min-w-[335px]">
+        No se encontraron productos en tu carrito, puedes revisar nuestro
+        catálogo y añadir productos al mismo.
+      </span>
+      <router-link
+        to="/productos"
+        class="p-2 font-medium border-2 border-tertiary-dark bg-primary-light drop-shadow-items"
+      >
+        VISITAR CATÁLOGO
+      </router-link>
     </div>
   </div>
 </template>

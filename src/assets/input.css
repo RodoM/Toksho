@@ -12,3 +12,30 @@
   border: 2px solid #0F0F0F;
   box-shadow: 6px 6px 0px rgba(0,0,0,1) !important;
 }
+
+.vs__dropdown-toggle {
+  border-radius: 0px !important;
+  border: none !important;
+}
+
+.vs__dropdown-menu {
+  margin-top: 8px !important;
+  padding: 8px !important;
+  border: 2px solid #0f0f0f !important;
+  background-color: #f8f9fa !important;
+}
+
+.vs__dropdown-option {
+  border: 2px solid #f8f9fa !important;
+}
+
+.vs__dropdown-option--highlight {
+  background: #86bbd8 !important;
+  color: white !important;
+  border: 2px solid #0f0f0f !important;
+}
+
+.vs__clear,
+.vs__open-indicator {
+  fill: #0f0f0f !important;
+}

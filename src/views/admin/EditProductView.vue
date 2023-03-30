@@ -215,12 +215,12 @@ const submitForm = async (e) => {
                 {{ v$.type.$errors[0].$message }}
               </span>
             </div>
-            <input
+            <v-select
               v-model="state.type"
-              type="text"
-              placeholder="Tipo de producto"
-              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
+              :options="['Mangas', 'Comics', 'Indumentaria']"
+              :clearSearchOnSelect="false"
+              class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
+            ></v-select>
           </div>
           <div class="w-full">
             <label :for="state.name">Nombre del producto</label>
@@ -358,5 +358,9 @@ input[type="file"]::file-selector-button {
   border: none;
   border-right: 2px solid #0f0f0f;
   padding: 8px;
+}
+
+.v-select {
+  z-index: 10 !important;
 }
 </style>
