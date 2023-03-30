@@ -19,9 +19,9 @@ const props = defineProps({
 const filterMenu = ref(false);
 
 const filterOptions = [
-  { label: "Mangas", value: "manga" },
-  { label: "Comics", value: "comic" },
-  { label: "Indumentaria", value: "indumentary" },
+  { label: "Mangas", value: "Manga" },
+  { label: "Comics", value: "Comic" },
+  { label: "Indumentaria", value: "Indumentaria" },
   { label: "Todos", value: "all" },
 ];
 
@@ -71,7 +71,7 @@ const clearFilter = () => {
     >
       {{ props.productsInView }} de {{ props.totalProducts }}
     </span>
-    <div>
+    <div class="ml-auto">
       <button class="flex items-center" @click="filterMenu = !filterMenu">
         <span class="font-medium">Filtrar</span>
         <span class="material-icons-outlined">sort</span>
@@ -92,7 +92,7 @@ const clearFilter = () => {
             ></v-select>
           </div>
           <div
-            v-if="selectedFilterOpt == 'manga' || selectedFilterOpt == 'comic'"
+            v-if="selectedFilterOpt == 'Manga' || selectedFilterOpt == 'Comic'"
           >
             <label for="">Autor</label>
             <v-select
@@ -103,7 +103,7 @@ const clearFilter = () => {
             ></v-select>
           </div>
           <div
-            v-if="selectedFilterOpt == 'manga' || selectedFilterOpt == 'comic'"
+            v-if="selectedFilterOpt == 'Manga' || selectedFilterOpt == 'Comic'"
           >
             <label for="">Categoría</label>
             <v-select

@@ -82,7 +82,7 @@ export async function getRelatedProducts(categories, name) {
   if (error) {
     console.log(error);
   } else {
-    return data;
+    return data.slice(0, 6);
   }
 }
 
