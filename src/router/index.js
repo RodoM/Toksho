@@ -2,33 +2,13 @@ import { computed } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { userStore } from "@/stores/index.js";
 
-import Home from "@/views/frontend/HomeView.vue";
-import Products from "@/views/frontend/ProductsView.vue";
-import ProductDetail from "@/views/frontend/ProductDetail.vue";
-import Faq from "@/views/frontend/FaqView.vue";
-import Contact from "@/views/frontend/ContactView.vue";
-
-import Login from "@/views/LoginView.vue";
-import Register from "@/views/RegisterView.vue";
-import ForgotPassword from "@/views/ForgotPasswordView.vue";
-import RestorePassword from "@/views/RestorePasswordView.vue";
-
-import Cart from "@/views/frontend/CartView.vue";
-import Profile from "@/views/frontend/ProfileView.vue";
-import NotFound from "@/views/404View.vue";
-
-import ProductStockView from "@/views/admin/ProductStockView.vue";
-import AddProductView from "@/views/admin/AddProductView.vue";
-import EditProductView from "@/views/admin/EditProductView.vue";
-import SeeProductView from "@/views/admin/SeeProductView.vue";
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
       name: "Home",
-      component: Home,
+      component: () => import("@/views/frontend/HomeView.vue"),
       meta: {
         label: "Inicio",
         auth: false,
@@ -37,7 +17,7 @@ const router = createRouter({
     {
       path: "/productos",
       name: "Products",
-      component: Products,
+      component: () => import("@/views/frontend/ProductsView.vue"),
       meta: {
         label: "Productos",
         auth: false,
@@ -46,7 +26,7 @@ const router = createRouter({
     {
       path: "/productos/:id:/:name",
       name: "Product",
-      component: ProductDetail,
+      component: () => import("@/views/frontend/ProductDetail.vue"),
       meta: {
         label: "Producto",
         auth: false,
@@ -55,7 +35,7 @@ const router = createRouter({
     {
       path: "/preguntas",
       name: "Questions",
-      component: Faq,
+      component: () => import("@/views/frontend/FaqView.vue"),
       meta: {
         label: "Preguntas",
         auth: false,
@@ -64,7 +44,7 @@ const router = createRouter({
     {
       path: "/contacto",
       name: "Contact",
-      component: Contact,
+      component: () => import("@/views/frontend/ContactView.vue"),
       meta: {
         label: "Contacto",
         auth: false,
@@ -73,7 +53,7 @@ const router = createRouter({
     {
       path: "/ingresar",
       name: "Login",
-      component: Login,
+      component: () => import("@/views/LoginView.vue"),
       meta: {
         label: "Ingresar",
         auth: false,
@@ -82,7 +62,7 @@ const router = createRouter({
     {
       path: "/registro",
       name: "Register",
-      component: Register,
+      component: () => import("@/views/RegisterView.vue"),
       meta: {
         label: "Registrarse",
         auth: false,
@@ -91,7 +71,7 @@ const router = createRouter({
     {
       path: "/olvide-contrasena",
       name: "ForgotPassword",
-      component: ForgotPassword,
+      component: () => import("@/views/ForgotPasswordView.vue"),
       meta: {
         label: "Olvide contraseña",
         auth: false,
@@ -100,7 +80,7 @@ const router = createRouter({
     {
       path: "/restablecer-contrasena",
       name: "RestorePassword",
-      component: RestorePassword,
+      component: () => import("@/views/RestorePasswordView.vue"),
       meta: {
         label: "Restablecer contraseña",
         auth: false,
@@ -109,7 +89,7 @@ const router = createRouter({
     {
       path: "/perfil",
       name: "Profile",
-      component: Profile,
+      component: () => import("@/views/frontend/ProfileView.vue"),
       meta: {
         label: "Perfil",
         auth: true,
@@ -118,7 +98,7 @@ const router = createRouter({
     {
       path: "/carrito",
       name: "Cart",
-      component: Cart,
+      component: () => import("@/views/frontend/CartView.vue"),
       meta: {
         label: "Carrito",
         auth: false,
@@ -127,7 +107,7 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       name: "NoResult",
-      component: NotFound,
+      component: () => import("@/views/404View.vue"),
       meta: {
         label: "Sin Resultado",
         auth: false,
@@ -136,7 +116,7 @@ const router = createRouter({
     {
       path: "/admin/listado",
       name: "Stock",
-      component: ProductStockView,
+      component: () => import("@/views/admin/ProductStockView.vue"),
       meta: {
         label: "Listado",
         auth: true,
@@ -146,7 +126,7 @@ const router = createRouter({
     {
       path: "/admin/agregar-producto",
       name: "AddProduct",
-      component: AddProductView,
+      component: () => import("@/views/admin/AddProductView.vue"),
       meta: {
         label: "Agregar producto",
         auth: true,
@@ -156,7 +136,7 @@ const router = createRouter({
     {
       path: "/admin/editar-producto/:id",
       name: "EditProduct",
-      component: EditProductView,
+      component: () => import("@/views/admin/EditProductView.vue"),
       meta: {
         label: "Editar producto",
         auth: true,
@@ -166,7 +146,7 @@ const router = createRouter({
     {
       path: "/admin/ver-producto/:id",
       name: "SeeProduct",
-      component: SeeProductView,
+      component: () => import("@/views/admin/SeeProductView.vue"),
       meta: {
         label: "Ver producto",
         auth: true,
