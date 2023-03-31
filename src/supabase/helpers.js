@@ -88,12 +88,30 @@ export async function setAsNovelty(id, value) {
   if (error) console.log(error);
 }
 
+export async function getNovelties() {
+  const { data, error } = await supabase
+    .from("Products")
+    .select("id, name, image, price, discount, stock")
+    .eq("isNovelty", true);
+  if (error) console.log(error);
+  else return data;
+}
+
 export async function setAsPresale(id, value) {
   const { error } = await supabase
     .from("Products")
     .update({ isPresale: value })
     .eq("id", id);
   if (error) console.log(error);
+}
+
+export async function getPresales() {
+  const { data, error } = await supabase
+    .from("Products")
+    .select("id, name, image, price, discount, stock")
+    .eq("isPresale", true);
+  if (error) console.log(error);
+  else return data;
 }
 
 export async function searchProducts(value) {

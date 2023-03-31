@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 
-import { getAllProducts } from "@/supabase/helpers.js";
+import { getNovelties, getPresales } from "@/supabase/helpers.js";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
@@ -14,7 +14,8 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import ProductList from "@/components/shared/products/ProductList.vue";
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 
-const products = ref([]);
+const novelties = ref();
+const presales = ref();
 const loading = ref(false);
 const photos = [
   "https://images.unsplash.com/photo-1588497859490-85d1c17db96d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
@@ -24,17 +25,10 @@ const photos = [
 
 onMounted(async () => {
   loading.value = true;
-  products.value = await getAllProducts();
+  novelties.value = await getNovelties();
+  presales.value = await getPresales();
   loading.value = false;
 });
-
-const getNovelties = () => {
-  return products.value.filter((product) => product.isNovelty);
-};
-
-const getPreSales = () => {
-  return products.value.filter((product) => product.isPresale);
-};
 </script>
 
 <template>
@@ -64,12 +58,12 @@ const getPreSales = () => {
       <header-title>
         <span class="text-2xl font-bold">NOVEDADES</span>
       </header-title>
-      <ProductList :products="getNovelties()" />
+      <ProductList v-if="novelties" :products="novelties" />
       <content-block>
         <header-title class="self-center">
           <span class="text-2xl font-bold">PREVENTA</span>
         </header-title>
-        <ProductList :products="getPreSales()" class="mt-5" />
+        <ProductList v-if="presales" :products="presales" class="mt-5" />
       </content-block>
       <header-title>
         <span class="text-2xl font-bold">NUESTRO LOCAL</span>
