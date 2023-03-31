@@ -10,21 +10,24 @@ import {
   setAsPresale,
 } from "@/supabase/helpers.js";
 
+import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import ProductSearchOptions from "@/components/shared/filters/ProductSearchOptions.vue";
+import PaginationComponent from "@/components/shared/PaginationComponent.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 import CustomModal from "../../lib/components/CustomModal.vue";
-import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 
 const $toast = useToast();
 
 const products = ref([]);
 const loading = ref(false);
 const showModal = ref(false);
+
 const count = ref(0);
 
-const getProducts = async () => {
-  products.value = await getAllProducts();
-  count.value = products.value.length;
+const fetchProducts = async () => {
+  const res = await getAllProducts(offset.value, limit.value);
+  products.value = res.data;
+  count.value = res.count;
 };
 
 const searchInput = ref("");
@@ -34,7 +37,7 @@ const inputSearchProducts = async () => {
   if (searchInput.value.length > 0) {
     products.value = await searchProducts(searchInput.value);
   } else {
-    getProducts();
+    fetchProducts();
   }
   loading.value = false;
 };
@@ -75,7 +78,7 @@ const getAllAuthors = async () => {
 
 onMounted(async () => {
   loading.value = true;
-  await getProducts();
+  await fetchProducts();
   getAllCategories();
   getAllAuthors();
   loading.value = false;
@@ -112,7 +115,7 @@ const deleteProduct = async () => {
       dismissible: true,
     });
     loading.value = true;
-    getProducts();
+    fetchProducts();
     loading.value = false;
   }
 };
@@ -143,7 +146,7 @@ const applyFilters = async (type, author, categorie, order, asc) => {
 
 const clearFilters = async () => {
   loading.value = true;
-  await getProducts();
+  await fetchProducts();
   loading.value = false;
 };
 
@@ -153,6 +156,41 @@ const setProductAsNovelty = async (id, value) => {
 
 const setProductAsPresale = async (id, value) => {
   await setAsPresale(id, !value);
+};
+
+// Pagination
+const productsPerPage = ref(15);
+const offset = ref(0);
+const limit = ref(productsPerPage.value);
+
+const prevPage = async () => {
+  limit.value = offset.value;
+  if (offset.value - productsPerPage.value > 0) {
+    offset.value -= productsPerPage.value;
+  } else {
+    offset.value = 0;
+  }
+  await fetchProducts();
+};
+
+const nextPage = async () => {
+  offset.value = limit.value;
+  if (limit.value + productsPerPage.value < count.value) {
+    limit.value += productsPerPage.value;
+  } else {
+    limit.value = count.value;
+  }
+  await fetchProducts();
+};
+
+const goToPage = async (page) => {
+  if (productsPerPage.value * page > count.value) {
+    limit.value = count.value;
+  } else {
+    limit.value = productsPerPage.value * page;
+  }
+  offset.value = productsPerPage.value * (page - 1);
+  await fetchProducts();
 };
 </script>
 
@@ -273,6 +311,16 @@ const setProductAsPresale = async (id, value) => {
           </tr>
         </tbody>
       </table>
+      <PaginationComponent
+        class="mt-10"
+        :productsPerPage="productsPerPage"
+        :count="count"
+        :offset="offset"
+        :limit="limit"
+        @prevPage="prevPage"
+        @nextPage="nextPage"
+        @goToPage="goToPage"
+      />
     </div>
     <CustomModal :show="showModal">
       <div

@@ -60,24 +60,6 @@ const getPreSales = () => {
         </div>
       </SwiperSlide>
     </Swiper>
-    <!-- <div
-      class="flex justify-center p-5 bg-secondary-light border-y-2 border-tertiary-dark"
-    >
-      <div
-        class="flex items-center w-full border-2 border-tertiary-dark drop-shadow-items"
-      >
-        <input
-          type="text"
-          placeholder="Busqueda..."
-          class="w-full p-2 focus:outline-none"
-        />
-        <button
-          class="p-2 border-l-2 material-icons-outlined border-tertiary-dark bg-primary-light"
-        >
-          search
-        </button>
-      </div>
-    </div> -->
     <div class="container flex flex-col items-center mx-auto my-5 gap-y-5">
       <header-title>
         <span class="text-2xl font-bold">NOVEDADES</span>

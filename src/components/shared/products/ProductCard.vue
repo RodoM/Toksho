@@ -20,10 +20,10 @@ function newPrice(price, discount) {
     class="flex flex-col items-center gap-3"
   >
     <div class="relative">
-      <div class="border-2 w-36 h-52 lg:h-64 lg:w-40 border-tertiary-dark drop-shadow-items">
+      <div class="border-2 border-tertiary-dark drop-shadow-items">
         <img
           :src="props.product.image"
-          class="object-cover w-full h-full"
+          class="object-cover max-h-64"
           :alt="props.product.name"
           loading="lazy"
         />

@@ -1,16 +1,63 @@
 import { supabase } from "@/supabase/supabase.js";
 
-export async function getAllProducts() {
-  const { data, error } = await supabase
+export async function getAllProducts(offset, limit) {
+  const { data, count, error } = await supabase
     .from("Products")
     .select(
-      "id, name, image, price, discount, stock, updated_at, isNovelty, isPresale"
-    );
+      "id, name, image, price, discount, stock, updated_at, isNovelty, isPresale",
+      { count: "exact" }
+    )
+    .range(offset, limit);
   if (error) {
     console.log(error);
   } else {
-    return data;
+    return { data, count };
   }
+}
+
+export async function getAllAuthors() {
+  let authorsArr = [];
+  const { data: Authors, error } = await supabase
+    .from("Products")
+    .select("author");
+  if (error) console.log(error);
+  else {
+    Authors.forEach((author) => {
+      authorsArr.push(author.author);
+    });
+    return [...new Set(authorsArr)];
+  }
+}
+
+export async function getAllCategories() {
+  let categoriesArr = [];
+  const { data: Categories, error } = await supabase
+    .from("Products")
+    .select("categories");
+  if (error) console.log(error);
+  else {
+    Categories.forEach((cat) => {
+      cat.categories.forEach((c) => {
+        categoriesArr.push(c);
+      });
+    });
+    return [...new Set(categoriesArr)];
+  }
+}
+
+export async function filterProducts(type, author, categorie, order, asc) {
+  let query = supabase
+    .from("Products")
+    .select("id, name, image, price, discount, stock, updated_at", {
+      count: "exact",
+    });
+  if (type) query = query.eq("type", type);
+  if (author) query = query.eq("author", author);
+  if (categorie) query = query.overlaps("categories", [categorie]);
+  if (order) query = query.order(order, { ascending: asc });
+  const { data, count, error } = await query;
+  if (error) console.log(error);
+  else return { data, count };
 }
 
 export async function getCartItems(items) {
@@ -50,14 +97,17 @@ export async function setAsPresale(id, value) {
 }
 
 export async function searchProducts(value) {
-  const { data, error } = await supabase
+  const { data, count, error } = await supabase
     .from("Products")
-    .select()
+    .select(
+      "id, name, image, price, discount, stock, updated_at, isNovelty, isPresale",
+      { count: "exact" }
+    )
     .ilike("name", `%${value}%`);
   if (error) {
     console.log(error);
   } else {
-    return data;
+    return { data, count };
   }
 }
 

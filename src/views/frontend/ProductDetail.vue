@@ -119,7 +119,7 @@ function newPrice(price, discount) {
               <input
                 v-model="amount"
                 type="number"
-                class="w-1/3 p-3 text-center border-y-2 border-tertiary-dark focus:outline-none"
+                class="w-1/3 p-3 font-bold text-center border-y-2 border-tertiary-dark focus:outline-none"
               />
               <button
                 class="w-1/3 font-bold border-2 bg-primary-light border-tertiary-dark"

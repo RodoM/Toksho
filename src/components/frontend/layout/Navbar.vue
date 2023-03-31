@@ -153,7 +153,7 @@ const signOut = async () => {
       </div>
     </div>
     <div
-      class="absolute w-1/2 h-screen transition-all duration-500 border-r-2 lg:w-1/4 bg-background border-r-tertiary-dark lg:hidden"
+      class="absolute h-screen transition-all duration-500 border-r-2 bg-background border-r-tertiary-dark lg:hidden"
       :class="isOpen ? 'translate-x-0' : '-translate-x-[510px]'"
     >
       <ul class="flex flex-col gap-4 p-5">
@@ -207,7 +207,7 @@ const signOut = async () => {
         </li>
         <li v-if="user && user.isAdmin">
           <button
-            class="flex items-center gap-2 p-1 font-medium transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
+            class="flex items-center gap-2 p-1 font-medium transition-all duration-200 border-2 border-transparent text-start hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
             @click="dropdown = !dropdown"
           >
             <span class="material-icons-outlined">admin_panel_settings</span>
