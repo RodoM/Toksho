@@ -5,6 +5,7 @@ import { useToast } from "vue-toast-notification";
 import {
   getAllProducts,
   searchProducts,
+  filterProducts,
   deleteFile,
   setAsNovelty,
   setAsPresale,
@@ -127,21 +128,13 @@ const isEven = (n) => {
   return false;
 };
 
+// Filtering
 const applyFilters = async (type, author, categorie, order, asc) => {
   loading.value = true;
-  let query = supabase
-    .from("Products")
-    .select("id, name, image, price, discount, stock, updated_at");
-  if (type) query = query.eq("type", type);
-  if (author) query = query.eq("author", author);
-  if (categorie) query = query.overlaps("categories", [categorie]);
-  if (order) query = query.order(order, { ascending: asc });
-  const { data: Products, error } = await query;
-  if (error) console.log(error);
-  else {
-    products.value = Products;
-    loading.value = false;
-  }
+  const res = await filterProducts(type, author, categorie, order, asc);
+  products.value = res.data;
+  count.value = res.count;
+  loading.value = false;
 };
 
 const clearFilters = async () => {
@@ -150,6 +143,7 @@ const clearFilters = async () => {
   loading.value = false;
 };
 
+// Novelties and Presales setters
 const setProductAsNovelty = async (id, value) => {
   await setAsNovelty(id, !value);
 };
@@ -159,7 +153,7 @@ const setProductAsPresale = async (id, value) => {
 };
 
 // Pagination
-const productsPerPage = ref(15);
+const productsPerPage = ref(23);
 const offset = ref(0);
 const limit = ref(productsPerPage.value);
 
