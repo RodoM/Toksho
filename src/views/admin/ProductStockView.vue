@@ -1,10 +1,10 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import { supabase } from "@/supabase/supabase.js";
 import { useToast } from "vue-toast-notification";
 import {
   getAllProducts,
   deleteFile,
+  deleteProduct,
   setAsNovelty,
   setAsPresale,
 } from "@/supabase/helpers.js";
@@ -62,22 +62,33 @@ const clearFilters = async () => {
   await fetchProducts();
 };
 
-// product actions (aislar)
+// product actions
 const showModal = ref(false);
+const currentProduct = ref();
 
 const deleteImageFile = async (image) => {
   await deleteFile(image.substring(image.lastIndexOf("/") + 1, image.length));
 };
 
-const currentProduct = ref();
-
-const deleteProduct = async () => {
-  deleteImageFile(currentProduct.value.image);
-  const { error } = await supabase
-    .from("Products")
-    .delete()
-    .eq("id", currentProduct.value.id);
-  if (error) {
+const deleteProductFile = async () => {
+  try {
+    deleteImageFile(currentProduct.value.image);
+    const error = await deleteProduct(currentProduct.value.id);
+    if (error) throw error;
+    else {
+      showModal.value = false;
+      $toast.open({
+        position: "top-right",
+        message: "Se eliminó correctamente el producto",
+        type: "success",
+        duration: 5000,
+        dismissible: true,
+      });
+      loading.value = true;
+      fetchProducts();
+      loading.value = false;
+    }
+  } catch (error) {
     $toast.open({
       position: "top-right",
       message: "Error al borrar el producto",
@@ -85,27 +96,7 @@ const deleteProduct = async () => {
       duration: 5000,
       dismissible: true,
     });
-    console.log(error);
-  } else {
-    showModal.value = false;
-    $toast.open({
-      position: "top-right",
-      message: "Se eliminó correctamente el producto",
-      type: "success",
-      duration: 5000,
-      dismissible: true,
-    });
-    loading.value = true;
-    fetchProducts();
-    loading.value = false;
   }
-};
-
-const isEven = (n) => {
-  if (n % 2 === 0) {
-    return true;
-  }
-  return false;
 };
 
 // Novelties and Presales setters
@@ -201,7 +192,7 @@ onMounted(async () => {
           <tr
             v-for="(product, i) in products"
             :key="product.id"
-            :class="[isEven(i) ? 'bg-secondary-light' : 'bg-secondary']"
+            :class="[i % 2 === 0 ? 'bg-secondary-light' : 'bg-secondary']"
           >
             <td class="px-5 font-medium">
               <span class="flex items-center gap-2">
@@ -302,7 +293,7 @@ onMounted(async () => {
             <CustomButton secondary @click="showModal = false">
               CANCELAR
             </CustomButton>
-            <CustomButton primary @click="deleteProduct()">
+            <CustomButton primary @click="deleteProductFile()">
               ELIMINAR
             </CustomButton>
           </div>

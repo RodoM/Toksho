@@ -3,11 +3,14 @@ import { reactive, computed } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
 import { supabase } from "@/supabase/supabase.js";
+import { userStore } from "@/stores/index.js";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toast-notification";
+import { getSessionData } from "@/supabase/helpers.js";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 
+const store = userStore();
 const router = useRouter();
 const $toast = useToast();
 
@@ -39,6 +42,8 @@ const signInWithPassword = async () => {
     });
     if (error) throw error;
     else {
+      const res = await getSessionData();
+      await store.setUser(res.session);
       router.push({ name: "Home" });
       $toast.open({
         position: "top-right",

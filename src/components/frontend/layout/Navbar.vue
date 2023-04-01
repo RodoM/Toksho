@@ -4,6 +4,7 @@ import { ref, computed } from "vue";
 import { userStore } from "@/stores/index.js";
 import { supabase } from "@/supabase/supabase.js";
 import { useToast } from "vue-toast-notification";
+import { getSessionData } from "@/supabase/helpers.js";
 
 const $toast = useToast();
 const store = userStore();
@@ -19,6 +20,8 @@ const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     else {
+      const res = await getSessionData();
+      await store.setUser(res.session);
       $toast.open({
         position: "top-right",
         message: "Cierre de sesión exitoso",

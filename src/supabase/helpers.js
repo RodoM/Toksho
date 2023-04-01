@@ -1,5 +1,11 @@
 import { supabase } from "@/supabase/supabase.js";
 
+export async function getSessionData() {
+  const { data, error } = await supabase.auth.getSession();
+  if (error) console.log(error);
+  else return data;
+}
+
 export async function getAllProducts(
   offset,
   limit,
@@ -165,6 +171,11 @@ export async function deleteFile(name) {
     .from("products")
     .remove(["images/" + name]);
   if (error) console.log(error);
+}
+
+export async function deleteProduct(id) {
+  const { error } = await supabase.from("Products").delete().eq("id", id);
+  if (error) return error;
 }
 
 export async function getFileURL(name) {

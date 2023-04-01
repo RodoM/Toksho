@@ -1,14 +1,20 @@
 <script setup>
+import { onMounted } from "vue";
 import { RouterView } from "vue-router";
-import { supabase } from "@/supabase/supabase.js";
+import { getSessionData } from "@/supabase/helpers.js";
 import { userStore } from "@/stores/index.js";
 
 import NavBar from "./components/frontend/layout/Navbar.vue";
 
 const store = userStore();
 
-supabase.auth.onAuthStateChange(async (_, session) => {
-  await store.setUser(session);
+async function getSession() {
+  const res = await getSessionData();
+  await store.setUser(res.session);
+}
+
+onMounted(async () => {
+  await getSession();
 });
 </script>
 
