@@ -1,18 +1,29 @@
 import { supabase } from "@/supabase/supabase.js";
 
-export async function getAllProducts(offset, limit) {
-  const { data, count, error } = await supabase
+export async function getAllProducts(
+  offset,
+  limit,
+  name,
+  type,
+  author,
+  categorie,
+  order = "created_at",
+  asc = true
+) {
+  let query = supabase
     .from("Products")
-    .select(
-      "id, name, image, price, discount, stock, updated_at, isNovelty, isPresale",
-      { count: "exact" }
-    )
+    .select("id, type, name, image, price, discount, stock, updated_at", {
+      count: "exact",
+    })
     .range(offset, limit);
-  if (error) {
-    console.log(error);
-  } else {
-    return { data, count };
-  }
+  if (name) query = query.ilike("name", `%${name}%`);
+  if (type) query = query.eq("type", type);
+  if (author) query = query.eq("author", author);
+  if (categorie) query = query.overlaps("categories", [categorie]);
+  if (order) query = query.order(order, { ascending: asc });
+  const { data, count, error } = await query;
+  if (error) console.log(error);
+  else return { data, count };
 }
 
 export async function getAllAuthors() {
@@ -43,21 +54,6 @@ export async function getAllCategories() {
     });
     return [...new Set(categoriesArr)];
   }
-}
-
-export async function filterProducts(type, author, categorie, order, asc) {
-  let query = supabase
-    .from("Products")
-    .select("id, name, image, price, discount, stock, updated_at", {
-      count: "exact",
-    });
-  if (type) query = query.eq("type", type);
-  if (author) query = query.eq("author", author);
-  if (categorie) query = query.overlaps("categories", [categorie]);
-  if (order) query = query.order(order, { ascending: asc });
-  const { data, count, error } = await query;
-  if (error) console.log(error);
-  else return { data, count };
 }
 
 export async function getCartItems(items) {

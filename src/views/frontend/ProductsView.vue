@@ -1,74 +1,57 @@
 <script setup>
 import { onMounted, ref } from "vue";
-
-import {
-  getAllProducts,
-  getAllAuthors,
-  getAllCategories,
-  searchProducts,
-  filterProducts,
-} from "@/supabase/helpers.js";
+import { getAllProducts } from "@/supabase/helpers.js";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
-import ProductSearchOptions from "@/components/shared/filters/ProductSearchOptions.vue";
+import SearchAndFilter from "@/components/shared/filters/SearchAndFilter.vue";
 import ProductList from "@/components/shared/products/ProductList.vue";
 import PaginationComponent from "@/components/shared/PaginationComponent.vue";
 
 // Fetching products
 const products = ref([]);
+const filter = ref({
+  name: undefined,
+  type: undefined,
+  author: undefined,
+  categorie: undefined,
+  order: "created_at",
+  asc: true,
+});
 const count = ref(0);
 const loading = ref(false);
 
-async function fetchProducts() {
+// Guardar filtro para cuando haya paginacion en filtrado se mantenga al cambiar de pagina.
+
+async function fetchProducts(name, type, author, categorie, order, asc) {
+  if (name != undefined) filter.value.name = name;
+  if (type) filter.value.type = type;
+  if (author) filter.value.author = author;
+  if (categorie) filter.value.categorie = categorie;
+  if (order) filter.value.order = order;
+  if (asc) filter.value.asc = asc;
   loading.value = true;
-  const res = await getAllProducts(offset.value, limit.value);
+  const res = await getAllProducts(
+    offset.value,
+    limit.value,
+    filter.value.name,
+    filter.value.type,
+    filter.value.author,
+    filter.value.categorie,
+    filter.value.order,
+    filter.value.asc
+  );
   products.value = res.data;
   count.value = res.count;
   loading.value = false;
 }
-
-// Fetching authors
-const authors = ref();
-
-const fetchAuthors = async () => {
-  authors.value = await getAllAuthors();
-};
-
-// Fetching categories
-const categories = ref();
-
-const fetchCategories = async () => {
-  categories.value = await getAllCategories();
-};
-
-// Fetching with input
-const searchInput = ref("");
-
-async function inputSearchProducts() {
-  loading.value = true;
-  if (searchInput.value.length > 0) {
-    const res = await searchProducts(searchInput.value);
-    products.value = res.data;
-    count.value = res.count;
-  } else {
-    await fetchProducts();
-  }
-  loading.value = false;
-}
-
-// Filtering
-const applyFilters = async (type, author, categorie, order, asc) => {
-  loading.value = true;
-  const res = await filterProducts(type, author, categorie, order, asc);
-  products.value = res.data;
-  count.value = res.count;
-  loading.value = false;
-};
 
 const clearFilters = async () => {
-  loading.value = true;
+  filter.value.type = undefined;
+  filter.value.author = undefined;
+  filter.value.categorie = undefined;
+  filter.value.order = "created_at";
+  filter.value.asc = true;
   await fetchProducts();
-  loading.value = false;
 };
 
 // Pagination
@@ -77,9 +60,9 @@ const offset = ref(0);
 const limit = ref(productsPerPage.value);
 
 const prevPage = async () => {
-  limit.value = offset.value;
+  limit.value = offset.value - 1;
   if (offset.value - productsPerPage.value > 0) {
-    offset.value -= productsPerPage.value;
+    offset.value -= productsPerPage.value + 1;
   } else {
     offset.value = 0;
   }
@@ -87,9 +70,9 @@ const prevPage = async () => {
 };
 
 const nextPage = async () => {
-  offset.value = limit.value;
+  offset.value = limit.value + 1;
   if (limit.value + productsPerPage.value < count.value) {
-    limit.value += productsPerPage.value;
+    limit.value += productsPerPage.value + 1;
   } else {
     limit.value = count.value;
   }
@@ -97,20 +80,23 @@ const nextPage = async () => {
 };
 
 const goToPage = async (page) => {
-  if (productsPerPage.value * page > count.value) {
-    limit.value = count.value;
+  if (page == 1) {
+    limit.value = productsPerPage.value;
+    offset.value = 0;
   } else {
-    limit.value = productsPerPage.value * page;
+    offset.value = productsPerPage.value * (page - 1) + 1;
+    if (productsPerPage.value * page > count.value) {
+      limit.value = count.value;
+    } else {
+      limit.value = productsPerPage.value * page + 1;
+    }
   }
-  offset.value = productsPerPage.value * (page - 1);
   await fetchProducts();
 };
 
 onMounted(async () => {
   loading.value = true;
   fetchProducts();
-  fetchCategories();
-  fetchAuthors();
   setTimeout(() => {
     loading.value = false;
   }, 500);
@@ -120,32 +106,13 @@ onMounted(async () => {
 <template>
   <div class="container py-5 mx-auto">
     <div class="mx-5">
-      <div class="flex border-2 border-tertiary-dark drop-shadow-items">
-        <input
-          v-model="searchInput"
-          type="text"
-          placeholder="Busqueda..."
-          class="w-full p-2 focus:outline-none"
-          @keyup.enter="inputSearchProducts()"
-        />
-        <button
-          class="p-2 border-l-2 material-icons-outlined border-tertiary-dark bg-primary-light"
-          @click="inputSearchProducts()"
-        >
-          search
-        </button>
-      </div>
-      <div class="relative z-10 my-5">
-        <ProductSearchOptions
-          v-if="categories && authors"
-          :productsInView="products.length"
-          :totalProducts="count"
-          :categories="categories"
-          :authors="authors"
-          @applyFilter="applyFilters"
-          @clearFilter="clearFilters"
-        />
-      </div>
+      <SearchAndFilter
+        :productsPerPage="productsPerPage"
+        :totalProducts="count"
+        :productsInPage="offset + productsPerPage + 1"
+        @fetchWithFilters="fetchProducts"
+        @clearFilters="clearFilters"
+      />
       <LoadingSpinner v-if="loading" />
       <div v-if="!loading && products.length">
         <ProductList :products="products" />

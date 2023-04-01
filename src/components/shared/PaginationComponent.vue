@@ -41,7 +41,7 @@ const pages = () => {
       <button
         class="px-2.5 font-bold py-1 border-2 border-tertiary-dark drop-shadow-navlink"
         :class="[
-          props.offset / props.productsPerPage + 1 === i
+          Math.round(props.offset / props.productsPerPage) + 1 === i
             ? 'bg-secondary-light'
             : 'bg-primary-light',
         ]"

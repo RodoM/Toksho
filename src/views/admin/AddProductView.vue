@@ -159,7 +159,7 @@ const submitForm = async (e) => {
             </div>
             <v-select
               v-model="state.type"
-              :options="['Mangas', 'Comics', 'Indumentaria']"
+              :options="['Manga', 'Comic', 'Indumentaria']"
               :clearSearchOnSelect="false"
               class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
             ></v-select>

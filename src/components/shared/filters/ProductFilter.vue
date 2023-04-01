@@ -1,22 +1,52 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { getAllAuthors, getAllCategories } from "@/supabase/helpers.js";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 
+const emit = defineEmits(["applyFilter", "clearFilter"]);
+
 const props = defineProps({
-  totalProducts: Number,
-  productsInView: Number,
-  categories: {
-    type: Array,
+  productsPerPage: {
+    type: Number,
     required: true,
   },
-  authors: {
-    type: Array,
+  totalProducts: {
+    type: Number,
+    required: true,
+  },
+  productsInPage: {
+    type: Number,
     required: true,
   },
 });
 
-const filterMenu = ref(false);
+// Fetching authors
+const authors = ref();
+
+const fetchAuthors = async () => {
+  authors.value = await getAllAuthors();
+};
+
+// Fetching categories
+const categories = ref();
+
+const fetchCategories = async () => {
+  categories.value = await getAllCategories();
+};
+
+// Filter
+const openFilter = ref(false);
+
+const filter = ref({
+  option: undefined,
+  author: undefined,
+  categorie: undefined,
+  order: "created_at",
+  asc: true,
+});
+
+// Filter options
 
 const filterOptions = [
   { label: "Mangas", value: "Manga" },
@@ -24,10 +54,6 @@ const filterOptions = [
   { label: "Indumentaria", value: "Indumentaria" },
   { label: "Todos", value: "all" },
 ];
-
-const selectedFilterOpt = ref("");
-const selectedAuthor = ref("");
-const selectedCategorie = ref("");
 
 const orderOptions = [
   { label: "Alfabéticamente", value: "name" },
@@ -40,75 +66,77 @@ const isAscending = [
   { label: "Descendiente", value: false },
 ];
 
-const selectedOrder = ref("");
-const selectedAsc = ref(true);
-
-const emit = defineEmits(["applyFilter", "clearFilter"]);
-
-const applyFilter = (type, author, categorie, order, asc) => {
+// Filter actions
+const applyFilter = () => {
   event.preventDefault();
-  emit("applyFilter", type, author, categorie, order, asc);
+  emit("applyFilter", filter.value);
+  openFilter.value = false;
 };
 
 const clearFilter = () => {
   event.preventDefault();
   emit("clearFilter");
-  selectedFilterOpt.value = "";
-  selectedAuthor.value = "";
-  selectedCategorie.value = "";
-  selectedOrder.value = "";
-  selectedAsc.value = true;
+  filter.value.option = "";
+  filter.value.author = "";
+  filter.value.categorie = "";
+  filter.value.order = "created_at";
+  filter.value.asc = true;
+  openFilter.value = false;
 };
+
+onMounted(async () => {
+  await fetchAuthors();
+  await fetchCategories();
+});
 </script>
 
 <template>
   <div
     class="flex justify-between p-3 border-2 bg-secondary-light border-tertiary-dark drop-shadow-items"
   >
-    <span
-      v-if="props.productsInView && props.totalProducts"
-      class="font-medium"
-    >
-      {{ props.productsInView }} de {{ props.totalProducts }}
+    <span class="font-medium">
+      {{ props.productsInPage - props.productsPerPage }} -
+      {{
+        props.productsInPage < props.totalProducts
+          ? props.productsInPage
+          : props.totalProducts
+      }}
+      de {{ props.totalProducts }}
     </span>
     <div class="ml-auto">
-      <button class="flex items-center" @click="filterMenu = !filterMenu">
+      <button class="flex items-center" @click="openFilter = !openFilter">
         <span class="font-medium">Filtrar</span>
         <span class="material-icons-outlined">sort</span>
       </button>
       <div
-        v-if="filterMenu"
+        v-if="openFilter"
         class="absolute p-3 border-2 -right-[2px] top-16 bg-background border-tertiary-dark min-w-[300px]"
       >
         <form class="flex flex-col gap-3">
           <div>
             <label for="">Filtrar por</label>
             <v-select
-              v-model="selectedFilterOpt"
+              v-model="filter.option"
               :options="filterOptions"
               :reduce="(opt) => opt.value"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
-          <div
-            v-if="selectedFilterOpt == 'Manga' || selectedFilterOpt == 'Comic'"
-          >
+          <div v-if="filter.option == 'Manga' || filter.option == 'Comic'">
             <label for="">Autor</label>
             <v-select
-              v-model="selectedAuthor"
+              v-model="filter.author"
               :options="authors"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
-          <div
-            v-if="selectedFilterOpt == 'Manga' || selectedFilterOpt == 'Comic'"
-          >
+          <div v-if="filter.option == 'Manga' || filter.option == 'Comic'">
             <label for="">Categoría</label>
             <v-select
-              v-model="selectedCategorie"
-              :options="props.categories"
+              v-model="filter.categorie"
+              :options="categories"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
@@ -116,7 +144,7 @@ const clearFilter = () => {
           <div>
             <label for="">Ordenar por</label>
             <v-select
-              v-model="selectedOrder"
+              v-model="filter.order"
               :options="orderOptions"
               :reduce="(opt) => opt.value"
               class="border-2 border-tertiary-dark"
@@ -125,29 +153,15 @@ const clearFilter = () => {
           <div>
             <label for="">Orden</label>
             <v-select
-              v-model="selectedAsc"
+              v-model="filter.asc"
               :options="isAscending"
               :reduce="(opt) => opt.value"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
-          <CustomButton
-            primary
-            @click="
-              applyFilter(
-                selectedFilterOpt,
-                selectedAuthor,
-                selectedCategorie,
-                selectedOrder,
-                selectedAsc
-              ),
-                (filterMenu = false)
-            "
-          >
-            APLICAR
-          </CustomButton>
-          <CustomButton secondary @click="clearFilter(), (filterMenu = false)">
+          <CustomButton primary @click="applyFilter()"> APLICAR </CustomButton>
+          <CustomButton secondary @click="clearFilter()">
             LIMPIAR
           </CustomButton>
         </form>

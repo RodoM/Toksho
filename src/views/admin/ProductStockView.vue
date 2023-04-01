@@ -4,17 +4,13 @@ import { supabase } from "@/supabase/supabase.js";
 import { useToast } from "vue-toast-notification";
 import {
   getAllProducts,
-  getAllAuthors,
-  getAllCategories,
-  searchProducts,
-  filterProducts,
   deleteFile,
   setAsNovelty,
   setAsPresale,
 } from "@/supabase/helpers.js";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
-import ProductSearchOptions from "@/components/shared/filters/ProductSearchOptions.vue";
+import SearchAndFilter from "@/components/shared/filters/SearchAndFilter.vue";
 import PaginationComponent from "@/components/shared/PaginationComponent.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 import CustomModal from "../../lib/components/CustomModal.vue";
@@ -23,51 +19,48 @@ const $toast = useToast();
 
 // Fetching products
 const products = ref([]);
+const filter = ref({
+  name: undefined,
+  type: undefined,
+  author: undefined,
+  categorie: undefined,
+  order: "created_at",
+  asc: true,
+});
 const count = ref(0);
 const loading = ref(false);
 
-const fetchProducts = async () => {
-  const res = await getAllProducts(offset.value, limit.value);
+async function fetchProducts(name, type, author, categorie, order, asc) {
+  loading.value = true;
+  if (name != undefined) filter.value.name = name;
+  if (type) filter.value.type = type;
+  if (author) filter.value.author = author;
+  if (categorie) filter.value.categorie = categorie;
+  if (order) filter.value.order = order;
+  if (asc) filter.value.asc = asc;
+  const res = await getAllProducts(
+    offset.value,
+    limit.value,
+    filter.value.name,
+    filter.value.type,
+    filter.value.author,
+    filter.value.categorie,
+    filter.value.order,
+    filter.value.asc
+  );
   products.value = res.data;
   count.value = res.count;
-};
-
-// Fetching with input
-const searchInput = ref("");
-
-async function inputSearchProducts() {
-  loading.value = true;
-  if (searchInput.value.length > 0) {
-    const res = await searchProducts(searchInput.value);
-    products.value = res.data;
-    count.value = res.count;
-  } else {
-    await fetchProducts();
-  }
   loading.value = false;
 }
 
-// Fetching authors
-const authors = ref();
-
-const fetchAuthors = async () => {
-  authors.value = await getAllAuthors();
-};
-
-// Fetching categories
-const categories = ref();
-
-const fetchCategories = async () => {
-  categories.value = await getAllCategories();
-};
-
-onMounted(async () => {
-  loading.value = true;
+const clearFilters = async () => {
+  filter.value.type = undefined;
+  filter.value.author = undefined;
+  filter.value.categorie = undefined;
+  filter.value.order = "created_at";
+  filter.value.asc = true;
   await fetchProducts();
-  fetchCategories();
-  fetchAuthors();
-  loading.value = false;
-});
+};
 
 // product actions (aislar)
 const showModal = ref(false);
@@ -115,21 +108,6 @@ const isEven = (n) => {
   return false;
 };
 
-// Filtering
-const applyFilters = async (type, author, categorie, order, asc) => {
-  loading.value = true;
-  const res = await filterProducts(type, author, categorie, order, asc);
-  products.value = res.data;
-  count.value = res.count;
-  loading.value = false;
-};
-
-const clearFilters = async () => {
-  loading.value = true;
-  await fetchProducts();
-  loading.value = false;
-};
-
 // Novelties and Presales setters
 const setProductAsNovelty = async (id, value) => {
   await setAsNovelty(id, !value);
@@ -145,9 +123,9 @@ const offset = ref(0);
 const limit = ref(productsPerPage.value);
 
 const prevPage = async () => {
-  limit.value = offset.value;
+  limit.value = offset.value - 1;
   if (offset.value - productsPerPage.value > 0) {
-    offset.value -= productsPerPage.value;
+    offset.value -= productsPerPage.value + 1;
   } else {
     offset.value = 0;
   }
@@ -155,9 +133,9 @@ const prevPage = async () => {
 };
 
 const nextPage = async () => {
-  offset.value = limit.value;
+  offset.value = limit.value + 1;
   if (limit.value + productsPerPage.value < count.value) {
-    limit.value += productsPerPage.value;
+    limit.value += productsPerPage.value + 1;
   } else {
     limit.value = count.value;
   }
@@ -165,51 +143,48 @@ const nextPage = async () => {
 };
 
 const goToPage = async (page) => {
-  if (productsPerPage.value * page > count.value) {
-    limit.value = count.value;
+  if (page == 1) {
+    limit.value = productsPerPage.value;
+    offset.value = 0;
   } else {
-    limit.value = productsPerPage.value * page;
+    offset.value = productsPerPage.value * (page - 1) + 1;
+    if (productsPerPage.value * page > count.value) {
+      limit.value = count.value;
+    } else {
+      limit.value = productsPerPage.value * page + 1;
+    }
   }
-  offset.value = productsPerPage.value * (page - 1);
   await fetchProducts();
 };
+
+onMounted(async () => {
+  loading.value = true;
+  await fetchProducts();
+  loading.value = false;
+});
 </script>
 
 <template>
   <div class="container py-5 mx-auto">
-    <div class="flex mx-5 border-2 border-tertiary-dark drop-shadow-items">
-      <input
-        v-model="searchInput"
-        type="text"
-        placeholder="Busqueda..."
-        class="w-full p-2 focus:outline-none"
-      />
-      <button
-        class="p-2 border-l-2 material-icons-outlined border-tertiary-dark bg-primary-light"
-        @click="inputSearchProducts"
+    <SearchAndFilter
+      class="px-5"
+      :productsPerPage="productsPerPage"
+      :totalProducts="count"
+      :productsInPage="offset + productsPerPage + 1"
+      @fetchWithFilters="fetchProducts"
+      @clearFilters="clearFilters"
+    >
+      <CustomButton
+        primary
+        class="h-auto md:px-10 md:w-fit"
+        @click="$router.push('/admin/agregar-producto')"
       >
-        search
-      </button>
-    </div>
-    <div class="relative z-10 flex justify-between gap-3 p-5">
-      <router-link to="/admin/agregar-producto">
-        <CustomButton primary class="w-full md:px-10 md:w-fit">
-          AGREGAR
-        </CustomButton>
-      </router-link>
-      <ProductSearchOptions
-        v-if="categories && authors"
-        :productsInView="products.length"
-        :totalProducts="count"
-        :categories="categories"
-        :authors="authors"
-        class="gap-3"
-        @applyFilter="applyFilters"
-        @clearFilter="clearFilters"
-      />
-    </div>
+        AGREGAR
+      </CustomButton>
+    </SearchAndFilter>
     <LoadingSpinner v-if="loading" />
     <div class="px-5 overflow-x-auto whitespace-nowrap drop-shadow-items">
+      <!-- Aislar tabla en componente -->
       <table v-if="!loading && products" class="w-full table-auto">
         <thead class="border-2 bg-primary border-tertiary-dark">
           <tr>
