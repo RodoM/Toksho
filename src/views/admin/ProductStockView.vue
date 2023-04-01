@@ -4,6 +4,8 @@ import { supabase } from "@/supabase/supabase.js";
 import { useToast } from "vue-toast-notification";
 import {
   getAllProducts,
+  getAllAuthors,
+  getAllCategories,
   searchProducts,
   filterProducts,
   deleteFile,
@@ -19,11 +21,10 @@ import CustomModal from "../../lib/components/CustomModal.vue";
 
 const $toast = useToast();
 
+// Fetching products
 const products = ref([]);
-const loading = ref(false);
-const showModal = ref(false);
-
 const count = ref(0);
+const loading = ref(false);
 
 const fetchProducts = async () => {
   const res = await getAllProducts(offset.value, limit.value);
@@ -31,59 +32,45 @@ const fetchProducts = async () => {
   count.value = res.count;
 };
 
+// Fetching with input
 const searchInput = ref("");
 
-const inputSearchProducts = async () => {
+async function inputSearchProducts() {
   loading.value = true;
   if (searchInput.value.length > 0) {
-    products.value = await searchProducts(searchInput.value);
+    const res = await searchProducts(searchInput.value);
+    products.value = res.data;
+    count.value = res.count;
   } else {
-    fetchProducts();
+    await fetchProducts();
   }
   loading.value = false;
-};
+}
 
-const categories = ref();
-
-const getAllCategories = async () => {
-  let categoriesArr = [];
-  const { data: Categories, error } = await supabase
-    .from("Products")
-    .select("categories");
-  if (error) console.log(error);
-  else {
-    Categories.forEach((cat) => {
-      cat.categories.forEach((c) => {
-        categoriesArr.push(c);
-      });
-    });
-    categories.value = [...new Set(categoriesArr)];
-  }
-};
-
+// Fetching authors
 const authors = ref();
 
-const getAllAuthors = async () => {
-  let authorsArr = [];
-  const { data: Authors, error } = await supabase
-    .from("Products")
-    .select("author");
-  if (error) console.log(error);
-  else {
-    Authors.forEach((author) => {
-      authorsArr.push(author.author);
-    });
-    authors.value = [...new Set(authorsArr)];
-  }
+const fetchAuthors = async () => {
+  authors.value = await getAllAuthors();
+};
+
+// Fetching categories
+const categories = ref();
+
+const fetchCategories = async () => {
+  categories.value = await getAllCategories();
 };
 
 onMounted(async () => {
   loading.value = true;
   await fetchProducts();
-  getAllCategories();
-  getAllAuthors();
+  fetchCategories();
+  fetchAuthors();
   loading.value = false;
 });
+
+// product actions (aislar)
+const showModal = ref(false);
 
 const deleteImageFile = async (image) => {
   await deleteFile(image.substring(image.lastIndexOf("/") + 1, image.length));
