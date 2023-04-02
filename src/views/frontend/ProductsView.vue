@@ -20,10 +20,15 @@ const filter = ref({
 const count = ref(0);
 const loading = ref(false);
 
-// Guardar filtro para cuando haya paginacion en filtrado se mantenga al cambiar de pagina.
-
 async function fetchProducts(name, type, author, categorie, order, asc) {
-  if (name != undefined) filter.value.name = name;
+  if (name != filter.value.name) {
+    filter.value.name = name;
+    currentPage.value = 0;
+    limitOfPages.value = 5;
+    offsetPages.value = 0;
+    limit.value = productsPerPage.value;
+    offset.value = 0;
+  }
   if (type) filter.value.type = type;
   if (author) filter.value.author = author;
   if (categorie) filter.value.categorie = categorie;
@@ -42,6 +47,7 @@ async function fetchProducts(name, type, author, categorie, order, asc) {
   );
   products.value = res.data;
   count.value = res.count;
+  pages();
   loading.value = false;
 }
 
@@ -55,9 +61,28 @@ const clearFilters = async () => {
 };
 
 // Pagination
+const currentPage = ref(1);
+const limitOfPages = ref(5);
+const offsetPages = ref(0);
+
 const productsPerPage = ref(23);
 const offset = ref(0);
 const limit = ref(productsPerPage.value);
+
+const pages = () => {
+  const totalPages = Math.ceil(count.value / productsPerPage.value);
+  if (totalPages < 5) {
+    limitOfPages.value = totalPages;
+  } else if (currentPage.value === limitOfPages.value) {
+    if (limitOfPages.value + 2 < totalPages) {
+      limitOfPages.value += 2;
+      offsetPages.value += 2;
+    } else if (limitOfPages.value + 1 < totalPages) {
+      limitOfPages.value += 1;
+      offsetPages.value += 1;
+    }
+  }
+};
 
 const prevPage = async () => {
   limit.value = offset.value - 1;
@@ -66,7 +91,8 @@ const prevPage = async () => {
   } else {
     offset.value = 0;
   }
-  await fetchProducts();
+  currentPage.value -= 1;
+  await fetchProducts(filter.value.name);
 };
 
 const nextPage = async () => {
@@ -76,7 +102,8 @@ const nextPage = async () => {
   } else {
     limit.value = count.value;
   }
-  await fetchProducts();
+  currentPage.value += 1;
+  await fetchProducts(filter.value.name);
 };
 
 const goToPage = async (page) => {
@@ -84,14 +111,16 @@ const goToPage = async (page) => {
     limit.value = productsPerPage.value;
     offset.value = 0;
   } else {
-    offset.value = productsPerPage.value * (page - 1) + 1;
-    if (productsPerPage.value * page > count.value) {
+    offset.value = (productsPerPage.value + 1) * (page - 1);
+    if (productsPerPage.value * (page - 1) > count.value) {
       limit.value = count.value;
     } else {
-      limit.value = productsPerPage.value * page + 1;
+      limit.value =
+        productsPerPage.value + (productsPerPage.value + 1) * (page - 1);
     }
   }
-  await fetchProducts();
+  currentPage.value = page;
+  await fetchProducts(filter.value.name);
 };
 
 onMounted(async () => {
@@ -122,6 +151,8 @@ onMounted(async () => {
           :count="count"
           :offset="offset"
           :limit="limit"
+          :pages="limitOfPages"
+          :pageOffset="offsetPages"
           @prevPage="prevPage"
           @nextPage="nextPage"
           @goToPage="goToPage"

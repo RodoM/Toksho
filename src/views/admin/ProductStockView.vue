@@ -31,13 +31,19 @@ const count = ref(0);
 const loading = ref(false);
 
 async function fetchProducts(name, type, author, categorie, order, asc) {
-  loading.value = true;
-  if (name != undefined) filter.value.name = name;
+  if (name != undefined) {
+    filter.value.name = name;
+    currentPage.value = 0;
+    offsetPages.value = 0;
+    limit.value = productsPerPage.value;
+    offset.value = 0;
+  }
   if (type) filter.value.type = type;
   if (author) filter.value.author = author;
   if (categorie) filter.value.categorie = categorie;
   if (order) filter.value.order = order;
   if (asc) filter.value.asc = asc;
+  loading.value = true;
   const res = await getAllProducts(
     offset.value,
     limit.value,
@@ -50,6 +56,7 @@ async function fetchProducts(name, type, author, categorie, order, asc) {
   );
   products.value = res.data;
   count.value = res.count;
+  pages();
   loading.value = false;
 }
 
@@ -109,9 +116,26 @@ const setProductAsPresale = async (id, value) => {
 };
 
 // Pagination
+const currentPage = ref(1);
+const limitOfPages = ref(5);
+const offsetPages = ref(0);
+
 const productsPerPage = ref(23);
 const offset = ref(0);
 const limit = ref(productsPerPage.value);
+
+const pages = () => {
+  const totalPages = Math.ceil(count.value / productsPerPage.value) + 1;
+  if (totalPages < 5 || totalPages + 1 < 5) {
+    if (totalPages % 1 === 0) limitOfPages.value = totalPages - 1;
+    else limitOfPages.value = totalPages;
+  } else if (currentPage.value === limitOfPages.value) {
+    if (limitOfPages.value + 2 < totalPages) {
+      limitOfPages.value += 2;
+      offsetPages.value += 2;
+    }
+  }
+};
 
 const prevPage = async () => {
   limit.value = offset.value - 1;
@@ -120,6 +144,7 @@ const prevPage = async () => {
   } else {
     offset.value = 0;
   }
+  currentPage.value -= 1;
   await fetchProducts();
 };
 
@@ -130,6 +155,7 @@ const nextPage = async () => {
   } else {
     limit.value = count.value;
   }
+  currentPage.value += 1;
   await fetchProducts();
 };
 
@@ -145,6 +171,7 @@ const goToPage = async (page) => {
       limit.value = productsPerPage.value * page + 1;
     }
   }
+  currentPage.value = page;
   await fetchProducts();
 };
 
@@ -264,6 +291,8 @@ onMounted(async () => {
         :count="count"
         :offset="offset"
         :limit="limit"
+        :pages="limitOfPages"
+        :pageOffset="offsetPages"
         @prevPage="prevPage"
         @nextPage="nextPage"
         @goToPage="goToPage"
