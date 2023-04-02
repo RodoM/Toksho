@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useToast } from "vue-toast-notification";
 import {
-  getAllProducts,
+  getAllProductsAdmin,
   deleteFile,
   deleteProduct,
   setAsNovelty,
@@ -31,9 +31,10 @@ const count = ref(0);
 const loading = ref(false);
 
 async function fetchProducts(name, type, author, categorie, order, asc) {
-  if (name != undefined) {
+  if (name != filter.value.name) {
     filter.value.name = name;
     currentPage.value = 0;
+    limitOfPages.value = 5;
     offsetPages.value = 0;
     limit.value = productsPerPage.value;
     offset.value = 0;
@@ -44,7 +45,7 @@ async function fetchProducts(name, type, author, categorie, order, asc) {
   if (order) filter.value.order = order;
   if (asc) filter.value.asc = asc;
   loading.value = true;
-  const res = await getAllProducts(
+  const res = await getAllProductsAdmin(
     offset.value,
     limit.value,
     filter.value.name,
@@ -125,14 +126,16 @@ const offset = ref(0);
 const limit = ref(productsPerPage.value);
 
 const pages = () => {
-  const totalPages = Math.ceil(count.value / productsPerPage.value) + 1;
-  if (totalPages < 5 || totalPages + 1 < 5) {
-    if (totalPages % 1 === 0) limitOfPages.value = totalPages - 1;
-    else limitOfPages.value = totalPages;
+  const totalPages = Math.ceil(count.value / productsPerPage.value);
+  if (totalPages < 5) {
+    limitOfPages.value = totalPages;
   } else if (currentPage.value === limitOfPages.value) {
     if (limitOfPages.value + 2 < totalPages) {
       limitOfPages.value += 2;
       offsetPages.value += 2;
+    } else if (limitOfPages.value + 1 < totalPages) {
+      limitOfPages.value += 1;
+      offsetPages.value += 1;
     }
   }
 };
@@ -145,7 +148,7 @@ const prevPage = async () => {
     offset.value = 0;
   }
   currentPage.value -= 1;
-  await fetchProducts();
+  await fetchProducts(filter.value.name);
 };
 
 const nextPage = async () => {
@@ -156,7 +159,7 @@ const nextPage = async () => {
     limit.value = count.value;
   }
   currentPage.value += 1;
-  await fetchProducts();
+  await fetchProducts(filter.value.name);
 };
 
 const goToPage = async (page) => {
@@ -164,15 +167,16 @@ const goToPage = async (page) => {
     limit.value = productsPerPage.value;
     offset.value = 0;
   } else {
-    offset.value = productsPerPage.value * (page - 1) + 1;
-    if (productsPerPage.value * page > count.value) {
+    offset.value = (productsPerPage.value + 1) * (page - 1);
+    if (productsPerPage.value * (page - 1) > count.value) {
       limit.value = count.value;
     } else {
-      limit.value = productsPerPage.value * page + 1;
+      limit.value =
+        productsPerPage.value + (productsPerPage.value + 1) * (page - 1);
     }
   }
   currentPage.value = page;
-  await fetchProducts();
+  await fetchProducts(filter.value.name);
 };
 
 onMounted(async () => {

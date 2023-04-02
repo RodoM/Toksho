@@ -18,7 +18,33 @@ export async function getAllProducts(
 ) {
   let query = supabase
     .from("Products")
-    .select("id, type, name, image, price, discount, stock, updated_at", {
+    .select("id, name, image, price, discount, stock", {
+      count: "exact",
+    })
+    .range(offset, limit);
+  if (name) query = query.ilike("name", `%${name}%`);
+  if (type) query = query.eq("type", type);
+  if (author) query = query.eq("author", author);
+  if (categorie) query = query.overlaps("categories", [categorie]);
+  if (order) query = query.order(order, { ascending: asc });
+  const { data, count, error } = await query;
+  if (error) console.log(error);
+  else return { data, count };
+}
+
+export async function getAllProductsAdmin(
+  offset,
+  limit,
+  name,
+  type,
+  author,
+  categorie,
+  order = "created_at",
+  asc = true
+) {
+  let query = supabase
+    .from("Products")
+    .select("id, name, price, discount, stock, isNovelty, isPresale", {
       count: "exact",
     })
     .range(offset, limit);
