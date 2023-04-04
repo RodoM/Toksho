@@ -39,7 +39,7 @@ const fetchCategories = async () => {
 const openFilter = ref(false);
 
 const filter = ref({
-  option: undefined,
+  type: undefined,
   author: undefined,
   categorie: undefined,
   order: "created_at",
@@ -76,7 +76,7 @@ const applyFilter = () => {
 const clearFilter = () => {
   event.preventDefault();
   emit("clearFilter");
-  filter.value.option = "";
+  filter.value.type = "";
   filter.value.author = "";
   filter.value.categorie = "";
   filter.value.order = "created_at";
@@ -116,14 +116,14 @@ onMounted(async () => {
           <div>
             <label for="">Filtrar por</label>
             <v-select
-              v-model="filter.option"
+              v-model="filter.type"
               :options="filterOptions"
               :reduce="(opt) => opt.value"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
-          <div v-if="filter.option == 'Manga' || filter.option == 'Comic'">
+          <div v-if="filter.type == 'Manga' || filter.type == 'Comic'">
             <label for="">Autor</label>
             <v-select
               v-model="filter.author"
@@ -132,7 +132,7 @@ onMounted(async () => {
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
-          <div v-if="filter.option == 'Manga' || filter.option == 'Comic'">
+          <div v-if="filter.type == 'Manga' || filter.type == 'Comic'">
             <label for="">Categoría</label>
             <v-select
               v-model="filter.categorie"
