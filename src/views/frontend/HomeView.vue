@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 
-import { getNovelties, getPresales } from "@/supabase/helpers.js";
+import { getNovelties, getPresales, getNews } from "@/supabase/helpers.js";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
@@ -10,6 +10,7 @@ import { Autoplay, Navigation, Pagination } from "swiper";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import ProductList from "@/components/shared/products/ProductList.vue";
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
@@ -17,14 +18,11 @@ import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 const novelties = ref();
 const presales = ref();
 const loading = ref(false);
-const photos = [
-  "https://images.unsplash.com/photo-1588497859490-85d1c17db96d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-  "https://images.unsplash.com/photo-1620336655052-b57986f5a26a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-  "https://images.unsplash.com/photo-1628426912206-d88e22da5c76?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-];
+const news = ref();
 
 onMounted(async () => {
   loading.value = true;
+  news.value = await getNews();
   novelties.value = await getNovelties();
   presales.value = await getPresales();
   loading.value = false;
@@ -33,49 +31,67 @@ onMounted(async () => {
 
 <template>
   <div>
-    <Swiper
-      :centeredslides="true"
-      :autoplay="{ delay: 4000, disableOnInteraction: false }"
-      :navigation="true"
-      :pagination="{
-        clickable: true,
-      }"
-      :loop="true"
-      :modules="[Autoplay, Navigation, Pagination]"
-      class="border-b-2 border-tertiary-dark"
-    >
-      <SwiperSlide v-for="(photo, i) in photos" :key="i">
-        <div class="relative h-[600px] lg:h-[700px]">
-          <span
-            class="absolute p-5 text-5xl font-bold -translate-x-1/2 -translate-y-1/2 border-2 border-tertiary-dark drop-shadow-items bg-primary top-1/2 left-1/2"
-            >Slide {{ i + 1 }}</span
-          >
-          <img :src="photo" alt="" class="z-40 object-cover w-full h-full" loading="lazy" />
-        </div>
-      </SwiperSlide>
-    </Swiper>
-    <div class="container flex flex-col items-center mx-auto my-5 gap-y-5">
-      <header-title>
-        <span class="text-2xl font-bold">NOVEDADES</span>
-      </header-title>
-      <ProductList v-if="novelties" :products="novelties" />
-      <content-block>
-        <header-title class="self-center">
-          <span class="text-2xl font-bold">PREVENTA</span>
+    <LoadingSpinner v-if="loading" />
+    <div v-else>
+      <Swiper
+        :centeredslides="true"
+        :autoplay="{ delay: 4000, disableOnInteraction: false }"
+        :navigation="true"
+        :pagination="{
+          clickable: true,
+        }"
+        :loop="true"
+        :modules="[Autoplay, Navigation, Pagination]"
+        class="border-b-2 border-tertiary-dark"
+      >
+        <SwiperSlide v-for="n in news" :key="n.id">
+          <div class="relative h-[600px] lg:h-[700px]">
+            <div
+              class="absolute z-50 flex flex-col w-3/4 text-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+            >
+              <span
+                class="text-2xl font-extrabold uppercase text-stroke-2 text-secondary-light drop-shadow-navlink md:drop-shadow-items md:text-4xl"
+              >
+                {{ n.text.smallText }}
+              </span>
+              <span
+                class="text-4xl font-extrabold uppercase sm:text-6xl text-stroke-2 text-primary-light drop-shadow-items md:text-8xl"
+              >
+                {{ n.text.bigText }}
+              </span>
+            </div>
+            <img
+              :src="n.image"
+              alt="noticia"
+              class="z-40 w-full h-full blur-sm"
+              loading="lazy"
+            />
+          </div>
+        </SwiperSlide>
+      </Swiper>
+      <div class="container flex flex-col items-center mx-auto my-5 gap-y-5">
+        <header-title>
+          <span class="text-2xl font-bold">NOVEDADES</span>
         </header-title>
-        <ProductList v-if="presales" :products="presales" class="mt-5" />
-      </content-block>
-      <header-title>
-        <span class="text-2xl font-bold">NUESTRO LOCAL</span>
-      </header-title>
-      <div class="w-full">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3355.85120910867!2d-60.73914318441111!3d-32.74314138098227!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b65b5764fd94f3%3A0xf1c310865ef199a8!2sTOKSHO%20COMIC!5e0!3m2!1ses-419!2sar!4v1676674481705!5m2!1ses-419!2sar"
-          allowfullscreen="false"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          class="w-full border-2 h-96 lg:h-[600px] border-tertiary-dark drop-shadow-items"
-        ></iframe>
+        <ProductList v-if="novelties" :products="novelties" />
+        <content-block>
+          <header-title class="self-center">
+            <span class="text-2xl font-bold">PREVENTA</span>
+          </header-title>
+          <ProductList v-if="presales" :products="presales" class="mt-5" />
+        </content-block>
+        <header-title>
+          <span class="text-2xl font-bold">NUESTRO LOCAL</span>
+        </header-title>
+        <div class="w-full">
+          <iframe
+            title="google map"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3355.85120910867!2d-60.73914318441111!3d-32.74314138098227!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b65b5764fd94f3%3A0xf1c310865ef199a8!2sTOKSHO%20COMIC!5e0!3m2!1ses-419!2sar!4v1676674481705!5m2!1ses-419!2sar"
+            allowfullscreen="false"
+            referrerpolicy="no-referrer-when-downgrade"
+            class="w-full border-2 h-96 lg:h-[600px] border-tertiary-dark drop-shadow-items"
+          ></iframe>
+        </div>
       </div>
     </div>
   </div>
@@ -103,5 +119,13 @@ onMounted(async () => {
   width: 12px;
   height: 12px;
   box-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+}
+
+.text-stroke-1 {
+  -webkit-text-stroke: 1px white;
+}
+
+.text-stroke-2 {
+  -webkit-text-stroke: 2px white;
 }
 </style>

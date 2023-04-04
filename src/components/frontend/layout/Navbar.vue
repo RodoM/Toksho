@@ -112,12 +112,12 @@ const signOut = async () => {
                 LISTADO
               </router-link>
             </li>
-            <li
+            <!-- <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-primary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="dropdown = false"
             >
-              <router-link to="/admin/listado" class="font-medium">
-                PEDIDOS
+              <router-link to="/admin/noticias" class="font-medium">
+                NOTICIAS
               </router-link>
             </li>
             <li
@@ -127,7 +127,7 @@ const signOut = async () => {
               <router-link to="/admin/listado" class="font-medium">
                 CONFIGURACIÓN
               </router-link>
-            </li>
+            </li> -->
           </ul>
         </li>
       </ul>
@@ -141,17 +141,19 @@ const signOut = async () => {
         <router-link
           v-if="!user"
           to="/ingresar"
-          class="!hidden lg:!block material-icons-outlined"
+          class="items-center !hidden lg:!flex"
         >
-          login
+          <span class="material-icons-outlined">login</span>
+          <span class="font-medium">Ingresar</span>
         </router-link>
         <router-link
           v-else
           to="/"
-          class="!hidden lg:!block material-icons-outlined"
+          class="items-center !hidden lg:!flex"
           @click="signOut()"
         >
-          logout
+          <span class="material-icons-outlined">logout</span>
+          <span class="font-medium">Salir</span>
         </router-link>
       </div>
     </div>
@@ -226,12 +228,12 @@ const signOut = async () => {
                 LISTADO
               </router-link>
             </li>
-            <li
+            <!-- <li
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="(isOpen = false), (dropdown = false)"
             >
-              <router-link to="/admin/listado" class="font-medium">
-                PEDIDOS
+              <router-link to="/admin/noticias" class="font-medium">
+                NOTICIAS
               </router-link>
             </li>
             <li
@@ -241,7 +243,7 @@ const signOut = async () => {
               <router-link to="/admin/listado" class="font-medium">
                 CONFIGURACIÓN
               </router-link>
-            </li>
+            </li> -->
           </ul>
         </li>
         <li

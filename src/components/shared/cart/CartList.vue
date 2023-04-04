@@ -42,12 +42,16 @@ const getPrice = (item) => {
           <span class="font-medium">{{ item.author }}</span>
         </div>
         <div
-          class="flex justify-between px-2 py-1 border-2 bg-primary-light border-tertiary-dark drop-shadow-navlink"
+          class="flex flex-wrap justify-between px-2 py-1 border-2 bg-primary-light border-tertiary-dark drop-shadow-navlink"
         >
           <div class="flex items-center gap-5">
-            <button class="material-icons-outlined" @click="lessAmount(item)">arrow_drop_down</button>
+            <button class="material-icons-outlined" @click="lessAmount(item)">
+              arrow_drop_down
+            </button>
             <span class="font-bold">{{ item.amount }}</span>
-            <button class="material-icons-outlined" @click="moreAmount(item)">arrow_drop_up</button>
+            <button class="material-icons-outlined" @click="moreAmount(item)">
+              arrow_drop_up
+            </button>
           </div>
           <span class="font-bold">${{ getPrice(item) }}</span>
         </div>

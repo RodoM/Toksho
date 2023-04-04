@@ -58,6 +58,13 @@ export async function getAllProductsAdmin(
   else return { data, count };
 }
 
+export async function getNews() {
+  let { data, error } = await supabase.from("News").select("*");
+  console.log(data);
+  if (error) console.log(error);
+  else return data;
+}
+
 export async function getAllAuthors() {
   let authorsArr = [];
   const { data: Authors, error } = await supabase

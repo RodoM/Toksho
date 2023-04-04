@@ -124,6 +124,16 @@ const router = createRouter({
       },
     },
     {
+      path: "/admin/noticias",
+      name: "News",
+      component: () => import("@/views/admin/NewsView.vue"),
+      meta: {
+        label: "Noticias",
+        auth: true,
+        adminAuth: true,
+      },
+    },
+    {
       path: "/admin/agregar-producto",
       name: "AddProduct",
       component: () => import("@/views/admin/AddProductView.vue"),

@@ -37,11 +37,11 @@ onBeforeMount(async () => {
 <template>
   <div class="container p-5 mx-auto">
     <LoadingSpinner v-if="loading" />
-    <div v-else-if="!loading && items.length > 0">
+    <div v-else-if="!loading && items.length > 0" class="flex flex-col h-full">
       <header-title>
         <span class="text-2xl font-bold">CARRITO</span>
       </header-title>
-      <div class="flex flex-col gap-6 my-5 lg:gap-40 lg:flex-row">
+      <div class="flex flex-col flex-grow gap-6 my-5 lg:gap-40 lg:flex-row">
         <div class="w-full">
           <CartList :items="items" @deleteItem="deleteItem" />
         </div>
