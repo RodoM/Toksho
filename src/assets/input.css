@@ -27,6 +27,7 @@
 
 .vs__dropdown-option {
   border: 2px solid #f8f9fa !important;
+  text-transform: capitalize;
 }
 
 .vs__dropdown-option--highlight {

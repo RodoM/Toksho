@@ -5,6 +5,7 @@ import { getSessionData } from "@/supabase/helpers.js";
 import { userStore } from "@/stores/index.js";
 
 import NavBar from "./components/frontend/layout/Navbar.vue";
+import Footer from "./components/frontend/layout/Footer.vue";
 
 const store = userStore();
 
@@ -26,6 +27,7 @@ onMounted(async () => {
         <component :key="$route.path" :is="Component"></component>
       </transition>
     </router-view>
+    <Footer />
   </main>
 </template>
 

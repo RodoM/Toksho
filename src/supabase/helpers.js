@@ -60,7 +60,6 @@ export async function getAllProductsAdmin(
 
 export async function getNews() {
   let { data, error } = await supabase.from("News").select("*");
-  console.log(data);
   if (error) console.log(error);
   else return data;
 }

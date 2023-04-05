@@ -136,6 +136,7 @@ onMounted(async () => {
   <div class="container py-5 mx-auto">
     <div class="mx-5">
       <SearchAndFilter
+        v-if="!loading"
         :productsPerPage="productsPerPage"
         :totalProducts="count"
         :productsInPage="offset + productsPerPage + 1"
@@ -143,7 +144,7 @@ onMounted(async () => {
         @clearFilters="clearFilters"
       />
       <LoadingSpinner v-if="loading" />
-      <div v-if="!loading && products.length">
+      <div v-else-if="!loading && products.length">
         <ProductList :products="products" />
         <PaginationComponent
           class="mt-10"
@@ -159,7 +160,7 @@ onMounted(async () => {
         />
       </div>
       <div
-        v-if="!loading && products.length == 0"
+        v-else
         class="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
       >
         <span class="material-icons-outlined !text-9xl text-primary">

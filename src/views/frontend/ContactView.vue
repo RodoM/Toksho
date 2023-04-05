@@ -18,10 +18,6 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
             </span>
           </div>
           <div>
-            <span class="font-bold">Teléfono</span>
-            <span class="font-medium"> 341-6022682 </span>
-          </div>
-          <div>
             <span class="font-bold">Instagram</span>
             <span class="font-medium"> Toksho.Comic </span>
           </div>
