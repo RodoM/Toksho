@@ -184,7 +184,8 @@ export async function getRelatedProducts(categories, name) {
   if (error) {
     console.log(error);
   } else {
-    return data.slice(0, 6);
+    let res = data.slice(0, 30).sort(() => Math.random() - 0.5);
+    return res.slice(0, 6);
   }
 }
 
