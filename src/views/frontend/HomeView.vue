@@ -86,8 +86,16 @@ onMounted(async () => {
           class="grid grid-cols-2 gap-3 mx-5 place-items-center md:grid-cols-4"
         >
           <img src="@/assets/images/ivrea.png" alt="ivrea" class="grayscale" />
-          <img src="@/assets/images/panini.png" alt="panini" class="grayscale" />
-          <img src="@/assets/images/planeta-comic.png" alt="planeta-comic" class="grayscale" />
+          <img
+            src="@/assets/images/panini.png"
+            alt="panini"
+            class="grayscale"
+          />
+          <img
+            src="@/assets/images/planeta-comic.png"
+            alt="planeta-comic"
+            class="grayscale"
+          />
           <img src="@/assets/images/ovni.png" alt="ovni" class="grayscale" />
         </div>
         <div class="w-full px-5">

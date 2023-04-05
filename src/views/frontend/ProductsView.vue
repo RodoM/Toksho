@@ -148,6 +148,7 @@ onMounted(async () => {
         <ProductList :products="products" />
         <PaginationComponent
           class="mt-10"
+          :currentPage="currentPage"
           :productsPerPage="productsPerPage"
           :count="count"
           :offset="offset"

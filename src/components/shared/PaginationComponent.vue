@@ -1,5 +1,9 @@
 <script setup>
 const props = defineProps({
+  currentPage: {
+    type: Number,
+    required: true,
+  },
   productsPerPage: {
     type: Number,
     required: true,
@@ -63,8 +67,7 @@ const pages = () => {
       <button
         class="px-2.5 font-bold py-1 border-2 border-tertiary-dark drop-shadow-navlink"
         :class="[
-          Math.round(props.offset / props.productsPerPage) + 1 ===
-          i + pageOffset
+          props.currentPage === i + pageOffset
             ? 'bg-secondary-light'
             : 'bg-primary-light',
         ]"
