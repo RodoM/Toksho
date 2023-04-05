@@ -40,3 +40,14 @@
 .vs__open-indicator {
   fill: #0f0f0f !important;
 }
+
+.vs__selected {
+  width: 241px;
+  text-overflow: ellipsis;
+  overflow: hidden; 
+  white-space: nowrap;
+}
+
+.vs__selected-options {
+  flex-wrap: nowrap !important;
+}

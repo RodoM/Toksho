@@ -136,7 +136,7 @@ onMounted(async () => {
   <div class="container py-5 mx-auto">
     <div class="mx-5">
       <SearchAndFilter
-        v-if="!loading"
+        v-show="!loading"
         :productsPerPage="productsPerPage"
         :totalProducts="count"
         :productsInPage="offset + productsPerPage + 1"
