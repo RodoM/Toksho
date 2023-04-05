@@ -33,15 +33,26 @@ const moreAmount = () => {
 };
 
 const addProduct = (id) => {
-  store.addItem(id, amount.value);
-  $toast.open({
-    position: "top-right",
-    message: "Se agregó correctamente el producto del carrito",
-    type: "success",
-    duration: 5000,
-    dismissible: true,
-    pauseOnHover: true,
-  });
+  if (!store.items.find((x) => x.id === id)) {
+    store.addItem(id, amount.value);
+    $toast.open({
+      position: "top-right",
+      message: "Se agregó correctamente el producto del carrito",
+      type: "success",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
+  } else {
+    $toast.open({
+      position: "top-right",
+      message: "El producto ya se encuentra en tu carrito",
+      type: "warning",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
+  }
 };
 
 async function relatedProducts() {
