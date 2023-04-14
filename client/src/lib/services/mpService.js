@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/preference";
+const url = "https://toksho-comics.onrender.com/preference";
 
 class mpService {
   // Get preference ID
