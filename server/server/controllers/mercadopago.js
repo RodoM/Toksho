@@ -1,6 +1,8 @@
+require("dotenv").config();
+
 const mercadopago = require("mercadopago");
 mercadopago.configure({
-  access_token: "TEST-3266331875594738-041017-09caa4fbed07686d78be0d449ace33d0-258315324",
+  access_token: process.env.MP_ACCESS_TOKEN,
 });
 
 // Setear las backURLS
