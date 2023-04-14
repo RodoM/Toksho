@@ -18,6 +18,7 @@ let preference = {
     "failure": "https://toksho.netlify.app/carrito",
     "pending": "https://toksho.netlify.app"
   },
+  auto_return: "approved",
 };
 
 exports.setData = (req, res) => {
