@@ -14,9 +14,9 @@ let preference = {
     mode: "not_specified",
   },
   back_urls: {
-    "success": "http://localhost:5173",
-    "failure": "http://localhost:5173/carrito",
-    "pending": "http://localhost:5173/preguntas"
+    "success": "https://toksho.netlify.app",
+    "failure": "https://toksho.netlify.app/carrito",
+    "pending": "https://toksho.netlify.app"
   },
 };
 
