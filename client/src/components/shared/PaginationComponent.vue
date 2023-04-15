@@ -1,31 +1,11 @@
 <script setup>
 const props = defineProps({
-  currentPage: {
-    type: Number,
-    required: true,
-  },
-  productsPerPage: {
-    type: Number,
-    required: true,
-  },
   count: {
     type: Number,
     required: true,
   },
-  offset: {
-    type: Number,
-    required: true,
-  },
-  limit: {
-    type: Number,
-    required: true,
-  },
-  pages: {
-    type: Number,
-    required: true,
-  },
-  pageOffset: {
-    type: Number,
+  paginationData: {
+    type: Object,
     required: true,
   },
 });
@@ -40,25 +20,19 @@ const nextPage = () => {
   emit("nextPage");
 };
 
-// Paginación como google
-// Mostrar, si las hay, 5 paginas (1,2,3,4,5), cuando se llegue a la 5ta ponerla en medio y mostrar
-// las 2 siguientes (3,4,5,6,7) y a partir de ahi la siguiente pagina colocarla en medio, es decir,
-// (3,4,5,6,7) -> (4,5,6,7,8) -> (5,6,7,8,9) -> (6,7,8,9,10). Desplazar los valores con funciones de
-// prev y next, tambien meter los emits ahi dentro
-
 const pages = () => {
-  if (props.pages >= 5) return 5;
-  else return props.pages;
+  if (props.paginationData.limitPages >= 5) return 5;
+  else return props.paginationData.limitPages;
 };
 </script>
 
 <template>
   <ul
-    v-if="!(props.count < props.productsPerPage + 1)"
+    v-if="!(props.count < props.paginationData.productsPerPage + 1)"
     class="flex justify-center gap-3"
   >
     <li
-      v-if="props.offset > 0"
+      v-if="props.paginationData.offset > 0"
       class="p-1 border-2 material-icons-outlined border-tertiary-dark bg-primary-light drop-shadow-navlink"
     >
       <button @click="prevPage">navigate_before</button>
@@ -67,17 +41,18 @@ const pages = () => {
       <button
         class="px-2.5 font-bold py-1 border-2 border-tertiary-dark drop-shadow-navlink"
         :class="[
-          props.currentPage === i + pageOffset
+          props.paginationData.currentPage ===
+          i + props.paginationData.offsetPages
             ? 'bg-secondary-light'
             : 'bg-primary-light',
         ]"
-        @click="$emit('goToPage', i + pageOffset)"
+        @click="$emit('goToPage', i + props.paginationData.offsetPages)"
       >
-        {{ i + pageOffset }}
+        {{ i + props.paginationData.offsetPages }}
       </button>
     </li>
     <li
-      v-if="props.limit < props.count"
+      v-if="props.paginationData.limit < props.count"
       class="p-1 border-2 material-icons-outlined border-tertiary-dark bg-primary-light drop-shadow-navlink"
     >
       <button @click="nextPage">navigate_next</button>

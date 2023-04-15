@@ -6,16 +6,8 @@ export async function getSessionData() {
   else return data;
 }
 
-export async function getAllProducts(
-  offset,
-  limit,
-  name,
-  type,
-  author,
-  categorie,
-  order = "created_at",
-  asc = true
-) {
+export async function getAllProducts(offset, limit, filter) {
+  const { name, type, author, categorie, order, asc } = filter.value;
   let query = supabase
     .from("Products")
     .select("id, name, image, price, discount, stock", {
@@ -32,16 +24,8 @@ export async function getAllProducts(
   else return { data, count };
 }
 
-export async function getAllProductsAdmin(
-  offset,
-  limit,
-  name,
-  type,
-  author,
-  categorie,
-  order = "created_at",
-  asc = true
-) {
+export async function getAllProductsAdmin(offset, limit, filter) {
+  const { name, type, author, categorie, order, asc } = filter.value;
   let query = supabase
     .from("Products")
     .select("id, name, price, discount, stock, isNovelty, isPresale", {
