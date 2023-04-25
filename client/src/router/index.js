@@ -106,12 +106,7 @@ const router = createRouter({
     },
     {
       path: "/:pathMatch(.*)*",
-      name: "NoResult",
-      component: () => import("@/views/404View.vue"),
-      meta: {
-        label: "Sin Resultado",
-        auth: false,
-      },
+      redirect: "/",
     },
     {
       path: "/admin/listado",
@@ -124,11 +119,11 @@ const router = createRouter({
       },
     },
     {
-      path: "/admin/noticias",
+      path: "/admin/configuraciones",
       name: "News",
-      component: () => import("@/views/admin/NewsView.vue"),
+      component: () => import("@/views/admin/SettingsView.vue"),
       meta: {
-        label: "Noticias",
+        label: "Configuraciones",
         auth: true,
         adminAuth: true,
       },

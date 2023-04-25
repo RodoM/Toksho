@@ -8,10 +8,9 @@ mercadopago.configure({
 // Setear las backURLS
 let preference = {
   items: undefined,
-  // Calcular envio
+  payer: undefined,
   shipments:{
-    cost: 1000,
-    mode: "not_specified",
+    cost: undefined,
   },
   back_urls: {
     "success": "https://toksho.netlify.app",
@@ -23,7 +22,9 @@ let preference = {
 
 exports.setData = (req, res) => {
   try {
-    preference.items = req.body;
+    preference.items = req.body.items;
+    preference.payer = req.body.payer;
+    preference.shipments.cost = req.body.shipment;
     res.status(200).send({succes: true, message: "Preferencia recibida con éxito"});
   } catch(error) {
     console.log(error);

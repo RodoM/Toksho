@@ -3,28 +3,22 @@ import { onMounted, ref } from "vue";
 
 import { getNovelties, getPresales, getNews } from "@/supabase/helpers.js";
 
-import { Swiper, SwiperSlide } from "swiper/vue";
-import "swiper/css";
-
-import { Autoplay, Navigation, Pagination } from "swiper";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
+import SliderComponent from "../../components/shared/SliderComponent.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import ProductList from "@/components/shared/products/ProductList.vue";
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 
 const novelties = ref();
 const presales = ref();
+const news = ref([]);
 const loading = ref(false);
-const news = ref();
 
 onMounted(async () => {
   loading.value = true;
-  news.value = await getNews();
   novelties.value = await getNovelties();
   presales.value = await getPresales();
+  news.value = await getNews();
   loading.value = false;
 });
 </script>
@@ -33,42 +27,7 @@ onMounted(async () => {
   <div>
     <LoadingSpinner v-if="loading" />
     <div v-else>
-      <Swiper
-        :centeredslides="true"
-        :autoplay="{ delay: 4000, disableOnInteraction: false }"
-        :navigation="true"
-        :pagination="{
-          clickable: true,
-        }"
-        :loop="true"
-        :modules="[Autoplay, Navigation, Pagination]"
-        class="border-b-2 border-tertiary-dark"
-      >
-        <SwiperSlide v-for="n in news" :key="n.id">
-          <div class="relative h-[600px] lg:h-[700px]">
-            <div
-              class="absolute z-50 flex flex-col w-3/4 text-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-            >
-              <span
-                class="text-2xl font-extrabold uppercase text-stroke-2 text-secondary-light drop-shadow-navlink md:drop-shadow-items md:text-4xl"
-              >
-                {{ n.text.smallText }}
-              </span>
-              <span
-                class="text-4xl font-extrabold uppercase sm:text-6xl text-stroke-2 text-primary-light drop-shadow-items md:text-8xl"
-              >
-                {{ n.text.bigText }}
-              </span>
-            </div>
-            <img
-              :src="n.image"
-              alt="noticia"
-              class="z-40 object-cover w-full h-full blur-sm"
-              loading="lazy"
-            />
-          </div>
-        </SwiperSlide>
-      </Swiper>
+      <SliderComponent :slides="news" />
       <div class="container flex flex-col items-center mx-auto my-5 gap-y-20">
         <div class="flex flex-col items-center w-full gap-y-10">
           <header-title>

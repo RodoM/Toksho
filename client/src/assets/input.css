@@ -51,3 +51,18 @@
 .vs__selected-options {
   flex-wrap: nowrap !important;
 }
+
+div.svelte-4trrml {
+  margin: 0 !important;
+}
+
+button.svelte-1ugwjx2.svelte-1ugwjx2 {
+  border-radius: 0px !important;
+  border: 2px solid black !important;
+  --tw-drop-shadow: drop-shadow(6px 6px 0px rgba(0,0,0,1));
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.svelte-1a1oxv8 {
+  margin-top: 5px !important;
+}

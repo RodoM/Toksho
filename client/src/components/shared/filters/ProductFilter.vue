@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch } from "vue";
 import { getAllAuthors, getAllCategories } from "@/supabase/helpers.js";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
@@ -21,20 +21,6 @@ const props = defineProps({
   },
 });
 
-// Fetching authors
-const authors = ref();
-
-const fetchAuthors = async () => {
-  authors.value = await getAllAuthors();
-};
-
-// Fetching categories
-const categories = ref();
-
-const fetchCategories = async () => {
-  categories.value = await getAllCategories();
-};
-
 // Filter
 const openFilter = ref(false);
 
@@ -44,6 +30,19 @@ const filter = ref({
   categorie: undefined,
   order: "created_at",
   asc: true,
+});
+
+const authors = ref();
+const categories = ref();
+
+const alreadyFetched = ref(false);
+
+watch(openFilter, async () => {
+  if (!alreadyFetched.value) {
+    authors.value = await getAllAuthors();
+    categories.value = await getAllCategories();
+    alreadyFetched.value = true;
+  }
 });
 
 // Filter options
@@ -83,11 +82,6 @@ const clearFilter = () => {
   filter.value.asc = true;
   openFilter.value = false;
 };
-
-onMounted(async () => {
-  await fetchAuthors();
-  await fetchCategories();
-});
 </script>
 
 <template>
