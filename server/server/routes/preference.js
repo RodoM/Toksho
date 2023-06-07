@@ -1,16 +1,14 @@
 const express = require("express");
-const controller = require("../controllers/mercadopago");
+const controller = require("../controllers/preference");
 const router = express.Router();
 
-const path = "preference";
-
 router.post(
-  `/${path}`,
+  '/preference',
   controller.setData
   )
   
 router.get(
-  `/${path}`,
+  '/preference',
   controller.getData
 )
 

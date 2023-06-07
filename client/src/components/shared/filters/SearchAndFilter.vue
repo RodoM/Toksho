@@ -56,7 +56,7 @@ const clearFilter = () => {
 };
 </script>
 <template>
-  <div class="relative z-10 flex flex-col gap-3 mb-5">
+  <div class="relative z-20 flex flex-col gap-3 mb-5">
     <SearchBar @search="fetchWithFilters" />
     <div class="flex justify-between gap-3">
       <slot></slot>

@@ -1,11 +1,14 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useToast } from "vue-toast-notification";
 import {
   deleteFile,
   deleteProduct,
   setAsNovelty,
   setAsPresale,
+  getAllAuthors,
+  getAuthorPrices,
+  changeAllPrices,
 } from "@/supabase/helpers.js";
 import useProductPagination from "@/lib/composables/paginationHelper.js";
 
@@ -13,7 +16,6 @@ import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import SearchAndFilter from "@/components/shared/filters/SearchAndFilter.vue";
 import PaginationComponent from "@/components/shared/PaginationComponent.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
-import CustomModal from "../../lib/components/CustomModal.vue";
 
 const $toast = useToast();
 
@@ -22,55 +24,93 @@ const { loading, productsData, productsFunctions, pagination, pagesFunctions } =
   useProductPagination(true);
 
 // product actions
-const showModal = ref(false);
-const currentProduct = ref();
-
 const deleteImageFile = async (image) => {
   await deleteFile(image.substring(image.lastIndexOf("/") + 1, image.length));
 };
 
-const deleteProductFile = async () => {
-  try {
-    deleteImageFile(currentProduct.value.image);
-    const error = await deleteProduct(currentProduct.value.id);
-    if (error) throw error;
-    else {
-      showModal.value = false;
+const deleteProductFile = async (product) => {
+  if (confirm("¿Esta seguro que desea eliminar este producto?"))
+    try {
+      deleteImageFile(product.image);
+      const error = await deleteProduct(product.id);
+      if (error) throw error;
+      else {
+        $toast.open({
+          position: "top-right",
+          message: "Se eliminó correctamente el producto",
+          type: "success",
+          duration: 5000,
+          dismissible: true,
+        });
+        loading.value = true;
+        productsFunctions.fetchProducts();
+        loading.value = false;
+      }
+    } catch (error) {
       $toast.open({
         position: "top-right",
-        message: "Se eliminó correctamente el producto",
-        type: "success",
+        message: "Error al borrar el producto",
+        type: "error",
         duration: 5000,
         dismissible: true,
       });
-      loading.value = true;
-      productsFunctions.fetchProducts();
-      loading.value = false;
     }
-  } catch (error) {
-    $toast.open({
-      position: "top-right",
-      message: "Error al borrar el producto",
-      type: "error",
-      duration: 5000,
-      dismissible: true,
-    });
-  }
 };
 
 // Novelties and Presales setters
-const setProductAsNovelty = async (id, value) => {
-  await setAsNovelty(id, !value);
+const setProductAsNovelty = async (product) => {
+  const el = document.getElementById(`${product.id}-novelty`);
+  const confirmationMsg = product.isNovelty
+    ? "¿Quitar producto de novedades?"
+    : "¿Establecer producto como novedad?";
+  const shouldSetAsNovelty = confirm(confirmationMsg);
+  el.checked = shouldSetAsNovelty ? !product.isNovelty : product.isNovelty;
+  if (el.checked !== product.isNovelty)
+    await setAsNovelty(product.id, el.checked);
 };
 
-const setProductAsPresale = async (id, value) => {
-  await setAsPresale(id, !value);
+const setProductAsPresale = async (product) => {
+  const el = document.getElementById(`${product.id}-presale`);
+  const confirmationMsg = product.isPresale
+    ? "¿Quitar producto de preventa?"
+    : "¿Establecer producto como preventa?";
+  const shouldSetAsNovelty = confirm(confirmationMsg);
+  el.checked = shouldSetAsNovelty ? !product.isPresale : product.isPresale;
+  if (el.checked !== product.isPresale)
+    await setAsPresale(product.id, el.checked);
 };
 
-onMounted(async () => {
+const authors = ref();
+const prices = ref();
+
+const selectedAuthor = ref();
+const selectedPrice = ref();
+const newPrice = ref();
+
+watch(selectedAuthor, async () => {
+  prices.value = await getAuthorPrices(selectedAuthor.value);
+});
+
+async function fetchProducts() {
   loading.value = true;
   await productsFunctions.fetchProducts();
   loading.value = false;
+}
+
+async function changePrice() {
+  event.preventDefault();
+  await changeAllPrices(
+    selectedAuthor.value,
+    selectedPrice.value,
+    newPrice.value
+  );
+  await fetchProducts();
+}
+
+onMounted(async () => {
+  await fetchProducts();
+  authors.value = await getAllAuthors();
+  authors.value = authors.value.sort();
 });
 </script>
 
@@ -93,6 +133,46 @@ onMounted(async () => {
         AGREGAR
       </CustomButton>
     </SearchAndFilter>
+
+    <div v-if="!loading" class="relative z-10 px-5 mb-5">
+      <form class="flex flex-col gap-5 md:flex-row">
+        <div class="w-full">
+          <label>Autor</label>
+          <v-select
+            v-model="selectedAuthor"
+            :options="authors"
+            :clearSearchOnSelect="false"
+            class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
+          ></v-select>
+        </div>
+        <div class="w-full">
+          <label>Precio anterior</label>
+          <v-select
+            v-model="selectedPrice"
+            :options="prices"
+            :clearSearchOnSelect="false"
+            class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
+          ></v-select>
+        </div>
+        <div class="w-full">
+          <label>Nuevo precio</label>
+          <input
+            v-model="newPrice"
+            type="number"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+          />
+        </div>
+
+        <CustomButton
+          primary
+          class="md:px-10 md:w-fit h-[52px] mt-auto"
+          @click="changePrice()"
+        >
+          CAMBIAR
+        </CustomButton>
+      </form>
+    </div>
+
     <LoadingSpinner v-if="loading" />
     <div class="px-5 overflow-x-auto whitespace-nowrap drop-shadow-items">
       <!-- Aislar tabla en componente -->
@@ -140,8 +220,8 @@ onMounted(async () => {
                 type="checkbox"
                 class="w-6 h-6"
                 :name="product.name"
-                :id="product.id"
-                @click="setProductAsNovelty(product.id, product.isNovelty)"
+                :id="`${product.id}-novelty`"
+                @click="setProductAsNovelty(product)"
               />
             </td>
             <td class="px-5 font-medium text-center">
@@ -150,8 +230,8 @@ onMounted(async () => {
                 type="checkbox"
                 class="w-6 h-6"
                 :name="product.name"
-                :id="product.id"
-                @click="setProductAsPresale(product.id, product.isPresale)"
+                :id="`${product.id}-presale`"
+                @click="setProductAsPresale(product)"
               />
             </td>
             <td class="flex justify-center gap-3 px-5 py-2">
@@ -165,7 +245,7 @@ onMounted(async () => {
               >
               <button
                 class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
-                @click="(showModal = true), (currentProduct = product)"
+                @click="deleteProductFile(product)"
               >
                 delete
               </button>
@@ -191,36 +271,5 @@ onMounted(async () => {
         @goToPage="pagesFunctions.goToPage"
       />
     </div>
-    <CustomModal :show="showModal">
-      <div
-        class="relative border-2 drop-shadow-items border-tertiary-dark bg-background"
-      >
-        <button
-          type="button"
-          class="absolute top-3 right-2.5"
-          @click="showModal = false"
-        >
-          <span class="material-icons-outlined text-tertiary-dark">
-            close
-          </span>
-        </button>
-        <div class="p-6 text-center">
-          <span class="material-icons-outlined text-primary !text-7xl">
-            warning_amber
-          </span>
-          <h3 class="mb-5 font-medium">
-            ¿Está seguro que desea eliminar este producto?
-          </h3>
-          <div class="flex justify-between">
-            <CustomButton secondary @click="showModal = false">
-              CANCELAR
-            </CustomButton>
-            <CustomButton primary @click="deleteProductFile()">
-              ELIMINAR
-            </CustomButton>
-          </div>
-        </div>
-      </div>
-    </CustomModal>
   </div>
 </template>

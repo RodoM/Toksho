@@ -119,6 +119,16 @@ const router = createRouter({
       },
     },
     {
+      path: "/admin/ordenes",
+      name: "Orders",
+      component: () => import("@/views/admin/OrdersView.vue"),
+      meta: {
+        label: "Ordenes",
+        auth: true,
+        adminAuth: true,
+      },
+    },
+    {
       path: "/admin/configuraciones",
       name: "News",
       component: () => import("@/views/admin/SettingsView.vue"),

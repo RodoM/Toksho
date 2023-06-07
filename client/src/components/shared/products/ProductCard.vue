@@ -23,7 +23,7 @@ function newPrice(price, discount) {
       <div class="border-2 border-tertiary-dark drop-shadow-items">
         <img
           :src="props.product.image"
-          class="object-cover max-h-64"
+          class="object-cover h-64"
           :alt="props.product.name"
           loading="lazy"
         />

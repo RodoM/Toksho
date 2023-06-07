@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from "vue";
-// import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 import CustomModal from "@/lib/components/CustomModal.vue";
 
@@ -43,7 +42,7 @@ const viewImage = (image) => {
         AGREGAR NUEVA SLIDE
       </CustomButton>
     </div>
-    <div class="px-5 overflow-x-auto whitespace-nowrap drop-shadow-items">
+    <div class="px-5 mb-5 overflow-x-auto whitespace-nowrap drop-shadow-items">
       <!-- Aislar tabla en componente -->
       <table class="w-full table-auto">
         <thead class="border-2 bg-primary border-tertiary-dark">

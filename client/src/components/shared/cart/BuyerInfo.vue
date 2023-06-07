@@ -10,11 +10,15 @@ import {
   maxLength,
   helpers,
 } from "@vuelidate/validators";
+import { userStore } from "@/stores/index.js";
 
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 
+const store = userStore();
+
 const state = reactive({
   payer: {
+    id: store.user ? store.user.id : null,
     name: undefined,
     surname: undefined,
     email: undefined,
@@ -23,6 +27,9 @@ const state = reactive({
       number: undefined,
     },
     address: {
+      location: undefined,
+      postal_code: undefined,
+      province: undefined,
       street_name: undefined,
       street_number: undefined,
     },
@@ -34,38 +41,56 @@ const rules = computed(() => {
   return {
     payer: {
       name: {
-        required: helpers.withMessage("Nombre requerido", required),
+        required: helpers.withMessage("Requerido", required),
       },
       surname: {
-        required: helpers.withMessage("Apellido requerido", required),
+        required: helpers.withMessage("Requerido", required),
       },
       email: {
-        required: helpers.withMessage("Email requerido", required),
+        required: helpers.withMessage("Requerido", required),
         email: helpers.withMessage("Ingresa un email valido", email),
       },
       phone: {
         area_code: {
-          required: helpers.withMessage("Código de área requerido", required),
+          required: helpers.withMessage("Requerido", required),
           numeric: helpers.withMessage("Solo se admiten numeros", numeric),
           minLength: helpers.withMessage("Mínimo 3 dígitos", minLength(3)),
           maxLength: helpers.withMessage("Máximo 4 dígitos", maxLength(4)),
         },
         number: {
-          required: helpers.withMessage("Número requerido", required),
+          required: helpers.withMessage("Requerido", required),
           minLength: helpers.withMessage("Mínimo 6 dígitos", minLength(6)),
           maxLength: helpers.withMessage("Máximo 7 dígitos", maxLength(7)),
         },
       },
       address: {
+        location: {
+          requiredIf: helpers.withMessage(
+            "Requerido",
+            requiredIf(state.shipment)
+          ),
+        },
+        postal_code: {
+          requiredIf: helpers.withMessage(
+            "Requerido",
+            requiredIf(state.shipment)
+          ),
+        },
+        province: {
+          requiredIf: helpers.withMessage(
+            "Requerido",
+            requiredIf(state.shipment)
+          ),
+        },
         street_name: {
           requiredIf: helpers.withMessage(
-            "Calle requerida",
+            "Requerido",
             requiredIf(state.shipment)
           ),
         },
         street_number: {
           requiredIf: helpers.withMessage(
-            "Número requerido",
+            "Requerido",
             requiredIf(state.shipment)
           ),
         },
@@ -176,35 +201,101 @@ defineExpose({
         <span>Envio (Costo $X, los mismos se realizan los días)</span>
       </div>
 
-      <div v-if="state.shipment" class="flex flex-col gap-5 md:flex-row">
-        <div class="w-full">
-          <div>
-            <label :for="state.payer.address.street_name">Calle</label>
-            <span v-if="v$.payer.address.street_name.$error" class="pl-2 text-red-500">
-              {{ v$.payer.address.street_name.$errors[0].$message }}
-            </span>
+      <div v-if="state.shipment" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-5 md:flex-row">
+          <div class="w-full">
+            <div>
+              <label :for="state.payer.address.province">Provincia</label>
+              <span
+                v-if="v$.payer.address.province.$error"
+                class="pl-2 text-red-500"
+              >
+                {{ v$.payer.address.province.$errors[0].$message }}
+              </span>
+            </div>
+            <input
+              v-model="state.payer.address.province"
+              type="text"
+              placeholder="Provincia"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
           </div>
-          <input
-            v-model="state.payer.address.street_name"
-            type="text"
-            placeholder="Calle"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
+
+          <div class="w-full">
+            <div>
+              <label :for="state.payer.address.location">Ciudad</label>
+              <span
+                v-if="v$.payer.address.location.$error"
+                class="pl-2 text-red-500"
+              >
+                {{ v$.payer.address.location.$errors[0].$message }}
+              </span>
+            </div>
+            <input
+              v-model="state.payer.address.location"
+              type="text"
+              placeholder="Ciudad"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
         </div>
 
-        <div class="w-full">
-          <div>
-            <label :for="state.payer.address.street_number">Número</label>
-            <span v-if="v$.payer.address.street_number.$error" class="pl-2 text-red-500">
-              {{ v$.payer.address.street_number.$errors[0].$message }}
-            </span>
+        <div class="flex flex-col gap-5 md:flex-row">
+          <div class="w-full">
+            <div>
+              <label :for="state.payer.address.postal_code">
+                Código postal
+              </label>
+              <span
+                v-if="v$.payer.address.postal_code.$error"
+                class="pl-2 text-red-500"
+              >
+                {{ v$.payer.address.postal_code.$errors[0].$message }}
+              </span>
+            </div>
+            <input
+              v-model="state.payer.address.postal_code"
+              type="number"
+              placeholder="Código postal"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
           </div>
-          <input
-            v-model="state.payer.address.street_number"
-            type="number"
-            placeholder="Número"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
+
+          <div class="w-full">
+            <div>
+              <label :for="state.payer.address.street_name">Calle</label>
+              <span
+                v-if="v$.payer.address.street_name.$error"
+                class="pl-2 text-red-500"
+              >
+                {{ v$.payer.address.street_name.$errors[0].$message }}
+              </span>
+            </div>
+            <input
+              v-model="state.payer.address.street_name"
+              type="text"
+              placeholder="Calle"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
+
+          <div class="w-full">
+            <div>
+              <label :for="state.payer.address.street_number">Número</label>
+              <span
+                v-if="v$.payer.address.street_number.$error"
+                class="pl-2 text-red-500"
+              >
+                {{ v$.payer.address.street_number.$errors[0].$message }}
+              </span>
+            </div>
+            <input
+              v-model="state.payer.address.street_number"
+              type="number"
+              placeholder="Número"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
         </div>
       </div>
     </form>

@@ -121,7 +121,7 @@ const clearFilter = () => {
             <label for="">Autor</label>
             <v-select
               v-model="filter.author"
-              :options="authors"
+              :options="authors.sort()"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
@@ -130,7 +130,7 @@ const clearFilter = () => {
             <label for="">Categoría</label>
             <v-select
               v-model="filter.categorie"
-              :options="categories"
+              :options="categories.sort()"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>

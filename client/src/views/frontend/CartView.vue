@@ -81,7 +81,6 @@ const sendPreference = () => {
   setTimeout(async () => {
     if (isValidated.value) {
       loadingBtn.value = true;
-      console.log(state.value.state);
       await mpService.createPreference(formatPreference());
       setTimeout(() => {
         receivePreference();

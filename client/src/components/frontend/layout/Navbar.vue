@@ -12,8 +12,20 @@ const user = computed(() => store.user);
 
 //navbar
 const isOpen = ref(false);
-
 const dropdown = ref(false);
+
+const routes = ref([
+  { id: 1, name: "INICIO", path: "/", icon: "home" },
+  { id: 2, name: "PRODUCTOS", path: "/productos", icon: "shopping_bag" },
+  { id: 3, name: "PREGUNTAS", path: "/preguntas", icon: "help_outline" },
+  { id: 4, name: "CONTACTO", path: "/contacto", icon: "place" },
+]);
+
+const adminRoutes = ref([
+  { id: 5, name: "LISTADO", path: "/admin/listado" },
+  { id: 6, name: "ORDENES", path: "/admin/ordenes" },
+  { id: 7, name: "CONGIFURACIÓN", path: "/admin/configuraciones" },
+]);
 
 const signOut = async () => {
   try {
@@ -58,29 +70,12 @@ const signOut = async () => {
       </router-link>
       <ul class="items-center hidden gap-6 lg:flex">
         <li
+          v-for="route in routes"
+          :key="route.id"
           class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
         >
-          <router-link class="font-medium" to="/"> INICIO </router-link>
-        </li>
-        <li
-          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-        >
-          <router-link class="font-medium" to="/productos">
-            PRODUCTOS
-          </router-link>
-        </li>
-        <li
-          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-        >
-          <router-link class="font-medium" to="/preguntas">
-            PREGUNTAS
-          </router-link>
-        </li>
-        <li
-          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-        >
-          <router-link class="font-medium" to="/contacto">
-            CONTACTO
+          <router-link class="font-medium" :to="route.path">
+            {{ route.name }}
           </router-link>
         </li>
         <li v-if="user && user.isAdmin">
@@ -105,19 +100,13 @@ const signOut = async () => {
             class="p-2 flex flex-col gap-1 absolute w-[167.63px] bg-secondary-light border-2 border-tertiary-dark drop-shadow-navlink top-14"
           >
             <li
+              v-for="route in adminRoutes"
+              :key="route.id"
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-primary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="dropdown = false"
             >
-              <router-link to="/admin/listado" class="font-medium">
-                LISTADO
-              </router-link>
-            </li>
-            <li
-              class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-primary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-              @click="dropdown = false"
-            >
-              <router-link to="/admin/configuraciones" class="font-medium">
-                CONFIGURACIÓN
+              <router-link :to="route.path" class="font-medium">
+                {{ route.name }}
               </router-link>
             </li>
           </ul>
@@ -155,51 +144,17 @@ const signOut = async () => {
     >
       <ul class="flex flex-col gap-4 p-5">
         <li
+          v-for="route in routes"
+          :key="route.id"
           class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
         >
           <router-link
             class="flex items-center gap-2 font-medium"
-            to="/"
+            :to="route.path"
             @click="isOpen = !isOpen"
           >
-            <span class="material-icons-outlined">home</span>
-            INICIO
-          </router-link>
-        </li>
-        <li
-          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-        >
-          <router-link
-            class="flex items-center gap-2 font-medium"
-            to="/productos"
-            @click="isOpen = !isOpen"
-          >
-            <span class="material-icons-outlined">shopping_bag</span>
-            PRODUCTOS
-          </router-link>
-        </li>
-        <li
-          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-        >
-          <router-link
-            class="flex items-center gap-2 font-medium"
-            to="/preguntas"
-            @click="isOpen = !isOpen"
-          >
-            <span class="material-icons-outlined">help_outline</span>
-            PREGUNTAS
-          </router-link>
-        </li>
-        <li
-          class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-        >
-          <router-link
-            class="flex items-center gap-2 font-medium"
-            to="/contacto"
-            @click="isOpen = !isOpen"
-          >
-            <span class="material-icons-outlined">place</span>
-            CONTACTO
+            <span class="material-icons-outlined">{{ route.icon }}</span>
+            {{ route.name }}
           </router-link>
         </li>
         <li v-if="user && user.isAdmin">
@@ -213,19 +168,13 @@ const signOut = async () => {
           </button>
           <ul v-if="dropdown" class="flex flex-col gap-2 pt-2 pl-8">
             <li
+              v-for="route in adminRoutes"
+              :key="route.id"
               class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
               @click="(isOpen = false), (dropdown = false)"
             >
-              <router-link to="/admin/listado" class="font-medium">
-                LISTADO
-              </router-link>
-            </li>
-            <li
-              class="p-1 transition-all duration-200 border-2 border-transparent hover:bg-secondary-light hover:border-tertiary-dark hover:drop-shadow-navlink"
-              @click="(isOpen = false), (dropdown = false)"
-            >
-              <router-link to="/admin/configuraciones" class="font-medium">
-                CONFIGURACIÓN
+              <router-link :to="route.path" class="font-medium">
+                {{ route.name }}
               </router-link>
             </li>
           </ul>

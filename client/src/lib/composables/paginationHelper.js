@@ -34,7 +34,7 @@ const useProductPagination = (isAdmin) => {
     if (author) filter.value.author = author;
     if (categorie) filter.value.categorie = categorie;
     if (order) filter.value.order = order;
-    if (asc) filter.value.asc = asc;
+    filter.value.asc = asc;
 
     loading.value = true;
 

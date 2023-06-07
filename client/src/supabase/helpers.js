@@ -28,7 +28,7 @@ export async function getAllProductsAdmin(offset, limit, filter) {
   const { name, type, author, categorie, order, asc } = filter.value;
   let query = supabase
     .from("Products")
-    .select("id, name, price, discount, stock, isNovelty, isPresale", {
+    .select("id, name, author, price, discount, stock, isNovelty, isPresale", {
       count: "exact",
     })
     .range(offset, limit);
@@ -40,6 +40,15 @@ export async function getAllProductsAdmin(offset, limit, filter) {
   const { data, count, error } = await query;
   if (error) console.log(error);
   else return { data, count };
+}
+
+export async function getAllOrders() {
+  let { data, error } = await supabase
+    .from("Orders")
+    .select("*")
+    .order("date_created", { ascending: false });
+  if (error) console.log(error);
+  else return data;
 }
 
 export async function getNews() {
@@ -76,6 +85,32 @@ export async function getAllCategories() {
     });
     return [...new Set(categoriesArr)];
   }
+}
+
+export async function getAuthorPrices(author) {
+  let pricesArr = [];
+  const { data: Prices, error } = await supabase
+    .from("Products")
+    .select("price")
+    .eq("author", author);
+  if (error) console.log(error);
+  else {
+    Prices.forEach((price) => {
+      pricesArr.push(price.price);
+    });
+    return [...new Set(pricesArr)].sort();
+  }
+}
+
+export async function changeAllPrices(author, price, newPrice) {
+  const { data, error } = await supabase
+    .from("Products")
+    .update({ price: newPrice })
+    .eq("author", author)
+    .eq("price", price)
+    .select();
+  if (error) console.log(error);
+  else return data;
 }
 
 export async function getCartItems(items) {

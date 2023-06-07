@@ -6,8 +6,11 @@ const app = express();
 app.use(express.json());
 app.use(cors())
 
-const mercadopagoRoute = require("./routes/mercadopago");
-app.use(mercadopagoRoute);
+const preferenceRoute = require("./routes/preference");
+app.use(preferenceRoute);
+
+const notificateRoute = require("./routes/notificate");
+app.use(notificateRoute);
 
 const port = process.env.PORT || 5000;
 
