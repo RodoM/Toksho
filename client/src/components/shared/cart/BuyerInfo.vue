@@ -16,6 +16,12 @@ import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 
 const store = userStore();
 
+const props = defineProps({
+  shipmentPrice: {
+    type: Number,
+  },
+});
+
 const state = reactive({
   payer: {
     id: store.user ? store.user.id : null,
@@ -198,7 +204,7 @@ defineExpose({
 
       <div class="flex gap-3">
         <input v-model="state.shipment" type="checkbox" />
-        <span>Envio (Costo $X, los mismos se realizan los días)</span>
+        <span>Envio ${{ props.shipmentPrice }}</span>
       </div>
 
       <div v-if="state.shipment" class="flex flex-col gap-5">

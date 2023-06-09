@@ -245,3 +245,39 @@ export async function userIsAdmin(id) {
   if (error) console.log(error);
   else return isAdmin[0].is_admin;
 }
+
+export async function getMaintenance() {
+  const { data, error } = await supabase
+    .from("Settings")
+    .select("active")
+    .eq("name", "maintenance");
+  if (error) console.log(error);
+  else return data[0].active;
+}
+
+export async function setMaintenance(active) {
+  const { error } = await supabase
+    .from("Settings")
+    .update({ active: active })
+    .eq("name", "maintenance")
+    .select();
+  if (error) return error;
+}
+
+export async function getShippingPrice() {
+  const { data, error } = await supabase
+    .from("Settings")
+    .select("value")
+    .eq("name", "shipment_price");
+  if (error) console.log(error);
+  else return data[0].value;
+}
+
+export async function setShippingPrice(value) {
+  const { error } = await supabase
+    .from("Settings")
+    .update({ value: value })
+    .eq("name", "shipment_price")
+    .select();
+  if (error) return error;
+}

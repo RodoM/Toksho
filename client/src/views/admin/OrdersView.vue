@@ -37,12 +37,12 @@ onMounted(async () => {
         <div class="flex flex-col gap-3">
           <div class="flex justify-between">
             <span
-              class="p-2 text-sm font-medium border-2 w-fit bg-primary border-tertiary-dark drop-shadow-navlink"
+              class="p-2 text-sm font-bold border-2 w-fit bg-primary border-tertiary-dark drop-shadow-navlink"
             >
               #{{ order.id }}
             </span>
             <span
-              class="p-2 text-sm font-medium border-2 w-fit bg-primary border-tertiary-dark drop-shadow-navlink"
+              class="p-2 text-sm font-bold border-2 w-fit bg-primary border-tertiary-dark drop-shadow-navlink"
             >
               ESTADO: {{ orderState(order.status_detail) }}
             </span>
@@ -88,7 +88,7 @@ onMounted(async () => {
             class="flex justify-between p-2 font-medium border-2 bg-primary border-tertiary-dark drop-shadow-navlink"
           >
             <span>{{ formatedDate(order.date_created.slice(0, 10)) }}</span>
-            <span>
+            <span class="font-bold">
               TOTAL: ${{ order.transaction_details.total_paid_amount }}
             </span>
           </div>

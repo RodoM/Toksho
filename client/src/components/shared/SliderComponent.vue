@@ -25,7 +25,7 @@ const props = defineProps({
     class="border-b-2 border-tertiary-dark"
   >
     <SwiperSlide v-for="slide in props.slides" :key="slide.id">
-      <div class="relative h-[600px] lg:h-[700px]">
+      <div class="relative h-[350px] lg:h-[700px]">
         <div
           class="absolute z-50 flex flex-col w-3/4 text-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
         >

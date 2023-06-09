@@ -2,7 +2,11 @@
 import { ref, onBeforeMount } from "vue";
 import { itemsStore } from "@/stores/shoppingCart.js";
 import { useToast } from "vue-toast-notification";
-import { getCartItems } from "@/supabase/helpers.js";
+import {
+  getCartItems,
+  getMaintenance,
+  getShippingPrice,
+} from "@/supabase/helpers.js";
 import mpService from "@/lib/services/mpService.js";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
@@ -15,6 +19,8 @@ const store = itemsStore();
 const $toast = useToast();
 
 const loading = ref(false);
+const maintenance = ref();
+const shipmentPrice = ref();
 const items = ref();
 
 const step1 = ref(true);
@@ -69,7 +75,7 @@ const formatPreference = () => {
   return {
     items: preferenceItems,
     payer: state.value.state.payer,
-    shipment: state.value.state.shipment ? 500 : 0,
+    shipment: state.value.state.shipment ? shipmentPrice.value : 0,
   };
 };
 
@@ -97,6 +103,8 @@ const stepBack = () => {
 
 onBeforeMount(async () => {
   loading.value = true;
+  maintenance.value = await getMaintenance();
+  shipmentPrice.value = await getShippingPrice();
   items.value = await getCartItems(store.items);
   loading.value = false;
 });
@@ -112,16 +120,25 @@ onBeforeMount(async () => {
       <div class="flex flex-col flex-grow gap-6 my-5 lg:gap-40 lg:flex-row">
         <div class="w-full">
           <CartList v-if="step1" :items="items" @deleteItem="deleteItem" />
-          <BuyerInfo v-else ref="state" @validate="isValidated = true" />
+          <BuyerInfo
+            v-else
+            ref="state"
+            :shipmentPrice="shipmentPrice"
+            @validate="isValidated = true"
+          />
         </div>
         <div class="flex flex-col gap-5">
           <CartSummary :items="items" />
           <div v-if="preferenceId" id="wallet_container"></div>
-          <CustomButton v-else-if="step1" primary @click="step1 = false">
+          <CustomButton
+            v-else-if="!maintenance && step1"
+            primary
+            @click="step1 = false"
+          >
             CONTINUAR CON EL PEDIDO
           </CustomButton>
           <CustomButton
-            v-else
+            v-else-if="!maintenance"
             primary
             class="flex justify-center"
             @click="sendPreference"

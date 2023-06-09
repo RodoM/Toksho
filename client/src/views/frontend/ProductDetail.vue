@@ -3,7 +3,11 @@ import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 import { itemsStore } from "@/stores/shoppingCart.js";
 import { useToast } from "vue-toast-notification";
-import { getRelatedProducts, getProductDetails } from "@/supabase/helpers.js";
+import {
+  getRelatedProducts,
+  getProductDetails,
+  getMaintenance,
+} from "@/supabase/helpers.js";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
@@ -15,6 +19,7 @@ const store = itemsStore();
 const $toast = useToast();
 
 const product = ref();
+const maintenance = ref();
 const loading = ref(false);
 const related = ref();
 
@@ -64,6 +69,7 @@ async function relatedProducts() {
 
 onBeforeMount(async () => {
   loading.value = true;
+  maintenance.value = await getMaintenance();
   product.value = await getProductDetails(route.params.id);
   await relatedProducts();
   loading.value = false;
@@ -119,7 +125,7 @@ function newPrice(price, discount) {
               {{ product.author }}
             </span>
           </div>
-          <div class="flex flex-col gap-3 md:flex-row">
+          <div v-if="!maintenance" class="flex flex-col gap-3 md:flex-row">
             <div class="flex drop-shadow-items">
               <button
                 class="w-1/3 font-bold border-2 bg-primary-light border-tertiary-dark"
