@@ -15,6 +15,7 @@ import useProductPagination from "@/lib/composables/paginationHelper.js";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import SearchAndFilter from "@/components/shared/filters/SearchAndFilter.vue";
 import PaginationComponent from "@/components/shared/PaginationComponent.vue";
+import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const $toast = useToast();
@@ -83,6 +84,8 @@ const setProductAsPresale = async (product) => {
 const authors = ref();
 const prices = ref();
 
+const showPriceForm = ref(false);
+
 const selectedAuthor = ref();
 const selectedPrice = ref();
 const newPrice = ref();
@@ -133,46 +136,61 @@ onMounted(async () => {
         AGREGAR
       </CustomButton>
     </SearchAndFilter>
-
-    <div v-if="!loading" class="relative z-10 px-5 mb-5">
-      <form class="flex flex-col gap-5 md:flex-row">
-        <div class="w-full">
-          <label>Autor</label>
-          <v-select
-            v-model="selectedAuthor"
-            :options="authors"
-            :clearSearchOnSelect="false"
-            class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
-          ></v-select>
-        </div>
-        <div class="w-full">
-          <label>Precio anterior</label>
-          <v-select
-            v-model="selectedPrice"
-            :options="prices"
-            :clearSearchOnSelect="false"
-            class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
-          ></v-select>
-        </div>
-        <div class="w-full">
-          <label>Nuevo precio</label>
-          <input
-            v-model="newPrice"
-            type="number"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
-        </div>
-
-        <CustomButton
-          primary
-          class="md:px-10 md:w-fit h-[52px] mt-auto"
-          @click="changePrice()"
+    <div class="px-5">
+      <content-block
+        v-if="!loading"
+        class="relative z-10 px-5 mx-5 mb-5 gap-y-5"
+      >
+        <button
+          class="flex items-center"
+          @click="showPriceForm = !showPriceForm"
         >
-          CAMBIAR
-        </CustomButton>
-      </form>
-    </div>
+          <span class="font-medium">Cambio de precio masivo</span>
+          <span
+            class="transition-all duration-200 material-icons-outlined"
+            :class="!showPriceForm ? 'rotate-0' : 'rotate-180'"
+          >
+            expand_more
+          </span>
+        </button>
+        <form v-if="showPriceForm" class="flex flex-col gap-5 md:flex-row">
+          <div class="w-full">
+            <label>Autor</label>
+            <v-select
+              v-model="selectedAuthor"
+              :options="authors"
+              :clearSearchOnSelect="false"
+              class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
+            ></v-select>
+          </div>
+          <div class="w-full">
+            <label>Precio anterior</label>
+            <v-select
+              v-model="selectedPrice"
+              :options="prices"
+              :clearSearchOnSelect="false"
+              class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
+            ></v-select>
+          </div>
+          <div class="w-full">
+            <label>Nuevo precio</label>
+            <input
+              v-model="newPrice"
+              type="number"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            />
+          </div>
 
+          <CustomButton
+            primary
+            class="md:px-10 md:w-fit h-[52px] mt-auto"
+            @click="changePrice()"
+          >
+            CAMBIAR
+          </CustomButton>
+        </form>
+      </content-block>
+    </div>
     <LoadingSpinner v-if="loading" />
     <div class="px-5 overflow-x-auto whitespace-nowrap drop-shadow-items">
       <!-- Aislar tabla en componente -->

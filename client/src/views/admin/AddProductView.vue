@@ -180,7 +180,7 @@ const submitForm = async (e) => {
           </div>
           <div class="w-full">
             <div>
-              <label :for="state.image.image">Imagen</label>
+              <label :for="state.image.image">Imágen</label>
               <span v-if="v$.image.image.$error" class="pl-2 text-red-500">
                 {{ v$.image.image.$errors[0].$message }}
               </span>

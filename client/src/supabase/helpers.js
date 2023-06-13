@@ -51,10 +51,48 @@ export async function getAllOrders() {
   else return data;
 }
 
-export async function getNews() {
-  let { data, error } = await supabase.from("News").select("*");
+export async function getSlides() {
+  let { data, error } = await supabase.from("Slides").select("*");
   if (error) console.log(error);
   else return data;
+}
+
+export async function createSlide(image, primaryText, secondaryText) {
+  let date = new Date();
+  date = String(date.getTime());
+
+  const { error: storageErr } = await supabase.storage
+    .from("slides")
+    .upload("images/" + date, image, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+  if (storageErr) console.log(storageErr);
+
+  const { data: storageData } = supabase.storage
+    .from("slides")
+    .getPublicUrl("images/" + date);
+  const imageURL = storageData.publicUrl;
+
+  const { error } = await supabase.from("Slides").insert([
+    {
+      image: imageURL,
+      primary_text: primaryText,
+      secondary_text: secondaryText,
+      updated_at: date,
+    },
+  ]);
+  if (error) console.log(error);
+}
+
+export async function deleteSlide(id, image) {
+  const { error: storageErr } = await supabase.storage
+    .from("slides")
+    .remove(["images/" + image]);
+  if (storageErr) console.log(storageErr);
+
+  const { error } = await supabase.from("Slides").delete().eq("id", id);
+  if (error) return error;
 }
 
 export async function getAllAuthors() {

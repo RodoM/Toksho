@@ -237,7 +237,7 @@ const submitForm = async (e) => {
           <div class="w-full">
             <div>
               <label :for="state.image.image">
-                Imagen (No seleccionar nada si no se actualiza)
+                Imágen (No seleccionar nada si no se actualiza)
               </label>
               <span v-if="v$.image.image.$error" class="pl-2 text-red-500">
                 {{ v$.image.image.$errors[0].$message }}

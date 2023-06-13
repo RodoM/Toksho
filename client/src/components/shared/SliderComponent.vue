@@ -16,6 +16,7 @@ const props = defineProps({
 
 <template>
   <Swiper
+    v-if="props.slides.length"
     :centeredslides="true"
     :autoplay="{ delay: 4000, disableOnInteraction: false }"
     :navigation="true"
@@ -30,14 +31,14 @@ const props = defineProps({
           class="absolute z-50 flex flex-col w-3/4 text-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
         >
           <span
-            class="text-2xl font-extrabold uppercase text-stroke-2 text-secondary-light drop-shadow-navlink md:drop-shadow-items md:text-4xl"
+            class="text-3xl font-extrabold uppercase text-stroke-2 text-secondary-light drop-shadow-navlink md:drop-shadow-items md:text-4xl"
           >
-            {{ slide.text.smallText }}
+            {{ slide.secondary_text }}
           </span>
           <span
             class="text-4xl font-extrabold uppercase sm:text-6xl text-stroke-2 text-primary-light drop-shadow-items md:text-8xl"
           >
-            {{ slide.text.bigText }}
+            {{ slide.primary_text }}
           </span>
         </div>
         <img

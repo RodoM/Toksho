@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 
-import { getNovelties, getPresales, getNews } from "@/supabase/helpers.js";
+import { getNovelties, getPresales, getSlides } from "@/supabase/helpers.js";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import SliderComponent from "../../components/shared/SliderComponent.vue";
@@ -11,14 +11,14 @@ import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 
 const novelties = ref();
 const presales = ref();
-const news = ref([]);
+const slides = ref([]);
 const loading = ref(false);
 
 onMounted(async () => {
   loading.value = true;
   novelties.value = await getNovelties();
   presales.value = await getPresales();
-  news.value = await getNews();
+  slides.value = await getSlides();
   loading.value = false;
 });
 </script>
@@ -27,7 +27,7 @@ onMounted(async () => {
   <div>
     <LoadingSpinner v-if="loading" />
     <div v-else>
-      <SliderComponent :slides="news" />
+      <SliderComponent :slides="slides" />
       <div class="container flex flex-col items-center mx-auto my-5 gap-y-20">
         <div class="flex flex-col items-center w-full gap-y-10">
           <header-title>
