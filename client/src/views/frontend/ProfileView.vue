@@ -1,331 +1,54 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
-import { getUser, updateUser, getUserOrders } from "@/supabase/helpers.js";
-import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers, requiredIf } from "@vuelidate/validators";
+import { ref, onMounted } from "vue";
+import { getUserOrders } from "@/supabase/helpers.js";
 import { userStore } from "@/stores/index.js";
-import { useToast } from "vue-toast-notification";
 
 // import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
+import UserForm from "@/components/frontend/user/UserForm.vue";
 import OrdersList from "@/components/shared/orders/OrdersList.vue";
-import CustomButton from "@/lib/components/CustomButton.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 
-let state = reactive({
-  first_name: "",
-  last_name: "",
-  email: "",
-  phone: {
-    code: "",
-    number: "",
-  },
-  address: {
-    province: "",
-    city: "",
-    postalCode: "",
-    street: "",
-    number: "",
-  },
-});
-
-const rules = computed(() => {
-  return {
-    first_name: {
-      required: helpers.withMessage("Requerido", required),
-    },
-    last_name: {
-      required: helpers.withMessage("Requerido", required),
-    },
-    email: {
-      required: helpers.withMessage("Requerido", required),
-      email: helpers.withMessage("Ingresa un correo electronico valido", email),
-    },
-    phone: {
-      code: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.phone))
-        ),
-      },
-      number: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.phone))
-        ),
-      },
-    },
-    address: {
-      province: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
-      },
-      city: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
-      },
-      postalCode: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
-      },
-      street: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
-      },
-      number: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
-      },
-    },
-  };
-});
-
-const v$ = useVuelidate(rules, state);
-
-function isObjectEmpty(object) {
-  for (let key in object) {
-    if (object[key] !== "") {
-      return false;
-    }
-  }
-  return true;
-}
-
 const store = userStore();
-const user = computed(() => store.user);
-const $toast = useToast();
 const orders = ref([]);
 
-async function updateUserData() {
-  try {
-    const error = await updateUser(user.value.id, state);
-    if (error) throw error;
-    else {
-      $toast.open({
-        position: "top-right",
-        message: "Se actualizaron correctamente los datos",
-        type: "success",
-        duration: 5000,
-        dismissible: true,
-        pauseOnHover: true,
-      });
-    }
-  } catch (error) {
-    $toast.open({
-      position: "top-right",
-      message: "Error al actualizar los datos",
-      type: "error",
-      duration: 5000,
-      dismissible: true,
-      pauseOnHover: true,
-    });
-  }
-}
-
-async function submitForm() {
-  event.preventDefault();
-  const result = await v$.value.$validate();
-  if (result) updateUserData();
-}
-
 onMounted(async () => {
-  const userData = await getUser(user.value.id);
-  Object.assign(state, userData);
-  orders.value = await getUserOrders(user.value.id);
+  orders.value = await getUserOrders(store.user.id);
 });
 </script>
 
 <template>
   <div class="container flex flex-col gap-10 py-5 mx-auto lg:flex-row">
-    <div class="w-full px-5 lg:w-1/3">
+    <div class="w-full px-5 xl:w-1/3">
       <header-title class="mb-5">
         <span class="text-2xl font-bold">DATOS PERSONALES</span>
       </header-title>
-
-      <form class="flex flex-col gap-y-3">
-        <div class="flex flex-col gap-3 lg:flex-row">
-          <div class="w-full">
-            <div>
-              <label :for="state.first_name">Nombre</label>
-              <span v-if="v$.first_name.$error" class="pl-2 text-red-500">
-                {{ v$.first_name.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.first_name"
-              type="text"
-              placeholder="Nombre"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
-          </div>
-
-          <div class="w-full">
-            <div>
-              <label :for="state.last_name">Apellido</label>
-              <span v-if="v$.last_name.$error" class="pl-2 text-red-500">
-                {{ v$.last_name.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.last_name"
-              type="text"
-              placeholder="Apellido"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <div class="w-full">
-          <div>
-            <label :for="state.email">Email</label>
-            <span v-if="v$.email.$error" class="pl-2 text-red-500">
-              {{ v$.email.$errors[0].$message }}
-            </span>
-          </div>
-          <input
-            v-model="state.email"
-            type="mail"
-            placeholder="Email"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
-        </div>
-
-        <div class="flex flex-col gap-3 lg:flex-row">
-          <div class="w-full">
-            <div>
-              <label :for="state.phone?.code">Código de area</label>
-              <span v-if="v$.phone.code?.$error" class="pl-2 text-red-500">
-                {{ v$.phone.code?.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.phone.code"
-              type="number"
-              placeholder="Código de area"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
-          </div>
-          <div class="w-full">
-            <div>
-              <label :for="state.phone.number">Número</label>
-              <span v-if="v$.phone.number.$error" class="pl-2 text-red-500">
-                {{ v$.phone.number.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.phone.number"
-              type="number"
-              placeholder="Número de télefono"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <div class="w-full">
-          <div>
-            <label :for="state.address.province">Provincia</label>
-            <span v-if="v$.address.province.$error" class="pl-2 text-red-500">
-              {{ v$.address.province.$errors[0].$message }}
-            </span>
-          </div>
-          <input
-            v-model="state.address.province"
-            type="text"
-            placeholder="Provincia"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-          />
-        </div>
-
-        <div class="flex flex-col gap-3 lg:flex-row">
-          <div class="w-full">
-            <div>
-              <label :for="state.address.city">Ciudad</label>
-              <span v-if="v$.address.city.$error" class="pl-2 text-red-500">
-                {{ v$.address.city.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.address.city"
-              type="text"
-              placeholder="Ciudad"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
-          </div>
-          <div class="w-full">
-            <div>
-              <label :for="state.address.postalCode">Código postal</label>
-              <span
-                v-if="v$.address.postalCode.$error"
-                class="pl-2 text-red-500"
-              >
-                {{ v$.address.postalCode.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.address.postalCode"
-              type="number"
-              placeholder="Código postal"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-3 lg:flex-row">
-          <div class="w-full">
-            <div>
-              <label :for="state.address.street">Calle</label>
-              <span v-if="v$.address.street.$error" class="pl-2 text-red-500">
-                {{ v$.address.street.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.address.street"
-              type="text"
-              placeholder="Calle"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
-          </div>
-          <div class="w-full">
-            <div>
-              <label :for="state.address.number">Número</label>
-              <span v-if="v$.address.number.$error" class="pl-2 text-red-500">
-                {{ v$.address.number.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.address.number"
-              type="number"
-              placeholder="Número de calle"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <CustomButton
-          class="w-full px-10 ml-auto lg:w-fit"
-          primary
-          @click="submitForm()"
-        >
-          ACTUALIZAR
-        </CustomButton>
-      </form>
+      <UserForm :userId="store.user.id" />
     </div>
 
-    <div class="w-full px-5 lg:w-2/3">
+    <div class="relative w-full px-5 xl:w-2/3">
       <header-title class="mb-5">
         <span class="text-2xl font-bold">ULTIMAS COMPRAS</span>
       </header-title>
       <div v-if="orders.length > 0">
         <OrdersList :orders="orders" />
+      </div>
+      <div
+        v-else
+        class="flex flex-col items-center gap-3 mt-5 lg:absolute lg:-translate-x-1/2 lg:-translate-y-1/2 top-1/2 left-1/2"
+      >
+        <span class="material-icons-outlined !text-9xl text-primary">
+          receipt_long
+        </span>
+        <span class="text-xl font-medium">Sin compras</span>
+        <span class="font-medium text-center min-w-[335px]">
+          No se encontraron anteriores compras
+        </span>
+        <router-link
+          to="/productos"
+          class="p-2 font-medium border-2 border-tertiary-dark bg-primary-light drop-shadow-items"
+        >
+          VISITAR CATÁLOGO
+        </router-link>
       </div>
     </div>
   </div>
