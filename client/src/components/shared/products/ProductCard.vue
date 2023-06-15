@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from "vue";
 const props = defineProps({
   product: {
     type: Object,
@@ -8,6 +9,12 @@ const props = defineProps({
 
 function newPrice(price, discount) {
   return price - (discount / 100) * price;
+}
+
+const currentImage = ref("../../../src/assets/svgs/image-placeholder.svg");
+
+function loadImage(image) {
+  currentImage.value = image;
 }
 </script>
 
@@ -22,7 +29,8 @@ function newPrice(price, discount) {
     <div class="relative">
       <div class="border-2 border-tertiary-dark drop-shadow-items">
         <img
-          :src="props.product.image"
+          :src="currentImage"
+          @load="loadImage(props.product.image)"
           class="object-cover h-56 md:h-64"
           :alt="props.product.name"
           loading="lazy"
