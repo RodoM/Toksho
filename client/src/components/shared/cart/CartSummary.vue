@@ -6,10 +6,19 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  shipment: {
+    type: Boolean,
+  },
+  shipmentPrice: {
+    type: Number,
+  },
 });
 
 const getTotal = () => {
   let totalPrice = 0;
+  if (props.shipment) {
+    totalPrice += props.shipmentPrice;
+  }
   props.items.forEach((item) => {
     totalPrice += item.price * item.amount;
   });
@@ -27,7 +36,12 @@ const getTotal = () => {
       </header-title>
       <ul class="flex flex-col gap-2 px-3">
         <li v-for="item in props.items" :key="item.id">
-          <span class="font-bold">x{{ item.amount }}</span> - {{ item.name }} - <span class="font-bold">${{ item.price }}</span>
+          <span class="font-bold">x{{ item.amount }}</span> - {{ item.name }} -
+          <span class="font-bold">${{ item.price }}</span>
+        </li>
+        <li v-if="props.shipment">
+          <span class="font-bold">x1</span> - Envio -
+          <span class="font-bold">${{ props.shipmentPrice }}</span>
         </li>
       </ul>
     </div>

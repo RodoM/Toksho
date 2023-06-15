@@ -1,5 +1,6 @@
 <script setup>
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
+import { getUser } from "@/supabase/helpers.js";
 import { useVuelidate } from "@vuelidate/core";
 import {
   required,
@@ -117,6 +118,24 @@ const validateInfo = async () => {
 defineExpose({
   state,
   validateInfo,
+});
+
+onMounted(async () => {
+  if (store.user?.id) {
+    const { first_name, last_name, email, phone, address } = await getUser(
+      store.user.id
+    );
+    state.payer.name = first_name;
+    state.payer.surname = last_name;
+    state.payer.email = email;
+    state.payer.phone.area_code = String(phone.code);
+    state.payer.phone.number = phone.number;
+    state.payer.address.province = address.province;
+    state.payer.address.location = address.city;
+    state.payer.address.postal_code = address.postalCode;
+    state.payer.address.street_name = address.street;
+    state.payer.address.street_number = address.number;
+  }
 });
 </script>
 

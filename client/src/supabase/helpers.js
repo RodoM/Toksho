@@ -284,6 +284,56 @@ export async function userIsAdmin(id) {
   else return isAdmin[0].is_admin;
 }
 
+export async function getUser(id) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("first_name, last_name, email, phone, address")
+    .eq("id", id);
+  if (error) console.log(error);
+  else return data[0];
+}
+
+export async function updateUser(id, data) {
+  const { error } = await supabase
+    .from("users")
+    .update({
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      phone: data.phone,
+      address: data.address,
+    })
+    .eq("id", id);
+  if (error) return error;
+}
+
+export async function addToUserCart(items, id) {
+  const { error } = await supabase
+    .from("users")
+    .update({ cart_items: items })
+    .eq("id", id);
+  if (error) return error;
+}
+
+export async function getUserCart(id) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("cart_items")
+    .eq("id", id);
+  if (error) console.log(error);
+  else return data[0].cart_items;
+}
+
+export async function getUserOrders(id) {
+  const { data, error } = await supabase
+    .from("Orders")
+    .select("*")
+    .eq("user_id", id)
+    .order("date_created", { ascending: false });
+  if (error) console.log(error);
+  else return data;
+}
+
 export async function getMaintenance() {
   const { data, error } = await supabase
     .from("Settings")

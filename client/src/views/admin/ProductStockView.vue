@@ -42,6 +42,7 @@ const deleteProductFile = async (product) => {
           type: "success",
           duration: 5000,
           dismissible: true,
+          pauseOnHover: true,
         });
         loading.value = true;
         productsFunctions.fetchProducts();
@@ -54,6 +55,7 @@ const deleteProductFile = async (product) => {
         type: "error",
         duration: 5000,
         dismissible: true,
+        pauseOnHover: true,
       });
     }
 };

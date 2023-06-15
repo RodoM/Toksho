@@ -35,6 +35,7 @@ async function updateSettings() {
           type: "success",
           duration: 5000,
           dismissible: true,
+          pauseOnHover: true,
         });
       }
     } catch (error) {
@@ -44,6 +45,7 @@ async function updateSettings() {
         type: "error",
         duration: 5000,
         dismissible: true,
+        pauseOnHover: true,
       });
     }
 }

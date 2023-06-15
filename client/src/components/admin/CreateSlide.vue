@@ -49,6 +49,7 @@ async function createSlideImage() {
         type: "success",
         duration: 5000,
         dismissible: true,
+        pauseOnHover: true,
       });
       emit("created");
     }
@@ -59,6 +60,7 @@ async function createSlideImage() {
       type: "error",
       duration: 5000,
       dismissible: true,
+      pauseOnHover: true,
     });
   }
 }

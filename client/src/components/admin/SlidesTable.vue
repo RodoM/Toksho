@@ -26,6 +26,7 @@ async function deleteSlideImage(slide) {
           type: "success",
           duration: 5000,
           dismissible: true,
+          pauseOnHover: true,
         });
         emit("deleted");
       }
@@ -36,6 +37,7 @@ async function deleteSlideImage(slide) {
         type: "error",
         duration: 5000,
         dismissible: true,
+        pauseOnHover: true,
       });
     }
 }

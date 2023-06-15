@@ -2,10 +2,13 @@
 import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 import { itemsStore } from "@/stores/shoppingCart.js";
+import { userStore } from "@/stores/index.js";
 import { useToast } from "vue-toast-notification";
 import {
   getRelatedProducts,
   getProductDetails,
+  getUserCart,
+  addToUserCart,
   getMaintenance,
 } from "@/supabase/helpers.js";
 
@@ -15,10 +18,12 @@ import ProductList from "@/components/shared/products/ProductList.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const route = useRoute();
-const store = itemsStore();
+const itemStore = itemsStore();
+const usersStore = userStore();
 const $toast = useToast();
 
 const product = ref();
+const userCart = ref([]);
 const maintenance = ref();
 const loading = ref(false);
 const related = ref();
@@ -26,7 +31,7 @@ const related = ref();
 const amount = ref(1);
 
 const lessAmount = () => {
-  if (amount.value > 0) {
+  if (amount.value > 1) {
     amount.value -= 1;
   }
 };
@@ -37,9 +42,31 @@ const moreAmount = () => {
   }
 };
 
-const addProduct = (id) => {
-  if (!store.items.find((x) => x.id === id)) {
-    store.addItem(id, amount.value);
+const addProduct = async (id) => {
+  try {
+    if (
+      !userCart.value.find((x) => x.id === id) &&
+      !itemStore.items.find((x) => x.id === id)
+    ) {
+      if (usersStore.user?.id) {
+        userCart.value.push({ id: id, amount: amount.value });
+        const error = await addToUserCart(userCart.value, usersStore.user.id);
+        if (error) throw error;
+        else userCart.value = await getUserCart(usersStore.user.id);
+      } else {
+        itemStore.addItem(id, amount.value);
+      }
+    } else {
+      $toast.open({
+        position: "top-right",
+        message: "El producto ya se encuentra en tu carrito",
+        type: "warning",
+        duration: 5000,
+        dismissible: true,
+        pauseOnHover: true,
+      });
+      return;
+    }
     $toast.open({
       position: "top-right",
       message: "Se agregó correctamente el producto del carrito",
@@ -48,11 +75,12 @@ const addProduct = (id) => {
       dismissible: true,
       pauseOnHover: true,
     });
-  } else {
+  } catch (error) {
+    console.log(error);
     $toast.open({
       position: "top-right",
-      message: "El producto ya se encuentra en tu carrito",
-      type: "warning",
+      message: "Error al agregar el producto a tu carrito",
+      type: "error",
       duration: 5000,
       dismissible: true,
       pauseOnHover: true,
@@ -71,6 +99,9 @@ onBeforeMount(async () => {
   loading.value = true;
   maintenance.value = await getMaintenance();
   product.value = await getProductDetails(route.params.id);
+  if (usersStore.user?.id) {
+    userCart.value = await getUserCart(usersStore.user.id);
+  }
   await relatedProducts();
   loading.value = false;
 });
@@ -136,7 +167,8 @@ function newPrice(price, discount) {
               <input
                 v-model="amount"
                 type="number"
-                class="w-1/3 p-3 font-bold text-center border-y-2 border-tertiary-dark focus:outline-none"
+                disabled
+                class="w-1/3 p-3 font-bold text-center bg-white border-y-2 border-tertiary-dark focus:outline-none"
               />
               <button
                 class="w-1/3 font-bold border-2 bg-primary-light border-tertiary-dark"

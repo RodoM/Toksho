@@ -1,8 +1,11 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import { itemsStore } from "@/stores/shoppingCart.js";
+import { userStore } from "@/stores/index.js";
 import { useToast } from "vue-toast-notification";
 import {
+  getUserCart,
+  addToUserCart,
   getCartItems,
   getMaintenance,
   getShippingPrice,
@@ -15,7 +18,8 @@ import BuyerInfo from "@/components/shared/cart/BuyerInfo.vue";
 import CartSummary from "@/components/shared/cart/CartSummary.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
-const store = itemsStore();
+const itemStore = itemsStore();
+const usersStore = userStore();
 const $toast = useToast();
 
 const loading = ref(false);
@@ -26,16 +30,37 @@ const items = ref();
 const step1 = ref(true);
 
 const deleteItem = async (id) => {
-  store.deleteItem(id);
-  items.value = await getCartItems(store.items);
-  $toast.open({
-    position: "top-right",
-    message: "Se eliminó correctamente el producto al carrito",
-    type: "success",
-    duration: 5000,
-    dismissible: true,
-    pauseOnHover: true,
-  });
+  try {
+    if (usersStore.user?.id) {
+      items.value.pop(items.value.find((x) => x.id === id));
+      const error = await addToUserCart(
+        items.value.map((x) => ({ id: x.id, amount: x.amount })),
+        usersStore.user.id
+      );
+      if (error) throw error;
+    } else {
+      itemStore.deleteItem(id);
+      items.value = await getCartItems(itemStore.items);
+    }
+    $toast.open({
+      position: "top-right",
+      message: "Se eliminó correctamente el producto al carrito",
+      type: "success",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
+  } catch (error) {
+    console.log(error);
+    $toast.open({
+      position: "top-right",
+      message: "Error al eliminar el producto del carrito",
+      type: "error",
+      duration: 5000,
+      dismissible: true,
+      pauseOnHover: true,
+    });
+  }
 };
 
 const loadingBtn = ref(false);
@@ -72,6 +97,9 @@ const formatPreference = () => {
       unit_price: item.price - (item.discount / 100) * item.price,
     });
   });
+  if (!state.value.state.shipment) {
+    state.value.state.payer.address = {};
+  }
   return {
     items: preferenceItems,
     payer: state.value.state.payer,
@@ -101,11 +129,18 @@ const stepBack = () => {
   step1.value = true;
 };
 
+const userCart = ref([]);
+
 onBeforeMount(async () => {
   loading.value = true;
   maintenance.value = await getMaintenance();
   shipmentPrice.value = await getShippingPrice();
-  items.value = await getCartItems(store.items);
+  if (usersStore.user?.id) {
+    userCart.value = await getUserCart(usersStore.user.id);
+    items.value = await getCartItems(userCart.value);
+  } else {
+    items.value = await getCartItems(itemStore.items);
+  }
   loading.value = false;
 });
 </script>
@@ -128,7 +163,11 @@ onBeforeMount(async () => {
           />
         </div>
         <div class="flex flex-col gap-5">
-          <CartSummary :items="items" />
+          <CartSummary
+            :items="items"
+            :shipment="state?.state?.shipment"
+            :shipmentPrice="shipmentPrice"
+          />
           <div v-if="preferenceId" id="wallet_container"></div>
           <CustomButton
             v-else-if="!maintenance && step1"
