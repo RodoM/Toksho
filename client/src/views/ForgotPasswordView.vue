@@ -41,8 +41,12 @@ const forgotPassword = async (e) => {
 
 <template>
   <div class="flex items-center justify-center bg-comic">
-    <content-block class="flex flex-col items-center justify-center max-w-md px-5">
-      <span>Ingrese el mail de tu cuenta para cambiar tu contraseña</span>
+    <content-block
+      class="flex flex-col items-center justify-center max-w-lg px-5 gap-y-5"
+    >
+      <span class="font-medium">
+        Ingrese el mail de tu cuenta para cambiar tu contraseña
+      </span>
       <form class="flex flex-col w-full gap-4">
         <input
           v-model="email"

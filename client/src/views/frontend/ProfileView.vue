@@ -3,21 +3,28 @@ import { ref, onMounted } from "vue";
 import { getUserOrders } from "@/supabase/helpers.js";
 import { userStore } from "@/stores/index.js";
 
-// import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
+import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import UserForm from "@/components/frontend/user/UserForm.vue";
 import OrdersList from "@/components/shared/orders/OrdersList.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 
 const store = userStore();
+const loading = ref(false);
 const orders = ref([]);
 
 onMounted(async () => {
+  loading.value = true;
   orders.value = await getUserOrders(store.user.id);
+  loading.value = false;
 });
 </script>
 
 <template>
-  <div class="container flex flex-col gap-10 py-5 mx-auto lg:flex-row">
+  <LoadingSpinner v-if="loading" />
+  <div
+    v-else-if="!loading"
+    class="container flex flex-col gap-10 py-5 mx-auto lg:flex-row"
+  >
     <div class="w-full px-5 xl:w-1/3">
       <header-title class="mb-5">
         <span class="text-2xl font-bold">DATOS PERSONALES</span>

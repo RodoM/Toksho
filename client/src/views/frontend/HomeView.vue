@@ -29,17 +29,20 @@ onMounted(async () => {
     <div v-else>
       <SliderComponent :slides="slides" />
       <div class="container flex flex-col items-center mx-auto my-5 gap-y-20">
-        <div class="flex flex-col items-center w-full gap-y-10">
+        <div
+          v-if="novelties"
+          class="flex flex-col items-center w-full gap-y-10"
+        >
           <header-title>
             <span class="text-2xl font-bold">NOVEDADES</span>
           </header-title>
-          <ProductList v-if="novelties" :products="novelties" class="px-5" />
+          <ProductList :products="novelties" class="px-5" />
         </div>
-        <content-block>
+        <content-block v-if="presales">
           <header-title class="self-center">
             <span class="text-2xl font-bold">PREVENTA</span>
           </header-title>
-          <ProductList v-if="presales" :products="presales" class="px-5" />
+          <ProductList :products="presales" class="px-5" />
         </content-block>
         <div
           class="grid grid-cols-2 gap-3 mx-5 place-items-center md:grid-cols-4"
