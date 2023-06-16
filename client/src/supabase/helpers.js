@@ -51,6 +51,16 @@ export async function getAllOrders() {
   else return data;
 }
 
+export async function searchOrders(id) {
+  let { data, error } = await supabase
+    .from("Orders")
+    .select("*")
+    .ilike("id", `%${id}%`)
+    .order("date_created", { ascending: false });
+  if (error) console.log(error);
+  else return data;
+}
+
 export async function getSlides() {
   let { data, error } = await supabase.from("Slides").select("*");
   if (error) console.log(error);
