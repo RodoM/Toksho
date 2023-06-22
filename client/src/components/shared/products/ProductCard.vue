@@ -14,6 +14,7 @@ function newPrice(price, discount) {
 const currentImage = ref("../../../src/assets/svgs/image-placeholder.svg");
 
 function loadImage(image) {
+  console.log("entro");
   currentImage.value = image;
 }
 </script>
