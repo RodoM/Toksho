@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from "vue";
+import placeholderImage from "@/assets/svgs/image-placeholder.svg";
+
 const props = defineProps({
   product: {
     type: Object,
@@ -11,7 +13,7 @@ function newPrice(price, discount) {
   return price - (discount / 100) * price;
 }
 
-const currentImage = ref("src/assets/svgs/image-placeholder.svg");
+const currentImage = ref(placeholderImage);
 
 function loadImage(image) {
   currentImage.value = image;
