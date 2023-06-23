@@ -33,6 +33,14 @@ async function createOrder(id, user_id, items, payer, created, updated, order, p
   if (error) console.log(error);
 }
 
+async function clearUserCart(id) {
+  const { error } = await supabase
+  .from("users")
+  .update({ cart_items: [] })
+  .eq("id", id);
+  if (error) console.log(error);
+}
+
 exports.getNotification = (req, res) => {
   if (req.body.data) {
     mercadopago.payment.findById(req.body.data.id).then(res => {
@@ -65,6 +73,7 @@ exports.getNotification = (req, res) => {
         transaction_amount,
         transaction_details
       );
+      if (status === 'approved') clearUserCart(metadata.user_id)
     })
   }
   res.send();

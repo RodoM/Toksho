@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
-
+import { useRouter } from "vue-router";
+import { itemsStore } from "@/stores/shoppingCart.js";
 import { getNovelties, getPresales, getSlides } from "@/supabase/helpers.js";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
@@ -8,6 +9,9 @@ import SliderComponent from "../../components/shared/SliderComponent.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import ProductList from "@/components/shared/products/ProductList.vue";
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
+
+const router = useRouter();
+const itemStore = itemsStore();
 
 const novelties = ref();
 const presales = ref();
@@ -19,6 +23,11 @@ onMounted(async () => {
   novelties.value = await getNovelties();
   presales.value = await getPresales();
   slides.value = await getSlides();
+
+  if (router.currentRoute.value.query.collection_status === "approved") {
+    itemStore.clearItems();
+  }
+
   loading.value = false;
 });
 </script>
