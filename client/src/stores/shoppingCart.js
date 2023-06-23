@@ -15,10 +15,15 @@ export const itemsStore = defineStore(
       items.value.splice(items.value.indexOf(x), 1);
     };
 
+    const clearItems = () => {
+      items.value = [];
+    };
+
     return {
       items,
       addItem,
       deleteItem,
+      clearItems,
     };
   },
   { persist: true }
