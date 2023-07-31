@@ -1,4 +1,5 @@
-require("dotenv").config();
+require('dotenv').config();
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
 
 const mercadopago = require("mercadopago");
 
@@ -18,11 +19,11 @@ let preference = {
     mode: "not_specified",
   },
   back_urls: {
-    "success": "https://toksho.netlify.app",
-    "failure": "https://toksho.netlify.app/carrito",
-    "pending": "https://toksho.netlify.app"
+    "success": process.env.API_BASE_URL,
+    "failure": `${process.env.API_BASE_URL}/carrito`,
+    "pending": process.env.API_BASE_URL
   },
-  notification_url: "https://toksho-comics.onrender.com/notificate"
+  notification_url: `${process.env.API_BASE_URL}/notificate`
 };
 
 exports.setData = (req, res) => {
