@@ -1,10 +1,6 @@
 require("dotenv").config();
-const supabaseClient = require("@supabase/supabase-js");
-
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
-
-const supabase = supabaseClient.createClient(supabaseUrl, supabaseAnonKey);
+const {createOrder, clearUserCart, getShippingPrice} = require("./supabaseHelpers");
+const mailer = require("./mailer");
 
 const mercadopago = require("mercadopago");
 
@@ -12,37 +8,9 @@ mercadopago.configure({
   access_token: process.env.MP_ACCESS_TOKEN,
 });
 
-async function createOrder(id, user_id, items, payer, created, updated, order, payer_mp, payment_type, status, status_detail, transaction_amount, transaction_details) {
-  const { data, error } = await supabase
-  .from('Orders')
-  .insert([{
-    id: id,
-    user_id: user_id,
-    items: items,
-    payer: payer,
-    date_created: created,
-    date_last_updated: updated,
-    order: order,
-    payer_mp: payer_mp,
-    payment_type: payment_type,
-    status: status,
-    status_detail: status,
-    transaction_amount: transaction_amount,
-    transaction_details: transaction_details,
-  }])
-  if (error) console.log(error);
-}
-
-async function clearUserCart(id) {
-  const { error } = await supabase
-  .from("users")
-  .update({ cart_items: [] })
-  .eq("id", id);
-  if (error) console.log(error);
-}
-
-exports.getNotification = (req, res) => {
+exports.getNotification = async (req, res) => {
   if (req.body.data) {
+    const shippingPrice = await getShippingPrice();
     mercadopago.payment.findById(req.body.data.id).then(res => {
       const {
         additional_info,
@@ -73,7 +41,10 @@ exports.getNotification = (req, res) => {
         transaction_amount,
         transaction_details
       );
-      if (status === 'approved') clearUserCart(metadata.user_id)
+      if (status === 'approved') {
+        clearUserCart(metadata.user_id);
+        mailer.mail(id, metadata.payer.name, metadata.payer.email, additional_info.items, metadata.payer.address, shippingPrice);
+      }
     })
   }
   res.send();

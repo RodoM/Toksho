@@ -1,23 +1,23 @@
 import axios from "axios";
 
-const url = "https://toksho-comics.onrender.com/preference";
+const url = `${import.meta.env.VITE_API_BACK_URL}/preference`;
 
 class mpService {
-  // Get preference ID
   static getPreference() {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const res = await axios.get(url);
-        const data = res.data;
-        resolve(data);
-      } catch (error) {
-        console.log(error);
-        reject(error);
-      }
+    return new Promise((resolve, reject) => {
+      axios
+        .get(url)
+        .then((res) => {
+          const data = res.data;
+          resolve(data);
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(error);
+        });
     });
   }
 
-  // Create preference
   static createPreference(preference) {
     axios.post(url, preference);
   }
