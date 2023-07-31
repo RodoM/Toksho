@@ -19,11 +19,11 @@ let preference = {
     mode: "not_specified",
   },
   back_urls: {
-    "success": process.env.API_BASE_URL,
-    "failure": `${process.env.API_BASE_URL}/carrito`,
-    "pending": process.env.API_BASE_URL
+    "success": process.env.VITE_API_FONT_URL,
+    "failure": `${process.env.VITE_API_FONT_URL}/carrito`,
+    "pending": process.env.VITE_API_FONT_URL
   },
-  notification_url: `${process.env.API_BASE_URL}/notificate`
+  notification_url: `${process.env.VITE_API_BACK_URL}/notificate`
 };
 
 exports.setData = (req, res) => {
