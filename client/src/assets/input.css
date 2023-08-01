@@ -56,17 +56,14 @@
   width: 100px !important;
 }
 
-div.svelte-1hiuiby {
+#wallet_container > div > div > div {
   margin: 0 !important;
 }
 
-button.default-3wknqQ.svelte-1as0ruy.svelte-1as0ruy {
+#wallet_container > div > div > div > div > button {
   border-radius: 0px !important;
   border: 2px solid black !important;
   --tw-drop-shadow: drop-shadow(6px 6px 0px rgba(0,0,0,1));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
-.svelte-1a1oxv8 {
-  margin-top: 5px !important;
+  margin-bottom: 8px;
 }
