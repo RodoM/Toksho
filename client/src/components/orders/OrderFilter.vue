@@ -1,62 +1,45 @@
 <script setup>
-import { ref, watch } from "vue";
-import { getAllAuthors, getAllCategories } from "@/supabase/helpers.js";
-
+import { ref } from "vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
-const emit = defineEmits(["applyFilter", "clearFilter"]);
-
 const props = defineProps({
-  productsPerPage: {
+  ordersPerPage: {
     type: Number,
     required: true,
   },
-  totalProducts: {
+  totalOrders: {
     type: Number,
     required: true,
   },
-  productsInPage: {
+  ordersInPage: {
     type: Number,
     required: true,
   },
 });
+
+const emit = defineEmits(["applyFilter", "clearFilter"]);
 
 // Filter
 const openFilter = ref(false);
 
 const filter = ref({
-  type: undefined,
-  author: undefined,
-  categorie: undefined,
-  order: "created_at",
-  asc: true,
-});
-
-const authors = ref();
-const categories = ref();
-
-const alreadyFetched = ref(false);
-
-watch(openFilter, async () => {
-  if (!alreadyFetched.value) {
-    authors.value = await getAllAuthors();
-    categories.value = await getAllCategories();
-    alreadyFetched.value = true;
-  }
+  state: "all",
+  order: "date_created",
+  asc: false,
 });
 
 // Filter options
 const filterOptions = [
-  { label: "Mangas", value: "Manga" },
-  { label: "Comics", value: "Comic" },
-  { label: "Indumentaria", value: "Indumentaria" },
-  { label: "Todos", value: "all" },
+  { label: "Aprobadas", value: "approved" },
+  { label: "Pendientes", value: "pending" },
+  { label: "Rechazadas", value: "rejected" },
+  { label: "Todas", value: "all" },
 ];
 
 const orderOptions = [
-  { label: "Alfabéticamente", value: "name" },
-  { label: "Precio", value: "price" },
-  { label: "Fecha de publicación", value: "created_at" },
+  { label: "Fecha de compra", value: "date_created" },
+  { label: "Apellido", value: "surname" },
+  { label: "Monto", value: "transaction_amount" },
 ];
 
 const isAscending = [
@@ -74,31 +57,28 @@ const applyFilter = () => {
 const clearFilter = () => {
   event.preventDefault();
   emit("clearFilter");
-  filter.value.type = "";
-  filter.value.author = "";
-  filter.value.categorie = "";
-  filter.value.order = "created_at";
-  filter.value.asc = true;
+  filter.value.state = "all";
+  filter.value.order = "date_created";
+  filter.value.asc = false;
   openFilter.value = false;
 };
 </script>
-
 <template>
   <div
     class="flex justify-between p-3 border-2 bg-secondary-light border-tertiary-dark drop-shadow-items"
   >
     <span class="font-medium">
-      {{ props.productsInPage - props.productsPerPage }} -
+      {{ props.ordersInPage - props.ordersPerPage }} -
       {{
-        props.productsInPage < props.totalProducts
-          ? props.productsInPage
-          : props.totalProducts
+        props.ordersInPage < props.totalOrders
+          ? props.ordersInPage
+          : props.totalOrders
       }}
-      de {{ props.totalProducts }}
+      de {{ props.totalOrders }}
     </span>
     <div class="ml-auto">
       <button class="flex items-center" @click="openFilter = !openFilter">
-        <span class="font-medium">Filtrar</span>
+        <span class="font-medium">Ordenar</span>
         <span class="material-icons-outlined">sort</span>
       </button>
       <div
@@ -107,29 +87,11 @@ const clearFilter = () => {
       >
         <form class="flex flex-col gap-3">
           <div>
-            <label for="">Filtrar por</label>
+            <label for="">Estado</label>
             <v-select
-              v-model="filter.type"
+              v-model="filter.state"
               :options="filterOptions"
               :reduce="(opt) => opt.value"
-              :clearSearchOnSelect="false"
-              class="border-2 border-tertiary-dark"
-            ></v-select>
-          </div>
-          <div v-if="filter.type == 'Manga' || filter.type == 'Comic'">
-            <label for="">Autor</label>
-            <v-select
-              v-model="filter.author"
-              :options="authors.sort()"
-              :clearSearchOnSelect="false"
-              class="border-2 border-tertiary-dark"
-            ></v-select>
-          </div>
-          <div v-if="filter.type == 'Manga' || filter.type == 'Comic'">
-            <label for="">Categoría</label>
-            <v-select
-              v-model="filter.categorie"
-              :options="categories.sort()"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
