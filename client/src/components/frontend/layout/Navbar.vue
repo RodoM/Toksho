@@ -22,7 +22,7 @@ const routes = ref([
 ]);
 
 const adminRoutes = ref([
-  { id: 5, name: "LISTADO", path: "/admin/listado" },
+  { id: 5, name: "PRODUCTOS", path: "/admin/productos" },
   { id: 6, name: "ORDENES", path: "/admin/ordenes" },
   { id: 7, name: "CONGIFURACIÓN", path: "/admin/configuraciones" },
 ]);

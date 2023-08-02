@@ -109,7 +109,7 @@ const router = createRouter({
       redirect: "/",
     },
     {
-      path: "/admin/listado",
+      path: "/admin/productos",
       name: "Stock",
       component: () => import("@/views/admin/ProductStockView.vue"),
       meta: {

@@ -38,7 +38,7 @@ onMounted(async () => {
       :orders="ordersData.orders.value"
     />
     <PaginationComponent
-      v-show="!loading"
+      v-show="!loading && ordersData.count.value > 0"
       class="mt-10"
       :count="ordersData.count.value"
       :paginationData="pagination"

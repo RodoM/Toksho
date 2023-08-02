@@ -34,48 +34,65 @@ function closeDialog() {
 </script>
 
 <template>
-  <div class="px-5 overflow-x-auto whitespace-nowrap drop-shadow-items">
-    <table class="w-full table-auto">
-      <thead class="border-2 bg-primary border-tertiary-dark">
-        <tr>
-          <th class="px-5 text-start">ID DE COMPRA</th>
-          <th class="px-5 text-center">COMPRADOR</th>
-          <th class="px-5 text-center">MONTO</th>
-          <th class="px-5 text-center">FECHA</th>
-          <th class="px-5 text-center">ESTADO</th>
-          <th class="px-5 text-center">DETALLE</th>
-        </tr>
-      </thead>
-      <tbody class="border-2 border-tertiary-dark">
-        <tr
-          v-for="(order, i) in props.orders"
-          :key="order.id"
-          :class="[i % 2 === 0 ? 'bg-secondary-light' : 'bg-secondary']"
-        >
-          <td class="px-5 font-medium">#{{ order.id }}</td>
-          <td class="px-5 font-medium text-center">
-            {{ order.payer.name }} {{ order.payer.surname }}
-          </td>
-          <td class="px-5 font-medium text-center">
-            ${{ order.transaction_details.total_paid_amount }}
-          </td>
-          <td class="px-5 font-medium text-center">
-            {{ formatedDate(order.date_created.slice(0, 10)) }}
-          </td>
-          <td class="px-5 font-medium text-center">
-            {{ orderState(order.status_detail) }}
-          </td>
-          <td class="flex justify-center gap-3 px-5 py-2">
-            <button
-              class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
-              @click="orderDetails(order)"
-            >
-              visibility
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div>
+    <div
+      v-if="props.orders.length > 0"
+      class="px-5 overflow-x-auto whitespace-nowrap drop-shadow-items"
+    >
+      <table class="w-full table-auto">
+        <thead class="border-2 bg-primary border-tertiary-dark">
+          <tr>
+            <th class="px-5 text-start">ID DE COMPRA</th>
+            <th class="px-5 text-center">COMPRADOR</th>
+            <th class="px-5 text-center">MONTO</th>
+            <th class="px-5 text-center">FECHA</th>
+            <th class="px-5 text-center">ESTADO</th>
+            <th class="px-5 text-center">DETALLE</th>
+          </tr>
+        </thead>
+        <tbody class="border-2 border-tertiary-dark">
+          <tr
+            v-for="(order, i) in props.orders"
+            :key="order.id"
+            :class="[i % 2 === 0 ? 'bg-secondary-light' : 'bg-secondary']"
+          >
+            <td class="px-5 font-medium">#{{ order.id }}</td>
+            <td class="px-5 font-medium text-center">
+              {{ order.payer.name }} {{ order.payer.surname }}
+            </td>
+            <td class="px-5 font-medium text-center">
+              ${{ order.transaction_details.total_paid_amount }}
+            </td>
+            <td class="px-5 font-medium text-center">
+              {{ formatedDate(order.date_created.slice(0, 10)) }}
+            </td>
+            <td class="px-5 font-medium text-center">
+              {{ orderState(order.status_detail) }}
+            </td>
+            <td class="flex justify-center gap-3 px-5 py-2">
+              <button
+                class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+                @click="orderDetails(order)"
+              >
+                visibility
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div
+      v-else
+      class="absolute flex flex-col items-center gap-3 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+    >
+      <span class="material-icons-outlined !text-9xl text-primary">
+        receipt_long
+      </span>
+      <span class="text-xl font-medium">Sin ordenes</span>
+      <span class="font-medium text-center min-w-[335px]">
+        Todavía no se realizó ninguna orden.
+      </span>
+    </div>
   </div>
 
   <dialog
