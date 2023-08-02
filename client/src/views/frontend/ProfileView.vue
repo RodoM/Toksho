@@ -5,7 +5,7 @@ import { userStore } from "@/stores/index.js";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import UserForm from "@/components/frontend/user/UserForm.vue";
-import OrdersList from "@/components/shared/orders/OrdersList.vue";
+import OrderCard from "../../components/orders/OrderCard.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 
 const store = userStore();
@@ -36,8 +36,8 @@ onMounted(async () => {
       <header-title class="mb-5">
         <span class="text-2xl font-bold">ULTIMAS COMPRAS</span>
       </header-title>
-      <div v-if="orders.length > 0">
-        <OrdersList :orders="orders" />
+      <div v-if="orders.length > 0" class="flex flex-col gap-5">
+        <OrderCard v-for="order in orders" :key="order.id" :order="order" />
       </div>
       <div
         v-else

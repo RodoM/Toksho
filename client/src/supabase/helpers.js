@@ -336,7 +336,8 @@ export async function getUserOrders(id) {
     .from("Orders")
     .select("*")
     .eq("user_id", id)
-    .order("date_created", { ascending: false });
+    .order("date_created", { ascending: false })
+    .range(0, 4);
   if (error) console.log(error);
   else return data;
 }

@@ -147,7 +147,7 @@ onMounted(async () => {
 <template>
   <content-block class="p-5">
     <form class="flex flex-col gap-y-3">
-      <div class="flex flex-col gap-3 lg:flex-row">
+      <div class="flex flex-col gap-3 xl:flex-row">
         <div class="w-full">
           <div>
             <label :for="state.first_name">Nombre</label>
@@ -194,7 +194,7 @@ onMounted(async () => {
         />
       </div>
 
-      <div class="flex flex-col gap-3 lg:flex-row">
+      <div class="flex flex-col gap-3 xl:flex-row">
         <div class="w-full">
           <div>
             <label :for="state.phone?.code">Código de area</label>
@@ -240,7 +240,7 @@ onMounted(async () => {
         />
       </div>
 
-      <div class="flex flex-col gap-3 lg:flex-row">
+      <div class="flex flex-col gap-3 xl:flex-row">
         <div class="w-full">
           <div>
             <label :for="state.address.city">Ciudad</label>
@@ -271,7 +271,7 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="flex flex-col gap-3 lg:flex-row">
+      <div class="flex flex-col gap-3 xl:flex-row">
         <div class="w-full">
           <div>
             <label :for="state.address.street">Calle</label>
