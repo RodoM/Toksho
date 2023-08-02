@@ -6,6 +6,7 @@ import {
   deleteProduct,
   setAsNovelty,
   setAsPresale,
+  handlePublish,
   getAllAuthors,
   getAuthorPrices,
   changeAllPrices,
@@ -81,6 +82,17 @@ const setProductAsPresale = async (product) => {
   el.checked = shouldSetAsNovelty ? !product.isPresale : product.isPresale;
   if (el.checked !== product.isPresale)
     await setAsPresale(product.id, el.checked);
+};
+
+const handleProductPublish = async (product) => {
+  const el = document.getElementById(`${product.id}-published`);
+  const confirmationMsg = product.isPublished
+    ? "¿Ocultar producto del catálogo?"
+    : "¿Mostrar producto en el catálogo?";
+  const shouldPublish = confirm(confirmationMsg);
+  el.checked = shouldPublish ? !product.isPublished : product.isPublished;
+  if (el.checked !== product.isPublished)
+    await handlePublish(product.id, el.checked);
 };
 
 const authors = ref();
@@ -208,6 +220,7 @@ onMounted(async () => {
             <th class="px-5 text-center">DESCUENTO</th>
             <th class="px-5 text-center">NOVEDAD</th>
             <th class="px-5 text-center">PREVENTA</th>
+            <th class="px-5 text-center">PUBLICADO</th>
             <th class="px-5 text-center">ACCIONES</th>
           </tr>
         </thead>
@@ -252,6 +265,16 @@ onMounted(async () => {
                 :name="product.name"
                 :id="`${product.id}-presale`"
                 @click="setProductAsPresale(product)"
+              />
+            </td>
+            <td class="px-5 font-medium text-center">
+              <input
+                v-model="product.isPublished"
+                type="checkbox"
+                class="w-6 h-6"
+                :name="product.name"
+                :id="`${product.id}-published`"
+                @click="handleProductPublish(product)"
               />
             </td>
             <td class="flex justify-center gap-3 px-5 py-2">

@@ -13,6 +13,7 @@ export async function getAllProducts(offset, limit, filter) {
     .select("id, name, image, price, discount, stock", {
       count: "exact",
     })
+    .eq("isPublished", true)
     .range(offset, limit);
   if (name) query = query.ilike("name", `%${name}%`);
   if (type) query = query.eq("type", type);
@@ -28,9 +29,12 @@ export async function getAllProductsAdmin(offset, limit, filter) {
   const { name, type, author, categorie, order, asc } = filter.value;
   let query = supabase
     .from("Products")
-    .select("id, name, author, price, discount, stock, isNovelty, isPresale", {
-      count: "exact",
-    })
+    .select(
+      "id, name, author, price, discount, stock, isNovelty, isPresale, isPublished",
+      {
+        count: "exact",
+      }
+    )
     .range(offset, limit);
   if (name) query = query.ilike("name", `%${name}%`);
   if (type && type !== "all") query = query.eq("type", type);
@@ -199,6 +203,14 @@ export async function setAsPresale(id, value) {
   const { error } = await supabase
     .from("Products")
     .update({ isPresale: value })
+    .eq("id", id);
+  if (error) console.log(error);
+}
+
+export async function handlePublish(id, value) {
+  const { error } = await supabase
+    .from("Products")
+    .update({ isPublished: value })
     .eq("id", id);
   if (error) console.log(error);
 }
