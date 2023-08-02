@@ -154,7 +154,7 @@ onMounted(async () => {
             v-model="state.payer.name"
             type="text"
             placeholder="Nombre"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
           />
         </div>
 
@@ -169,7 +169,7 @@ onMounted(async () => {
             v-model="state.payer.surname"
             type="text"
             placeholder="Apellido"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
           />
         </div>
       </div>
@@ -185,7 +185,7 @@ onMounted(async () => {
           v-model="state.payer.email"
           type="email"
           placeholder="Email"
-          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
         />
       </div>
 
@@ -193,7 +193,10 @@ onMounted(async () => {
         <div class="w-full">
           <div>
             <label :for="state.payer.phone.area_code">Código de área</label>
-            <span v-if="v$.payer.phone.area_code.$error" class="pl-2 text-red-500">
+            <span
+              v-if="v$.payer.phone.area_code.$error"
+              class="pl-2 text-red-500"
+            >
               {{ v$.payer.phone.area_code.$errors[0].$message }}
             </span>
           </div>
@@ -201,7 +204,7 @@ onMounted(async () => {
             v-model="state.payer.phone.area_code"
             type="text"
             placeholder="Código de área"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
           />
         </div>
 
@@ -216,7 +219,7 @@ onMounted(async () => {
             v-model="state.payer.phone.number"
             type="number"
             placeholder="Código de área"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
           />
         </div>
       </div>
@@ -242,7 +245,7 @@ onMounted(async () => {
               v-model="state.payer.address.province"
               type="text"
               placeholder="Provincia"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
             />
           </div>
 
@@ -260,7 +263,7 @@ onMounted(async () => {
               v-model="state.payer.address.location"
               type="text"
               placeholder="Ciudad"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
             />
           </div>
         </div>
@@ -282,7 +285,7 @@ onMounted(async () => {
               v-model="state.payer.address.postal_code"
               type="number"
               placeholder="Código postal"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
             />
           </div>
 
@@ -300,7 +303,7 @@ onMounted(async () => {
               v-model="state.payer.address.street_name"
               type="text"
               placeholder="Calle"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
             />
           </div>
 
@@ -318,7 +321,7 @@ onMounted(async () => {
               v-model="state.payer.address.street_number"
               type="number"
               placeholder="Número"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
             />
           </div>
         </div>

@@ -32,7 +32,7 @@ const getTotal = () => {
   >
     <div class="flex flex-col gap-5">
       <header-title class="w-full">
-        <span class="text-2xl font-bold">SUBTOTAL</span>
+        <span class="text-2xl font-bold">RESUMEN</span>
       </header-title>
       <ul class="flex flex-col gap-2 px-3">
         <li v-for="item in props.items" :key="item.id">
