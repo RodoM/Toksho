@@ -56,7 +56,7 @@ exports.mail = async(orderId, name, mail, items, address, shippingPrice) => {
   const subTotal = calculateSubTotalPrice() + (hasShipping ? shippingPrice : 0);
 
   const info = await transporter.sendMail({
-    from: '"Toksho Comics" <foo@example.com>',
+    from: '"Toksho Comics" <toksho.comic@gmail.com>',
     to: mail,
     subject: "Compra en Toksho Comics",
     text: "Gracias por comprar en Toksho Comics",
