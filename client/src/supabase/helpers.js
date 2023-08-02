@@ -33,7 +33,7 @@ export async function getAllProductsAdmin(offset, limit, filter) {
     })
     .range(offset, limit);
   if (name) query = query.ilike("name", `%${name}%`);
-  if (type) query = query.eq("type", type);
+  if (type && type !== "all") query = query.eq("type", type);
   if (author) query = query.eq("author", author);
   if (categorie) query = query.overlaps("categories", [categorie]);
   if (order) query = query.order(order, { ascending: asc });
@@ -42,23 +42,20 @@ export async function getAllProductsAdmin(offset, limit, filter) {
   else return { data, count };
 }
 
-export async function getAllOrders() {
-  let { data, error } = await supabase
+export async function getAllOrders(offset, limit, filter) {
+  const { orderId, state, order, asc } = filter.value;
+  let query = supabase
     .from("Orders")
-    .select("*")
-    .order("date_created", { ascending: false });
+    .select("*", { count: "exact" })
+    .range(offset, limit);
+  if (orderId) query = query.ilike("id", `%${orderId}%`);
+  if (state && state !== "all") query = query.eq("status", state);
+  if (order === "surname")
+    query = query.order("payer->surname", { ascending: asc });
+  else if (order) query = query.order(order, { ascending: asc });
+  const { data, count, error } = await query;
   if (error) console.log(error);
-  else return data;
-}
-
-export async function searchOrders(id) {
-  let { data, error } = await supabase
-    .from("Orders")
-    .select("*")
-    .ilike("id", `%${id}%`)
-    .order("date_created", { ascending: false });
-  if (error) console.log(error);
-  else return data;
+  else return { data, count };
 }
 
 export async function getSlides() {

@@ -4,11 +4,11 @@ import { ref } from "vue";
 const searchInput = ref("");
 </script>
 <template>
-  <div class="flex w-full mb-5 border-2 border-tertiary-dark drop-shadow-items">
+  <div class="flex border-2 border-tertiary-dark drop-shadow-items">
     <input
       v-model="searchInput"
       type="text"
-      placeholder="ID de orden"
+      placeholder="Buscar ID..."
       class="w-full p-2 focus:outline-none"
       @keyup.enter="$emit('search', searchInput)"
     />
