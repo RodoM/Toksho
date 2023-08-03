@@ -206,12 +206,12 @@ onMounted(async () => {
       </content-block>
     </div>
     <LoadingSpinner v-if="loading" />
-    <div class="px-5 overflow-x-auto whitespace-nowrap drop-shadow-items">
+    <div
+      v-else-if="!loading && productsData.count.value > 0"
+      class="px-5 overflow-x-auto whitespace-nowrap drop-shadow-items"
+    >
       <!-- Aislar tabla en componente -->
-      <table
-        v-if="!loading && productsData.products.value"
-        class="w-full table-auto"
-      >
+      <table class="w-full table-auto">
         <thead class="border-2 bg-primary border-tertiary-dark">
           <tr>
             <th class="px-5 text-start">NOMBRE</th>
@@ -313,6 +313,18 @@ onMounted(async () => {
         @nextPage="pagesFunctions.nextPage"
         @goToPage="pagesFunctions.goToPage"
       />
+    </div>
+    <div
+      v-else
+      class="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+    >
+      <span class="material-icons-outlined !text-9xl text-primary">
+        search_off
+      </span>
+      <span class="text-xl font-medium">Sin resultados</span>
+      <span class="font-medium text-center min-w-[335px]"
+        >No se encontraron resultados con los datos especificados.</span
+      >
     </div>
   </div>
 </template>

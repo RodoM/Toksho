@@ -32,7 +32,7 @@ onMounted(async () => {
         @clearFilters="productsFunctions.clearFilters"
       />
       <LoadingSpinner v-if="loading" />
-      <div v-else-if="!loading && productsData.products.value">
+      <div v-else-if="!loading && productsData.count.value > 0">
         <ProductList :products="productsData.products.value" />
         <PaginationComponent
           v-show="!loading"
