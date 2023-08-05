@@ -11,7 +11,8 @@ import {
   getAuthorPrices,
   changeAllPrices,
 } from "@/supabase/helpers.js";
-import useProductPagination from "@/lib/composables/paginationHelper.js";
+import { getImagePath } from "@/lib/composables/imageHelper";
+import useProductPagination from "@/lib/composables/paginationHelper";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import SearchAndFilter from "@/components/shared/filters/SearchAndFilter.vue";
@@ -22,18 +23,12 @@ import CustomButton from "@/lib/components/CustomButton.vue";
 const $toast = useToast();
 
 // Pagination
-const { loading, productsData, productsFunctions, pagination, pagesFunctions } =
-  useProductPagination(true);
-
-// product actions
-const deleteImageFile = async (image) => {
-  await deleteFile(image.substring(image.lastIndexOf("/") + 1, image.length));
-};
+const { loading, productsData, productsFunctions, pagination, pagesFunctions } = useProductPagination(true);
 
 const deleteProductFile = async (product) => {
   if (confirm("¿Esta seguro que desea eliminar este producto?"))
     try {
-      deleteImageFile(product.image);
+      await deleteFile(getImagePath(product.image));
       const error = await deleteProduct(product.id);
       if (error) throw error;
       else {
@@ -64,35 +59,26 @@ const deleteProductFile = async (product) => {
 // Novelties and Presales setters
 const setProductAsNovelty = async (product) => {
   const el = document.getElementById(`${product.id}-novelty`);
-  const confirmationMsg = product.isNovelty
-    ? "¿Quitar producto de novedades?"
-    : "¿Establecer producto como novedad?";
+  const confirmationMsg = product.isNovelty ? "¿Quitar producto de novedades?" : "¿Establecer producto como novedad?";
   const shouldSetAsNovelty = confirm(confirmationMsg);
   el.checked = shouldSetAsNovelty ? !product.isNovelty : product.isNovelty;
-  if (el.checked !== product.isNovelty)
-    await setAsNovelty(product.id, el.checked);
+  if (el.checked !== product.isNovelty) await setAsNovelty(product.id, el.checked);
 };
 
 const setProductAsPresale = async (product) => {
   const el = document.getElementById(`${product.id}-presale`);
-  const confirmationMsg = product.isPresale
-    ? "¿Quitar producto de preventa?"
-    : "¿Establecer producto como preventa?";
+  const confirmationMsg = product.isPresale ? "¿Quitar producto de preventa?" : "¿Establecer producto como preventa?";
   const shouldSetAsNovelty = confirm(confirmationMsg);
   el.checked = shouldSetAsNovelty ? !product.isPresale : product.isPresale;
-  if (el.checked !== product.isPresale)
-    await setAsPresale(product.id, el.checked);
+  if (el.checked !== product.isPresale) await setAsPresale(product.id, el.checked);
 };
 
 const handleProductPublish = async (product) => {
   const el = document.getElementById(`${product.id}-published`);
-  const confirmationMsg = product.isPublished
-    ? "¿Ocultar producto del catálogo?"
-    : "¿Mostrar producto en el catálogo?";
+  const confirmationMsg = product.isPublished ? "¿Ocultar producto del catálogo?" : "¿Mostrar producto en el catálogo?";
   const shouldPublish = confirm(confirmationMsg);
   el.checked = shouldPublish ? !product.isPublished : product.isPublished;
-  if (el.checked !== product.isPublished)
-    await handlePublish(product.id, el.checked);
+  if (el.checked !== product.isPublished) await handlePublish(product.id, el.checked);
 };
 
 const authors = ref();
@@ -116,11 +102,7 @@ async function fetchProducts() {
 
 async function changePrice() {
   event.preventDefault();
-  await changeAllPrices(
-    selectedAuthor.value,
-    selectedPrice.value,
-    newPrice.value
-  );
+  await changeAllPrices(selectedAuthor.value, selectedPrice.value, newPrice.value);
   await fetchProducts();
 }
 
@@ -132,7 +114,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container py-5 mx-auto">
+  <div class="container mx-auto py-5">
     <SearchAndFilter
       v-show="!loading"
       class="px-5"
@@ -142,28 +124,13 @@ onMounted(async () => {
       @fetchWithFilters="productsFunctions.fetchProducts"
       @clearFilters="productsFunctions.clearFilters"
     >
-      <CustomButton
-        primary
-        class="h-auto md:px-10 md:w-fit"
-        @click="$router.push('/admin/agregar-producto')"
-      >
-        AGREGAR
-      </CustomButton>
+      <CustomButton primary class="h-auto md:w-fit md:px-10" @click="$router.push('/admin/agregar-producto')"> AGREGAR </CustomButton>
     </SearchAndFilter>
     <div class="px-5">
-      <content-block
-        v-if="!loading"
-        class="relative z-10 px-5 mx-5 mb-5 gap-y-5"
-      >
-        <button
-          class="flex items-center"
-          @click="showPriceForm = !showPriceForm"
-        >
+      <content-block v-if="!loading" class="relative z-10 mx-5 mb-5 gap-y-5 px-5">
+        <button class="flex items-center" @click="showPriceForm = !showPriceForm">
           <span class="font-medium">Cambio de precio masivo</span>
-          <span
-            class="transition-all duration-200 material-icons-outlined"
-            :class="!showPriceForm ? 'rotate-0' : 'rotate-180'"
-          >
+          <span class="material-icons-outlined transition-all duration-200" :class="!showPriceForm ? 'rotate-0' : 'rotate-180'">
             expand_more
           </span>
         </button>
@@ -174,7 +141,7 @@ onMounted(async () => {
               v-model="selectedAuthor"
               :options="authors"
               :clearSearchOnSelect="false"
-              class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full border-2 border-tertiary-dark bg-background p-2 drop-shadow-items focus:outline-none"
             ></v-select>
           </div>
           <div class="w-full">
@@ -183,36 +150,23 @@ onMounted(async () => {
               v-model="selectedPrice"
               :options="prices"
               :clearSearchOnSelect="false"
-              class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full border-2 border-tertiary-dark bg-background p-2 drop-shadow-items focus:outline-none"
             ></v-select>
           </div>
           <div class="w-full">
             <label>Nuevo precio</label>
-            <input
-              v-model="newPrice"
-              type="number"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
+            <input v-model="newPrice" type="number" class="w-full border-2 border-tertiary-dark p-3 drop-shadow-items focus:outline-none" />
           </div>
 
-          <CustomButton
-            primary
-            class="md:px-10 md:w-fit h-[52px] mt-auto"
-            @click="changePrice()"
-          >
-            CAMBIAR
-          </CustomButton>
+          <CustomButton primary class="mt-auto h-[52px] md:w-fit md:px-10" @click="changePrice()"> CAMBIAR </CustomButton>
         </form>
       </content-block>
     </div>
     <LoadingSpinner v-if="loading" />
-    <div
-      v-else-if="!loading && productsData.count.value > 0"
-      class="px-5 overflow-x-auto whitespace-nowrap drop-shadow-items"
-    >
+    <div v-else-if="!loading && productsData.count.value > 0" class="overflow-x-auto whitespace-nowrap px-5 drop-shadow-items">
       <!-- Aislar tabla en componente -->
       <table class="w-full table-auto">
-        <thead class="border-2 bg-primary border-tertiary-dark">
+        <thead class="border-2 border-tertiary-dark bg-primary">
           <tr>
             <th class="px-5 text-start">NOMBRE</th>
             <th class="px-5 text-center">UNIDADES</th>
@@ -235,43 +189,41 @@ onMounted(async () => {
                 {{ product.name }}
                 <span
                   v-if="product.stock === 0"
-                  class="border-2 rounded-full material-icons-outlined bg-primary border-tertiary-dark px-1 !text-base"
+                  class="material-icons-outlined rounded-full border-2 border-tertiary-dark bg-primary px-1 !text-base"
                   title="SIN STOCK"
                 >
                   priority_high
                 </span>
               </span>
             </td>
-            <td class="px-5 font-medium text-center">{{ product.stock }}</td>
-            <td class="px-5 font-medium text-center">${{ product.price }}</td>
-            <td class="px-5 font-medium text-center">
-              {{ product.discount ? product.discount : "0" }}%
-            </td>
-            <td class="px-5 font-medium text-center">
+            <td class="px-5 text-center font-medium">{{ product.stock }}</td>
+            <td class="px-5 text-center font-medium">${{ product.price }}</td>
+            <td class="px-5 text-center font-medium">{{ product.discount ? product.discount : "0" }}%</td>
+            <td class="px-5 text-center font-medium">
               <input
                 v-model="product.isNovelty"
                 type="checkbox"
-                class="w-6 h-6"
+                class="h-6 w-6"
                 :name="product.name"
                 :id="`${product.id}-novelty`"
                 @click="setProductAsNovelty(product)"
               />
             </td>
-            <td class="px-5 font-medium text-center">
+            <td class="px-5 text-center font-medium">
               <input
                 v-model="product.isPresale"
                 type="checkbox"
-                class="w-6 h-6"
+                class="h-6 w-6"
                 :name="product.name"
                 :id="`${product.id}-presale`"
                 @click="setProductAsPresale(product)"
               />
             </td>
-            <td class="px-5 font-medium text-center">
+            <td class="px-5 text-center font-medium">
               <input
                 v-model="product.isPublished"
                 type="checkbox"
-                class="w-6 h-6"
+                class="h-6 w-6"
                 :name="product.name"
                 :id="`${product.id}-published`"
                 @click="handleProductPublish(product)"
@@ -280,24 +232,26 @@ onMounted(async () => {
             <td class="flex justify-center gap-3 px-5 py-2">
               <router-link
                 :to="{
-                  name: 'EditProduct',
+                  name: 'SeeEditProduct',
                   params: { id: product.id },
+                  query: { edit: true },
                 }"
-                class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+                class="material-icons-outlined border-2 border-tertiary-dark bg-primary-light p-1 drop-shadow-navlink"
                 >edit</router-link
               >
               <button
-                class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+                class="material-icons-outlined border-2 border-tertiary-dark bg-primary-light p-1 drop-shadow-navlink"
                 @click="deleteProductFile(product)"
               >
                 delete
               </button>
               <router-link
                 :to="{
-                  name: 'SeeProduct',
+                  name: 'SeeEditProduct',
                   params: { id: product.id },
+                  query: { edit: false },
                 }"
-                class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+                class="material-icons-outlined border-2 border-tertiary-dark bg-primary-light p-1 drop-shadow-navlink"
                 >visibility</router-link
               >
             </td>
@@ -314,17 +268,10 @@ onMounted(async () => {
         @goToPage="pagesFunctions.goToPage"
       />
     </div>
-    <div
-      v-else
-      class="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-    >
-      <span class="material-icons-outlined !text-9xl text-primary">
-        search_off
-      </span>
+    <div v-else class="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+      <span class="material-icons-outlined !text-9xl text-primary"> search_off </span>
       <span class="text-xl font-medium">Sin resultados</span>
-      <span class="font-medium text-center min-w-[335px]"
-        >No se encontraron resultados con los datos especificados.</span
-      >
+      <span class="min-w-[335px] text-center font-medium">No se encontraron resultados con los datos especificados.</span>
     </div>
   </div>
 </template>

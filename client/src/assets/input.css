@@ -56,6 +56,10 @@
   width: 100px !important;
 }
 
+.vs--disabled .vs__dropdown-toggle, .vs--disabled .vs__clear, .vs--disabled .vs__search, .vs--disabled .vs__selected, .vs--disabled .vs__open-indicator {
+  background-color: unset !important;
+}
+
 #wallet_container > div > div > div {
   margin: 0 !important;
 }

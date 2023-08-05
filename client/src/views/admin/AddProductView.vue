@@ -1,131 +1,48 @@
 <script setup>
-import { reactive, computed } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { required, alpha, helpers } from "@vuelidate/validators";
-import { supabase } from "@/supabase/supabase.js";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useToast } from "vue-toast-notification";
-
-import { uploadFile, getFileURL } from "@/supabase/helpers.js";
+import { uploadFile, createProduct } from "@/supabase/helpers.js";
+import { initialState, resetForm, v$ } from "@/lib/composables/productHelper";
+import { showToast } from "@/lib/composables/toastHelper";
+import { getFile } from "@/lib/composables/imageHelper";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const router = useRouter();
-const $toast = useToast();
-
-const state = reactive({
-  type: "",
-  name: "",
-  image: {
-    image: null,
-    imageReader: "/src/assets/images/image-placeholder.jpg",
-    imageURL: "",
-  },
-  author: "",
-  categories: "",
-  price: "",
-  discount: "0",
-  description: "",
-  stock: "",
-});
-
-const rules = computed(() => {
-  return {
-    type: {
-      required: helpers.withMessage("Tipo requerido", required),
-      alpha: helpers.withMessage("Solo caracteres alfabeticos", alpha),
-    },
-    name: {
-      required: helpers.withMessage("Nombre requerido", required),
-    },
-    image: {
-      image: {
-        required: helpers.withMessage("Imágen requerida", required),
-      },
-    },
-    author: {
-      required: helpers.withMessage("Autor requerido", required),
-    },
-    categories: {
-      required: helpers.withMessage("Categorías requeridas", required),
-    },
-    price: {
-      required: helpers.withMessage("Precio requerido", required),
-    },
-    description: {
-      required: helpers.withMessage("Descripción requerida", required),
-    },
-    stock: {
-      required: helpers.withMessage("Stock requerido", required),
-    },
-  };
-});
-
-const v$ = useVuelidate(rules, state);
 
 const getCategories = () => {
-  return state.categories.split(/\s*,\s*/);
+  return initialState.categories.split(/\s*,\s*/);
 };
 
-const getFile = () => {
-  const selectedFile = event.target.files[0];
-  state.image.image = selectedFile;
-
-  const inputValue = document.querySelector("#fileInput");
-  const reader = new FileReader();
-  reader.addEventListener("load", () => {
-    state.image.imageReader = reader.result;
-  });
-  reader.readAsDataURL(inputValue.files[0]);
+const getInputFile = (event) => {
+  getFile(event, initialState);
 };
+
+const loading = ref(false);
 
 const addProduct = async () => {
-  let date = new Date();
-  date = String(date.getTime());
-  const results = await Promise.all([
-    uploadFile(state.name.concat(date), state.image.image),
-    getFileURL(state.name.concat(date)),
-  ]);
-  state.image.imageURL = results[1];
-  const { error } = await supabase.from("Products").insert([
-    {
-      name: state.name,
-      type: state.type,
-      categories: getCategories(),
-      image: state.image.imageURL,
-      price: state.price,
-      discount: state.discount,
-      stock: state.stock,
-      author: state.author,
-      description: state.description,
-      updated_at: date,
-    },
-  ]);
-  if (error) {
-    $toast.open({
-      position: "top-right",
-      message: "Error al agregar el producto",
-      type: "error",
-      duration: 5000,
-      dismissible: true,
-      pauseOnHover: true,
-    });
-  } else {
-    $toast.open({
-      position: "top-right",
-      message: "Se agrego correctamente el producto",
-      type: "success",
-      duration: 5000,
-      dismissible: true,
-      pauseOnHover: true,
-    });
-    router.push({ name: "Stock" });
+  if (!loading.value) {
+    loading.value = true;
+    try {
+      const { author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
+
+      const imageURL = await uploadFile(author, name, image.image);
+      await createProduct(type, name, imageURL, size, author, editorial, getCategories(), price, discount, stock, description);
+
+      showToast("Se agregó correctamente el producto", "success");
+      router.push({ name: "Stock" });
+      resetForm();
+    } catch (error) {
+      console.log(error);
+      showToast("Error al cargar el producto", "error");
+    }
   }
 };
 
 const goBack = (e) => {
   e.preventDefault();
+  resetForm();
   router.push({ name: "Stock" });
 };
 
@@ -137,154 +54,179 @@ const submitForm = async (e) => {
 </script>
 
 <template>
-  <div class="container py-5 mx-auto">
+  <div class="container mx-auto py-5">
     <header-title class="mx-5 mb-5">
       <span class="text-2xl font-bold uppercase">AÑADIR PRODUCTO</span>
     </header-title>
-    <form class="flex flex-col gap-4 mx-5">
-      <div class="flex flex-col gap-4 md:flex-row">
+    <form class="mx-5 flex flex-col gap-4">
+      <div class="flex flex-col gap-4 lg:flex-row">
         <img
-          :src="state.image.imageReader"
+          :src="initialState.image.imageReader"
           alt="placeholder de imagen"
           loading="lazy"
-          class="md:h-[680px] md:w-[503px] lg:h-[656px] lg:min-w-[468px] bg-slate-400 border-2 border-tertiary-dark drop-shadow-items"
+          class="border-2 border-tertiary-dark bg-slate-400 drop-shadow-items lg:h-[656px] lg:min-w-[468px] lg:max-w-[468px]"
         />
-        <div class="flex flex-col w-full gap-4">
+        <div class="flex w-full flex-col justify-between gap-4 lg:gap-0">
           <div class="w-full">
             <div>
-              <label :for="state.type">Tipo de producto</label>
+              <label :for="initialState.type">Tipo de producto</label>
               <span v-if="v$.type.$error" class="pl-2 text-red-500">
                 {{ v$.type.$errors[0].$message }}
               </span>
             </div>
             <v-select
-              v-model="state.type"
+              v-model="initialState.type"
               :options="['Manga', 'Comic', 'Indumentaria']"
               :clearSearchOnSelect="false"
-              class="w-full p-2 border-2 bg-background border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full border-2 border-tertiary-dark bg-background p-2 drop-shadow-items focus:outline-none"
             ></v-select>
           </div>
           <div class="w-full">
             <div>
-              <label :for="state.name">Nombre del producto</label>
+              <label :for="initialState.name">Nombre del producto</label>
               <span v-if="v$.name.$error" class="pl-2 text-red-500">
                 {{ v$.name.$errors[0].$message }}
               </span>
             </div>
             <input
-              v-model="state.name"
+              v-model="initialState.name"
               type="text"
               placeholder="Nombre del producto"
-              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
           </div>
-          <div class="w-full">
-            <div>
-              <label :for="state.image.image">Imágen</label>
-              <span v-if="v$.image.image.$error" class="pl-2 text-red-500">
-                {{ v$.image.image.$errors[0].$message }}
-              </span>
+          <div class="flex flex-col gap-4 md:flex-row">
+            <div class="w-full">
+              <div>
+                <label :for="initialState.image.image">Imágen</label>
+                <span v-if="v$.image.image.$error" class="pl-2 text-red-500">
+                  {{ v$.image.image.$errors[0].$message }}
+                </span>
+              </div>
+              <input
+                type="file"
+                accept="image/png, image/jpeg, image/webp"
+                class="block w-full cursor-pointer border-2 border-tertiary-dark bg-white drop-shadow-items focus:outline-none"
+                @change="getInputFile"
+              />
             </div>
-            <input
-              id="fileInput"
-              type="file"
-              accept="image/png, image/jpeg, image/webp"
-              class="block w-full bg-white border-2 cursor-pointer drop-shadow-items border-tertiary-dark focus:outline-none"
-              @change="getFile"
-            />
+            <div class="w-full">
+              <div>
+                <label :for="initialState.size">Tamaño</label>
+                <span v-if="v$.size.$error" class="pl-2 text-red-500">
+                  {{ v$.size.$errors[0].$message }}
+                </span>
+              </div>
+              <input
+                v-model="initialState.size"
+                type="text"
+                placeholder="Tamaño del producto"
+                class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
+              />
+            </div>
           </div>
           <div class="w-full">
             <div>
-              <label :for="state.author">Autor</label>
+              <label :for="initialState.author">Autor</label>
               <span v-if="v$.author.$error" class="pl-2 text-red-500">
                 {{ v$.author.$errors[0].$message }}
               </span>
             </div>
             <input
-              v-model="state.author"
+              v-model="initialState.author"
               type="text"
               placeholder="Autor"
-              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
+            />
+          </div>
+          <div class="w-full">
+            <div>
+              <label :for="initialState.editorial">Editorial</label>
+              <span v-if="v$.editorial.$error" class="pl-2 text-red-500">
+                {{ v$.editorial.$errors[0].$message }}
+              </span>
+            </div>
+            <input
+              v-model="initialState.editorial"
+              type="text"
+              placeholder="Editorial"
+              class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
           </div>
           <div>
             <div>
-              <label :for="state.categories">
-                Categorías (separadas por comas)
-              </label>
+              <label :for="initialState.categories"> Categorías (separadas por comas) </label>
               <span v-if="v$.categories.$error" class="pl-2 text-red-500">
                 {{ v$.categories.$errors[0].$message }}
               </span>
             </div>
             <input
-              v-model="state.categories"
+              v-model="initialState.categories"
               type="text"
               placeholder="Categorías"
-              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
           </div>
-          <div class="w-full">
-            <div>
-              <label :for="state.price">Precio</label>
-              <span v-if="v$.price.$error" class="pl-2 text-red-500">
-                {{ v$.price.$errors[0].$message }}
-              </span>
+          <div class="flex flex-col gap-4 lg:flex-row">
+            <div class="w-full">
+              <div>
+                <label :for="initialState.price">Precio</label>
+                <span v-if="v$.price.$error" class="pl-2 text-red-500">
+                  {{ v$.price.$errors[0].$message }}
+                </span>
+              </div>
+              <input
+                v-model="initialState.price"
+                type="number"
+                placeholder="Precio"
+                class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
+              />
             </div>
-            <input
-              v-model="state.price"
-              type="number"
-              placeholder="Precio"
-              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
-          </div>
-          <div class="w-full">
-            <div>
-              <label :for="state.discount">Descuento (opcional)</label>
+            <div class="w-full">
+              <div>
+                <label :for="initialState.discount">Descuento (opcional)</label>
+              </div>
+              <input
+                v-model="initialState.discount"
+                type="number"
+                placeholder="Descuento"
+                class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
+              />
             </div>
-            <input
-              v-model="state.discount"
-              type="number"
-              placeholder="Descuento"
-              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-            />
           </div>
           <div class="w-full">
             <div>
-              <label :for="state.stock">Cantidad de stock</label>
+              <label :for="initialState.stock">Cantidad de stock</label>
               <span v-if="v$.stock.$error" class="pl-2 text-red-500">
                 {{ v$.stock.$errors[0].$message }}
               </span>
             </div>
             <input
-              v-model="state.stock"
+              v-model="initialState.stock"
               type="number"
               placeholder="Cantidad de stock"
-              class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+              class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
           </div>
         </div>
       </div>
       <div>
         <div>
-          <label :for="state.description">Descripción</label>
+          <label :for="initialState.description">Descripción</label>
           <span v-if="v$.description.$error" class="pl-2 text-red-500">
             {{ v$.description.$errors[0].$message }}
           </span>
         </div>
         <textarea
-          v-model="state.description"
+          v-model="initialState.description"
           type="text"
           placeholder="Descripción"
-          class="w-full p-2 border-2 border-tertiary-dark drop-shadow-items focus:outline-none h-80"
+          class="h-80 w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
         />
       </div>
       <div class="flex flex-col justify-between gap-3 md:flex-row">
-        <CustomButton class="md:px-36 md:order-2" primary @click="submitForm">
-          AGREGAR
-        </CustomButton>
-        <CustomButton class="md:px-36 md:order-1" secondary @click="goBack">
-          VOLVER
-        </CustomButton>
+        <CustomButton class="md:order-2 md:px-36" primary :loading="loading" @click="submitForm"> AGREGAR </CustomButton>
+        <CustomButton class="md:order-1 md:px-36" secondary @click="goBack"> VOLVER </CustomButton>
       </div>
     </form>
   </div>

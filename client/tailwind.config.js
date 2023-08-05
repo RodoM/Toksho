@@ -20,6 +20,7 @@ module.exports = {
           dark: "#0F0F0F",
         },
         background: "#F8F9FA",
+        disabled: "#C9C9C9",
       },
       dropShadow: {
         navlink: "4px 4px 0px rgba(0,0,0,1)",

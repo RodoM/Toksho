@@ -1,4 +1,5 @@
 import { supabase } from "@/supabase/supabase.js";
+import { showToast } from "@/lib/composables/toastHelper";
 
 export async function getSessionData() {
   const { data, error } = await supabase.auth.getSession();
@@ -29,12 +30,9 @@ export async function getAllProductsAdmin(offset, limit, filter) {
   const { name, type, author, categorie, order, asc } = filter.value;
   let query = supabase
     .from("Products")
-    .select(
-      "id, name, author, price, discount, stock, isNovelty, isPresale, isPublished",
-      {
-        count: "exact",
-      }
-    )
+    .select("id, name, author, image, price, discount, stock, isNovelty, isPresale, isPublished", {
+      count: "exact",
+    })
     .range(offset, limit);
   if (name) query = query.ilike("name", `%${name}%`);
   if (type && type !== "all") query = query.eq("type", type);
@@ -48,14 +46,10 @@ export async function getAllProductsAdmin(offset, limit, filter) {
 
 export async function getAllOrders(offset, limit, filter) {
   const { orderId, state, order, asc } = filter.value;
-  let query = supabase
-    .from("Orders")
-    .select("*", { count: "exact" })
-    .range(offset, limit);
+  let query = supabase.from("Orders").select("*", { count: "exact" }).range(offset, limit);
   if (orderId) query = query.ilike("id", `%${orderId}%`);
   if (state && state !== "all") query = query.eq("status", state);
-  if (order === "surname")
-    query = query.order("payer->surname", { ascending: asc });
+  if (order === "surname") query = query.order("payer->surname", { ascending: asc });
   else if (order) query = query.order(order, { ascending: asc });
   const { data, count, error } = await query;
   if (error) console.log(error);
@@ -72,17 +66,13 @@ export async function createSlide(image, primaryText, secondaryText) {
   let date = new Date();
   date = String(date.getTime());
 
-  const { error: storageErr } = await supabase.storage
-    .from("slides")
-    .upload("images/" + date, image, {
-      cacheControl: "3600",
-      upsert: false,
-    });
+  const { error: storageErr } = await supabase.storage.from("slides").upload("images/" + date, image, {
+    cacheControl: "3600",
+    upsert: false,
+  });
   if (storageErr) console.log(storageErr);
 
-  const { data: storageData } = supabase.storage
-    .from("slides")
-    .getPublicUrl("images/" + date);
+  const { data: storageData } = supabase.storage.from("slides").getPublicUrl("images/" + date);
   const imageURL = storageData.publicUrl;
 
   const { error } = await supabase.from("Slides").insert([
@@ -97,9 +87,7 @@ export async function createSlide(image, primaryText, secondaryText) {
 }
 
 export async function deleteSlide(id, image) {
-  const { error: storageErr } = await supabase.storage
-    .from("slides")
-    .remove(["images/" + image]);
+  const { error: storageErr } = await supabase.storage.from("slides").remove(["images/" + image]);
   if (storageErr) console.log(storageErr);
 
   const { error } = await supabase.from("Slides").delete().eq("id", id);
@@ -108,9 +96,7 @@ export async function deleteSlide(id, image) {
 
 export async function getAllAuthors() {
   let authorsArr = [];
-  const { data: Authors, error } = await supabase
-    .from("Products")
-    .select("author");
+  const { data: Authors, error } = await supabase.from("Products").select("author");
   if (error) console.log(error);
   else {
     Authors.forEach((author) => {
@@ -122,9 +108,7 @@ export async function getAllAuthors() {
 
 export async function getAllCategories() {
   let categoriesArr = [];
-  const { data: Categories, error } = await supabase
-    .from("Products")
-    .select("categories");
+  const { data: Categories, error } = await supabase.from("Products").select("categories");
   if (error) console.log(error);
   else {
     Categories.forEach((cat) => {
@@ -138,10 +122,7 @@ export async function getAllCategories() {
 
 export async function getAuthorPrices(author) {
   let pricesArr = [];
-  const { data: Prices, error } = await supabase
-    .from("Products")
-    .select("price")
-    .eq("author", author);
+  const { data: Prices, error } = await supabase.from("Products").select("price").eq("author", author);
   if (error) console.log(error);
   else {
     Prices.forEach((price) => {
@@ -152,22 +133,14 @@ export async function getAuthorPrices(author) {
 }
 
 export async function changeAllPrices(author, price, newPrice) {
-  const { data, error } = await supabase
-    .from("Products")
-    .update({ price: newPrice })
-    .eq("author", author)
-    .eq("price", price)
-    .select();
+  const { data, error } = await supabase.from("Products").update({ price: newPrice }).eq("author", author).eq("price", price).select();
   if (error) console.log(error);
   else return data;
 }
 
 export async function getCartItems(items) {
   const ids = items.map((item) => item.id);
-  const { data, error } = await supabase
-    .from("Products")
-    .select("id, name, image, author, price, discount, stock")
-    .in("id", ids);
+  const { data, error } = await supabase.from("Products").select("id, name, image, author, price, discount, stock").in("id", ids);
   if (error) {
     console.log(error);
   } else {
@@ -183,43 +156,28 @@ export async function getCartItems(items) {
 }
 
 export async function setAsNovelty(id, value) {
-  const { error } = await supabase
-    .from("Products")
-    .update({ isNovelty: value })
-    .eq("id", id);
+  const { error } = await supabase.from("Products").update({ isNovelty: value }).eq("id", id);
   if (error) console.log(error);
 }
 
 export async function getNovelties() {
-  const { data, error } = await supabase
-    .from("Products")
-    .select("id, name, image, price, discount, stock")
-    .eq("isNovelty", true);
+  const { data, error } = await supabase.from("Products").select("id, name, image, price, discount, stock").eq("isNovelty", true);
   if (error) console.log(error);
   else return data;
 }
 
 export async function setAsPresale(id, value) {
-  const { error } = await supabase
-    .from("Products")
-    .update({ isPresale: value })
-    .eq("id", id);
+  const { error } = await supabase.from("Products").update({ isPresale: value }).eq("id", id);
   if (error) console.log(error);
 }
 
 export async function handlePublish(id, value) {
-  const { error } = await supabase
-    .from("Products")
-    .update({ isPublished: value })
-    .eq("id", id);
+  const { error } = await supabase.from("Products").update({ isPublished: value }).eq("id", id);
   if (error) console.log(error);
 }
 
 export async function getPresales() {
-  const { data, error } = await supabase
-    .from("Products")
-    .select("id, name, image, price, discount, stock")
-    .eq("isPresale", true);
+  const { data, error } = await supabase.from("Products").select("id, name, image, price, discount, stock").eq("isPresale", true);
   if (error) console.log(error);
   else return data;
 }
@@ -227,10 +185,7 @@ export async function getPresales() {
 export async function searchProducts(value) {
   const { data, count, error } = await supabase
     .from("Products")
-    .select(
-      "id, name, image, price, discount, stock, updated_at, isNovelty, isPresale",
-      { count: "exact" }
-    )
+    .select("id, name, image, price, discount, stock, updated_at, isNovelty, isPresale", { count: "exact" })
     .ilike("name", `%${value}%`);
   if (error) {
     console.log(error);
@@ -240,10 +195,7 @@ export async function searchProducts(value) {
 }
 
 export async function getProductDetails(id) {
-  const { data, error } = await supabase
-    .from("Products")
-    .select("*")
-    .eq("id", id);
+  const { data, error } = await supabase.from("Products").select("*").eq("id", id);
   if (error) {
     console.log(error);
   } else {
@@ -265,20 +217,55 @@ export async function getRelatedProducts(categories, name) {
   }
 }
 
-export async function uploadFile(name, file) {
-  const { error } = await supabase.storage
-    .from("products")
-    .upload("images/" + name, file, {
-      cacheControl: "3600",
-      upsert: false,
-    });
+export async function createProduct(type, name, image, size, author, editorial, categories, price, discount, stock, description) {
+  const { error } = await supabase
+    .from("Products")
+    .insert([{ type, name, image, size, author, editorial, categories, price, discount, stock, description }]);
   if (error) console.log(error);
 }
 
-export async function deleteFile(name) {
-  const { error } = await supabase.storage
-    .from("products")
-    .remove(["images/" + name]);
+export async function updateProduct(id, type, name, image, size, author, editorial, categories, price, discount, stock, description) {
+  try {
+    await supabase
+      .from("Products")
+      .update({
+        type: type,
+        name: name,
+        image: image,
+        size: size,
+        author: author,
+        editorial: editorial,
+        categories: categories,
+        price: price,
+        discount: discount,
+        stock: stock,
+        description: description,
+      })
+      .eq("id", id);
+    showToast("Se editó correctamente el producto", "success");
+  } catch (error) {
+    console.log(error);
+    // Manejar los distintos error messages
+    showToast("Error al editar el producto", "error");
+  }
+}
+
+export async function uploadFile(author, name, file) {
+  const time = new Date().getTime();
+  const { error } = await supabase.storage.from("products").upload(`${author.toLowerCase()}/${name.toLowerCase()}-${time}`, file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+  if (error) console.log(error);
+  else {
+    const { data, error } = supabase.storage.from("products").getPublicUrl(`${author.toLowerCase()}/${name.toLowerCase()}-${time}`);
+    if (error) console.log(error);
+    else return data.publicUrl;
+  }
+}
+
+export async function deleteFile(image) {
+  const { error } = await supabase.storage.from("products").remove([image]);
   if (error) console.log(error);
 }
 
@@ -287,27 +274,14 @@ export async function deleteProduct(id) {
   if (error) return error;
 }
 
-export async function getFileURL(name) {
-  const { data } = supabase.storage
-    .from("products")
-    .getPublicUrl("images/" + name);
-  return data.publicUrl;
-}
-
 export async function userIsAdmin(id) {
-  const { data: isAdmin, error } = await supabase
-    .from("users")
-    .select("is_admin")
-    .eq("id", id);
+  const { data: isAdmin, error } = await supabase.from("users").select("is_admin").eq("id", id);
   if (error) console.log(error);
   else return isAdmin[0].is_admin;
 }
 
 export async function getUser(id) {
-  const { data, error } = await supabase
-    .from("users")
-    .select("first_name, last_name, email, phone, address")
-    .eq("id", id);
+  const { data, error } = await supabase.from("users").select("first_name, last_name, email, phone, address").eq("id", id);
   if (error) console.log(error);
   else return data[0];
 }
@@ -327,18 +301,12 @@ export async function updateUser(id, data) {
 }
 
 export async function addToUserCart(items, id) {
-  const { error } = await supabase
-    .from("users")
-    .update({ cart_items: items })
-    .eq("id", id);
+  const { error } = await supabase.from("users").update({ cart_items: items }).eq("id", id);
   if (error) return error;
 }
 
 export async function getUserCart(id) {
-  const { data, error } = await supabase
-    .from("users")
-    .select("cart_items")
-    .eq("id", id);
+  const { data, error } = await supabase.from("users").select("cart_items").eq("id", id);
   if (error) console.log(error);
   else return data[0].cart_items;
 }
@@ -355,37 +323,23 @@ export async function getUserOrders(id) {
 }
 
 export async function getMaintenance() {
-  const { data, error } = await supabase
-    .from("Settings")
-    .select("active")
-    .eq("name", "maintenance");
+  const { data, error } = await supabase.from("Settings").select("active").eq("name", "maintenance");
   if (error) console.log(error);
   else return data[0].active;
 }
 
 export async function setMaintenance(active) {
-  const { error } = await supabase
-    .from("Settings")
-    .update({ active: active })
-    .eq("name", "maintenance")
-    .select();
+  const { error } = await supabase.from("Settings").update({ active: active }).eq("name", "maintenance").select();
   if (error) return error;
 }
 
 export async function getShippingPrice() {
-  const { data, error } = await supabase
-    .from("Settings")
-    .select("value")
-    .eq("name", "shipment_price");
+  const { data, error } = await supabase.from("Settings").select("value").eq("name", "shipment_price");
   if (error) console.log(error);
   else return data[0].value;
 }
 
 export async function setShippingPrice(value) {
-  const { error } = await supabase
-    .from("Settings")
-    .update({ value: value })
-    .eq("name", "shipment_price")
-    .select();
+  const { error } = await supabase.from("Settings").update({ value: value }).eq("name", "shipment_price").select();
   if (error) return error;
 }
