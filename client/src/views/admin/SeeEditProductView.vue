@@ -48,18 +48,23 @@ const getInputFile = (event) => {
   getFile(event, initialState);
 };
 
+const loading = ref(false);
+
 const editProduct = async () => {
-  try {
-    let { id, author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
-    if (image.image) {
-      await deleteFile(getImagePath(previousData.value.image));
-      image.imageURL = await uploadFile(author, name, image.image);
+  if (!loading.value) {
+    loading.value = true;
+    try {
+      let { id, author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
+      if (image.image) {
+        await deleteFile(getImagePath(previousData.value.image));
+        image.imageURL = await uploadFile(author, name, image.image);
+      }
+      await updateProduct(id, type, name, image.imageURL, size, author, editorial, getCategories(), price, discount, stock, description);
+      resetForm();
+      router.push({ name: "Stock" });
+    } catch (error) {
+      console.log(error);
     }
-    await updateProduct(id, type, name, image.imageURL, size, author, editorial, getCategories(), price, discount, stock, description);
-    resetForm();
-    router.push({ name: "Stock" });
-  } catch (error) {
-    console.log(error);
   }
 };
 
@@ -81,12 +86,12 @@ const submitForm = async (event) => {
       <span class="text-2xl font-bold uppercase">EDITAR PRODUCTO</span>
     </header-title>
     <form v-if="initialState.id" class="mx-5 flex flex-col gap-4">
-      <div class="flex flex-col gap-4 md:flex-row">
+      <div class="flex flex-col gap-4 lg:flex-row">
         <img
           :src="initialState.image.imageReader ? initialState.image.imageReader : previousData?.image"
           alt="imagen del producto"
           loading="lazy"
-          class="border-2 border-tertiary-dark drop-shadow-items md:h-[680px] md:w-[503px] lg:h-[656px] lg:min-w-[468px]"
+          class="border-2 border-tertiary-dark drop-shadow-items lg:h-[656px] lg:min-w-[468px] lg:max-w-[468px]"
         />
         <div class="flex w-full flex-col gap-4">
           <div class="w-full">
@@ -234,7 +239,7 @@ const submitForm = async (event) => {
         />
       </div>
       <div class="flex flex-col justify-between gap-3 md:flex-row">
-        <CustomButton v-if="isEditing" class="md:order-2 md:px-36" primary @click="submitForm"> CONFIRMAR EDICIÓN </CustomButton>
+        <CustomButton v-if="isEditing" class="md:order-2 md:px-36" primary :loading="loading" @click="submitForm"> CONFIRMAR </CustomButton>
         <CustomButton v-else class="md:order-2 md:px-36" primary @click="goToEdit"> EDITAR </CustomButton>
         <CustomButton class="md:order-1 md:px-36" secondary @click="goBack"> VOLVER </CustomButton>
       </div>
