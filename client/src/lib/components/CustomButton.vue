@@ -61,7 +61,7 @@ const props = defineProps({
       'drop-shadow-items',
     ]"
   >
-    <div v-if="loading" class="flex justify-center md:w-[66.6px]">
+    <div v-if="loading" class="flex justify-center md:min-w-[66.6px]">
       <svg
         aria-hidden="true"
         class="h-5 w-5 animate-spin fill-primary text-tertiary-light"
