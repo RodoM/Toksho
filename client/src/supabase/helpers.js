@@ -185,7 +185,7 @@ export async function getPresales() {
 export async function searchProducts(value) {
   const { data, count, error } = await supabase
     .from("Products")
-    .select("id, name, image, price, discount, stock, updated_at, isNovelty, isPresale", { count: "exact" })
+    .select("id, name, image, price, discount, stock, isNovelty, isPresale", { count: "exact" })
     .ilike("name", `%${value}%`);
   if (error) {
     console.log(error);
