@@ -149,21 +149,11 @@ const router = createRouter({
       },
     },
     {
-      path: "/admin/editar-producto/:id",
-      name: "EditProduct",
-      component: () => import("@/views/admin/EditProductView.vue"),
+      path: "/admin/producto/:id",
+      name: "SeeEditProduct",
+      component: () => import("@/views/admin/SeeEditProductView.vue"),
       meta: {
         label: "Editar producto",
-        auth: true,
-        adminAuth: true,
-      },
-    },
-    {
-      path: "/admin/ver-producto/:id",
-      name: "SeeProduct",
-      component: () => import("@/views/admin/SeeProductView.vue"),
-      meta: {
-        label: "Ver producto",
         auth: true,
         adminAuth: true,
       },
@@ -177,10 +167,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const store = userStore();
   const user = computed(() => store.user);
-  if (
-    (to.meta.label === "Ingresar" || to.meta.label === "Registrarse") &&
-    user.value
-  ) {
+  if ((to.meta.label === "Ingresar" || to.meta.label === "Registrarse") && user.value) {
     next("/");
   } else if (to.meta.auth && to.meta.adminAuth && !user.value?.isAdmin) {
     next("/");
