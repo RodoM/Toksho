@@ -84,16 +84,10 @@ const clearFilter = () => {
 </script>
 
 <template>
-  <div
-    class="flex justify-between p-3 border-2 bg-secondary-light border-tertiary-dark drop-shadow-items"
-  >
+  <div class="flex justify-between border-2 border-tertiary-dark bg-secondary-light p-3 drop-shadow-items">
     <span class="font-medium">
       {{ props.productsInPage - props.productsPerPage }} -
-      {{
-        props.productsInPage < props.totalProducts
-          ? props.productsInPage
-          : props.totalProducts
-      }}
+      {{ props.productsInPage < props.totalProducts ? props.productsInPage : props.totalProducts }}
       de {{ props.totalProducts }}
     </span>
     <div class="ml-auto">
@@ -101,15 +95,13 @@ const clearFilter = () => {
         <span class="font-medium">Filtrar</span>
         <span class="material-icons-outlined">sort</span>
       </button>
-      <div
-        v-if="openFilter"
-        class="absolute p-3 border-2 -right-[2px] top-16 bg-background border-tertiary-dark min-w-[300px]"
-      >
+      <div v-if="openFilter" class="absolute -right-[2px] top-16 min-w-[300px] border-2 border-tertiary-dark bg-background p-3">
         <form class="flex flex-col gap-3">
           <div>
             <label for="">Filtrar por</label>
             <v-select
               v-model="filter.type"
+              :placeholder="'Tipo de producto'"
               :options="filterOptions"
               :reduce="(opt) => opt.value"
               :clearSearchOnSelect="false"
@@ -120,6 +112,7 @@ const clearFilter = () => {
             <label for="">Autor</label>
             <v-select
               v-model="filter.author"
+              :placeholder="'Autor'"
               :options="authors.sort()"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
@@ -129,6 +122,7 @@ const clearFilter = () => {
             <label for="">Categoría</label>
             <v-select
               v-model="filter.categorie"
+              :placeholder="'Categoría'"
               :options="categories.sort()"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
@@ -154,9 +148,7 @@ const clearFilter = () => {
             ></v-select>
           </div>
           <CustomButton primary @click="applyFilter()"> APLICAR </CustomButton>
-          <CustomButton secondary @click="clearFilter()">
-            LIMPIAR
-          </CustomButton>
+          <CustomButton secondary @click="clearFilter()"> LIMPIAR </CustomButton>
         </form>
       </div>
     </div>

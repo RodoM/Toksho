@@ -42,7 +42,6 @@
 }
 
 .vs__selected {
-  width: 241px;
   text-overflow: ellipsis;
   overflow: hidden; 
   white-space: nowrap;
@@ -50,6 +49,10 @@
 
 .vs__selected-options {
   flex-wrap: nowrap !important;
+}
+
+.vs__selected-options > input::placeholder {
+  opacity: 0.3;
 }
 
 .maintenance-select > div > .vs__selected-options > .vs__selected {

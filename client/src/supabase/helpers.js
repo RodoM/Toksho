@@ -120,22 +120,49 @@ export async function getAllCategories() {
   }
 }
 
-export async function getAuthorPrices(author) {
-  let pricesArr = [];
-  const { data: Prices, error } = await supabase.from("Products").select("price").eq("author", author);
+export async function getAllEditorials() {
+  let editorials = [];
+  const { data, error } = await supabase.from("Products").select("editorial").neq("editorial", null);
   if (error) console.log(error);
   else {
-    Prices.forEach((price) => {
-      pricesArr.push(price.price);
+    data.forEach((editorial) => {
+      editorials.push(editorial.editorial);
     });
-    return [...new Set(pricesArr)].sort();
+    return [...new Set(editorials)];
   }
 }
 
-export async function changeAllPrices(author, price, newPrice) {
-  const { data, error } = await supabase.from("Products").update({ price: newPrice }).eq("author", author).eq("price", price).select();
+export async function getEditorialSizes(editorial) {
+  let editorialSizes = [];
+  const { data, error } = await supabase.from("Products").select("size").eq("editorial", editorial).neq("size", null);
   if (error) console.log(error);
-  else return data;
+  else {
+    data.forEach((size) => {
+      editorialSizes.push(size.size);
+    });
+    return [...new Set(editorialSizes)];
+  }
+}
+
+export async function getEditorialSizePrice(editorial, size) {
+  let prices = [];
+  const { data, error } = await supabase.from("Products").select("price").eq("editorial", editorial).eq("size", size);
+  if (error) console.log(error);
+  else {
+    data.forEach((price) => {
+      prices.push(price.price);
+    });
+    return [...new Set(prices)];
+  }
+}
+
+export async function changePrice(editorial, size, oldPrice, newPrice) {
+  try {
+    await supabase.from("Products").update({ price: newPrice }).eq("editorial", editorial).eq("size", size).eq("price", oldPrice);
+    showToast("Se actualizó correctamente los precios", "success");
+  } catch (error) {
+    showToast("Error al actualizar los precios", "error");
+  }
 }
 
 export async function getCartItems(items) {

@@ -103,11 +103,12 @@ const submitForm = async (event) => {
             </div>
             <v-select
               v-model="initialState.type"
+              :placeholder="'Tipo de producto'"
               :disabled="!isEditing"
               :options="['Manga', 'Comic', 'Indumentaria']"
               :clearSearchOnSelect="false"
               :class="{ 'bg-disabled': !isEditing }"
-              class="w-full border-2 border-tertiary-dark bg-background p-2 drop-shadow-items focus:outline-none"
+              class="w-full border-2 border-tertiary-dark bg-background p-1 drop-shadow-items focus:outline-none"
             ></v-select>
           </div>
           <div class="w-full">

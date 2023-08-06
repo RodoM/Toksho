@@ -4,6 +4,9 @@ import { createSlide } from "@/supabase/helpers.js";
 import { useVuelidate } from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 import { useToast } from "vue-toast-notification";
+
+import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
+import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const emit = defineEmits(["created"]);
@@ -65,7 +68,7 @@ async function createSlideImage() {
   }
 }
 
-async function submitForm() {
+async function submitForm(event) {
   event.preventDefault();
   const result = await v$.value.$validate();
   if (result) createSlideImage();
@@ -73,55 +76,65 @@ async function submitForm() {
 </script>
 
 <template>
-  <form class="flex flex-col justify-between gap-5 md:flex-row">
-    <div>
-      <div>
-        <label :for="state.image">Imágen</label>
-        <span v-if="v$.image.$error" class="pl-2 text-red-500">
-          {{ v$.image.$errors[0].$message }}
-        </span>
+  <content-block class="z-0 gap-y-5 px-5">
+    <header-title>
+      <span class="text-2xl font-bold">DIAPOSITIVAS</span>
+    </header-title>
+    <form class="flex flex-col justify-between gap-4 md:flex-row">
+      <div class="w-full">
+        <div>
+          <label :for="state.image">Imágen</label>
+          <span v-if="v$.image.$error" class="pl-2 text-red-500">
+            {{ v$.image.$errors[0].$message }}
+          </span>
+        </div>
+        <input
+          id="imageInput"
+          type="file"
+          class="block h-[52px] w-full cursor-pointer border-2 border-tertiary-dark bg-white drop-shadow-items focus:outline-none"
+          @change="getFile"
+        />
       </div>
-      <input
-        id="imageInput"
-        type="file"
-        class="bg-white border-2 border-tertiary-dark drop-shadow-items h-[52px] py-[9px] px-3 w-fillAvailable"
-        @change="getFile"
-      />
-    </div>
-    <div>
-      <div>
-        <label :for="state.primaryText">Texto primario</label>
-        <span v-if="v$.primaryText.$error" class="pl-2 text-red-500">
-          {{ v$.primaryText.$errors[0].$message }}
-        </span>
+      <div class="w-full">
+        <div>
+          <label :for="state.primaryText">Texto primario</label>
+          <span v-if="v$.primaryText.$error" class="pl-2 text-red-500">
+            {{ v$.primaryText.$errors[0].$message }}
+          </span>
+        </div>
+        <input
+          v-model="state.primaryText"
+          type="text"
+          placeholder="Texto primario"
+          class="w-full border-2 border-tertiary-dark p-3 drop-shadow-items focus:outline-none"
+        />
       </div>
-      <input
-        v-model="state.primaryText"
-        type="text"
-        placeholder="Texto primario"
-        class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-      />
-    </div>
-    <div>
-      <div>
-        <label :for="state.secondaryText">Texto secundario</label>
-        <span v-if="v$.secondaryText.$error" class="pl-2 text-red-500">
-          {{ v$.secondaryText.$errors[0].$message }}
-        </span>
+      <div class="w-full">
+        <div>
+          <label :for="state.secondaryText">Texto secundario</label>
+          <span v-if="v$.secondaryText.$error" class="pl-2 text-red-500">
+            {{ v$.secondaryText.$errors[0].$message }}
+          </span>
+        </div>
+        <input
+          v-model="state.secondaryText"
+          type="text"
+          placeholder="Texto secundario"
+          class="w-full border-2 border-tertiary-dark p-3 drop-shadow-items focus:outline-none"
+        />
       </div>
-      <input
-        v-model="state.secondaryText"
-        type="text"
-        placeholder="Texto secundario"
-        class="w-full p-3 border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-      />
-    </div>
-    <CustomButton
-      primary
-      class="md:px-10 md:w-fit h-[52px] mt-auto"
-      @click="submitForm()"
-    >
-      AGREGAR
-    </CustomButton>
-  </form>
+    </form>
+    <CustomButton primary class="ml-auto w-full px-10 md:w-fit" @click="submitForm()"> AGREGAR </CustomButton>
+  </content-block>
 </template>
+
+<style scoped>
+input[type="file"]::file-selector-button {
+  height: 100%;
+  cursor: pointer;
+  background-color: #eeba5e;
+  border: none;
+  border-right: 2px solid #0f0f0f;
+  padding: 8px;
+}
+</style>

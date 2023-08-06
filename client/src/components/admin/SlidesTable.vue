@@ -59,9 +59,9 @@ function closeDialog() {
 
 <template>
   <div>
-    <div class="mt-5 overflow-x-auto whitespace-nowrap drop-shadow-items">
+    <div class="overflow-x-auto whitespace-nowrap drop-shadow-items">
       <table class="w-full table-auto">
-        <thead class="border-2 bg-primary border-tertiary-dark">
+        <thead class="border-2 border-tertiary-dark bg-primary">
           <tr>
             <th class="px-5 text-start">TEXTO PRIMARIO</th>
             <th class="px-5 text-start">TEXTO SECUNDARIO</th>
@@ -69,26 +69,22 @@ function closeDialog() {
           </tr>
         </thead>
         <tbody class="border-2 border-tertiary-dark">
-          <tr
-            v-for="(slide, i) in props.slides"
-            :key="slide.id"
-            :class="[i % 2 === 0 ? 'bg-secondary-light' : 'bg-secondary']"
-          >
-            <td class="px-5 font-medium text-start">
+          <tr v-for="(slide, i) in props.slides" :key="slide.id" :class="[i % 2 === 0 ? 'bg-secondary-light' : 'bg-secondary']">
+            <td class="px-5 text-start font-medium">
               {{ slide.primary_text }}
             </td>
-            <td class="px-5 font-medium text-start">
+            <td class="px-5 text-start font-medium">
               {{ slide.secondary_text }}
             </td>
             <td class="flex justify-start gap-3 px-5 py-2">
               <button
-                class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+                class="material-icons-outlined border-2 border-tertiary-dark bg-primary-light p-1 drop-shadow-navlink"
                 @click="deleteSlideImage(slide)"
               >
                 delete
               </button>
               <button
-                class="p-1 border-2 material-icons-outlined bg-primary-light border-tertiary-dark drop-shadow-navlink"
+                class="material-icons-outlined border-2 border-tertiary-dark bg-primary-light p-1 drop-shadow-navlink"
                 @click="openDialog(slide)"
               >
                 visibility
@@ -101,14 +97,8 @@ function closeDialog() {
 
     <dialog id="dialog" class="border-2 border-tertiary-dark">
       <div class="flex flex-col gap-3">
-        <button class="ml-auto material-icons-outlined" @click="closeDialog()">
-          close
-        </button>
-        <img
-          :src="currentSlideImage"
-          alt="slide image"
-          class="border-2 w-96 border-tertiary-dark"
-        />
+        <button class="material-icons-outlined ml-auto" @click="closeDialog()">close</button>
+        <img :src="currentSlideImage" alt="slide image" class="w-96 border-2 border-tertiary-dark" />
       </div>
     </dialog>
   </div>
