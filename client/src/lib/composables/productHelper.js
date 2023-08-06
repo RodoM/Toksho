@@ -1,6 +1,7 @@
 import { reactive, computed } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, requiredIf, alpha, maxValue, helpers } from "@vuelidate/validators";
+import placeholderImage from "@/assets/images/image-placeholder.jpg";
 
 export const initialState = reactive({
   id: "",
@@ -8,7 +9,7 @@ export const initialState = reactive({
   name: "",
   image: {
     image: null,
-    imageReader: "/src/assets/images/image-placeholder.jpg",
+    imageReader: placeholderImage,
     imageURL: "",
   },
   size: undefined,
