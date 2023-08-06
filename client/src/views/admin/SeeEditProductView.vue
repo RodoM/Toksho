@@ -124,21 +124,39 @@ const submitForm = async (event) => {
               class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
           </div>
-          <div class="w-full">
-            <div>
-              <label :for="initialState.image.image"> Imágen (No seleccionar nada si no se actualiza) </label>
-              <span v-if="v$.image.image.$error" class="pl-2 text-red-500">
-                {{ v$.image.image.$errors[0].$message }}
-              </span>
+          <div class="flex flex-col gap-4 md:flex-row">
+            <div class="w-full">
+              <div>
+                <label :for="initialState.image.image"> Imágen (No seleccionar nada si no se actualiza) </label>
+                <span v-if="v$.image.image.$error" class="pl-2 text-red-500">
+                  {{ v$.image.image.$errors[0].$message }}
+                </span>
+              </div>
+              <input
+                type="file"
+                :disabled="!isEditing"
+                accept="image/png, image/jpeg, image/webp"
+                :class="[!isEditing ? 'bg-disabled' : 'bg-white']"
+                class="block w-full cursor-pointer border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
+                @change="getInputFile"
+              />
             </div>
-            <input
-              type="file"
-              :disabled="!isEditing"
-              accept="image/png, image/jpeg, image/webp"
-              :class="[!isEditing ? 'bg-disabled' : 'bg-white']"
-              class="block w-full cursor-pointer border-2 border-tertiary-dark drop-shadow-items focus:outline-none"
-              @change="getInputFile"
-            />
+            <div class="w-full">
+              <div>
+                <label :for="initialState.size">Tamaño</label>
+                <span v-if="v$.size.$error" class="pl-2 text-red-500">
+                  {{ v$.size.$errors[0].$message }}
+                </span>
+              </div>
+              <input
+                v-model="initialState.size"
+                :disabled="!isEditing"
+                type="text"
+                placeholder="Tamaño del producto"
+                :class="[!isEditing ? 'bg-disabled' : 'bg-white']"
+                class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
+              />
+            </div>
           </div>
           <div class="w-full">
             <div>
@@ -153,6 +171,22 @@ const submitForm = async (event) => {
               type="text"
               placeholder="Autor"
               :class="{ 'bg-disabled': !isEditing }"
+              class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
+            />
+          </div>
+          <div class="w-full">
+            <div>
+              <label :for="initialState.editorial">Editorial</label>
+              <span v-if="v$.editorial.$error" class="pl-2 text-red-500">
+                {{ v$.editorial.$errors[0].$message }}
+              </span>
+            </div>
+            <input
+              v-model="initialState.editorial"
+              :disabled="!isEditing"
+              type="text"
+              placeholder="Editorial"
+              :class="[!isEditing ? 'bg-disabled' : 'bg-white']"
               class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
           </div>
@@ -172,37 +206,39 @@ const submitForm = async (event) => {
               class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
           </div>
-          <div class="w-full">
-            <div>
-              <label :for="initialState.price">Precio</label>
-              <span v-if="v$.price.$error" class="pl-2 text-red-500">
-                {{ v$.price.$errors[0].$message }}
-              </span>
+          <div class="flex flex-col gap-4 lg:flex-row">
+            <div class="w-full">
+              <div>
+                <label :for="initialState.price">Precio</label>
+                <span v-if="v$.price.$error" class="pl-2 text-red-500">
+                  {{ v$.price.$errors[0].$message }}
+                </span>
+              </div>
+              <input
+                v-model="initialState.price"
+                :disabled="!isEditing"
+                type="number"
+                placeholder="Precio"
+                :class="{ 'bg-disabled': !isEditing }"
+                class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
+              />
             </div>
-            <input
-              v-model="initialState.price"
-              :disabled="!isEditing"
-              type="number"
-              placeholder="Precio"
-              :class="{ 'bg-disabled': !isEditing }"
-              class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
-            />
-          </div>
-          <div class="w-full">
-            <div>
-              <label :for="initialState.discount">Descuento (opcional)</label>
-              <span v-if="v$.discount.$error" class="pl-2 text-red-500">
-                {{ v$.discount.$errors[0].$message }}
-              </span>
+            <div class="w-full">
+              <div>
+                <label :for="initialState.discount">Descuento (opcional)</label>
+                <span v-if="v$.discount.$error" class="pl-2 text-red-500">
+                  {{ v$.discount.$errors[0].$message }}
+                </span>
+              </div>
+              <input
+                v-model="initialState.discount"
+                :disabled="!isEditing"
+                type="number"
+                placeholder="Descuento"
+                :class="{ 'bg-disabled': !isEditing }"
+                class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
+              />
             </div>
-            <input
-              v-model="initialState.discount"
-              :disabled="!isEditing"
-              type="number"
-              placeholder="Descuento"
-              :class="{ 'bg-disabled': !isEditing }"
-              class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
-            />
           </div>
           <div class="w-full">
             <div>

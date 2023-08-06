@@ -33,36 +33,27 @@ function loadImage(image) {
         <img
           :src="currentImage"
           @load="loadImage(props.product.image)"
-          class="object-cover h-56 md:h-64"
+          class="h-56 object-cover md:h-64"
           :alt="props.product.name"
           loading="lazy"
         />
       </div>
       <span
         v-if="props.product.discount"
-        class="absolute p-2 font-medium border-2 rounded-full -top-3 -right-3 bg-primary-light border-tertiary-dark drop-shadow-navlink"
+        class="absolute -top-3 -right-3 rounded-full border-2 border-tertiary-dark bg-primary-light p-2 font-medium drop-shadow-navlink"
         >-{{ props.product.discount }}%</span
       >
       <span
         v-if="props.product.stock === 0"
-        class="absolute p-2 font-medium border-2 rounded-full -top-3 -right-3 bg-primary-light border-tertiary-dark drop-shadow-navlink"
+        class="absolute -top-3 -right-3 rounded-full border-2 border-tertiary-dark bg-primary-light p-2 font-medium drop-shadow-navlink"
         >SIN STOCK</span
       >
     </div>
     <div class="flex flex-col items-center gap-1">
-      <span class="font-bold max-w-[130px] text-center">{{
-        props.product.name
-      }}</span>
+      <span class="max-w-[130px] text-center font-bold">{{ props.product.name }}</span>
       <div>
-        <span
-          class="font-medium"
-          :class="{ 'line-through': props.product.discount }"
-        >
-          ${{ props.product.price }}
-        </span>
-        <span v-if="props.product.discount" class="ml-2 font-medium">
-          ${{ newPrice(props.product.price, props.product.discount) }}
-        </span>
+        <span class="font-medium" :class="{ 'line-through': props.product.discount }"> ${{ props.product.price }} </span>
+        <span v-if="props.product.discount" class="ml-2 font-medium"> ${{ newPrice(props.product.price, props.product.discount) }} </span>
       </div>
     </div>
   </router-link>
