@@ -1,8 +1,8 @@
 <template>
-  <div role="status" class="absolute -translate-x-1/2 top-1/2 left-1/2">
+  <div role="status" class="absolute top-1/2 left-1/2 -translate-x-1/2">
     <svg
       aria-hidden="true"
-      class="w-10 h-10 text-tertiary-light animate-spin fill-primary"
+      class="h-10 w-10 animate-spin fill-primary text-tertiary-light"
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

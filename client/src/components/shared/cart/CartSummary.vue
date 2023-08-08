@@ -28,7 +28,7 @@ const getTotal = () => {
 
 <template>
   <div
-    class="flex flex-col flex-grow justify-between gap-5 p-5 border-2 bg-secondary-light border-tertiary-dark sm:min-w-[320px] drop-shadow-items"
+    class="flex flex-grow flex-col justify-between gap-5 border-2 border-tertiary-dark bg-secondary-light p-5 drop-shadow-items sm:min-w-[320px]"
   >
     <div class="flex flex-col gap-5">
       <header-title class="w-full">

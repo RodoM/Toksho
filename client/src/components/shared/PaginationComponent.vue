@@ -27,25 +27,17 @@ const pages = () => {
 </script>
 
 <template>
-  <ul
-    v-if="!(props.count < props.paginationData.productsPerPage + 1)"
-    class="flex justify-center gap-3"
-  >
+  <ul v-if="!(props.count < props.paginationData.productsPerPage + 1)" class="flex justify-center gap-3">
     <li
       v-if="props.paginationData.offset > 0"
-      class="p-1 border-2 material-icons-outlined border-tertiary-dark bg-primary-light drop-shadow-navlink"
+      class="material-icons-outlined border-2 border-tertiary-dark bg-primary-light p-1 drop-shadow-navlink"
     >
       <button @click="prevPage">navigate_before</button>
     </li>
     <li v-for="i in pages()" :key="i">
       <button
-        class="px-2.5 font-bold py-1 border-2 border-tertiary-dark drop-shadow-navlink"
-        :class="[
-          props.paginationData.currentPage ===
-          i + props.paginationData.offsetPages
-            ? 'bg-secondary-light'
-            : 'bg-primary-light',
-        ]"
+        class="border-2 border-tertiary-dark px-2.5 py-1 font-bold drop-shadow-navlink"
+        :class="[props.paginationData.currentPage === i + props.paginationData.offsetPages ? 'bg-secondary-light' : 'bg-primary-light']"
         @click="$emit('goToPage', i + props.paginationData.offsetPages)"
       >
         {{ i + props.paginationData.offsetPages }}
@@ -53,7 +45,7 @@ const pages = () => {
     </li>
     <li
       v-if="props.paginationData.limit < props.count"
-      class="p-1 border-2 material-icons-outlined border-tertiary-dark bg-primary-light drop-shadow-navlink"
+      class="material-icons-outlined border-2 border-tertiary-dark bg-primary-light p-1 drop-shadow-navlink"
     >
       <button @click="nextPage">navigate_next</button>
     </li>

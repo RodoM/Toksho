@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="p-3 border-2 bg-primary w-fit border-tertiary-dark drop-shadow-navlink"
-  >
+  <div class="w-fit border-2 border-tertiary-dark bg-primary p-3 drop-shadow-navlink">
     <slot></slot>
   </div>
 </template>

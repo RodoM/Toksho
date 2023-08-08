@@ -31,13 +31,7 @@ const filter = ref({
 const fetchWithFilters = (value) => {
   if (typeof value === "string") searchInput.value = value;
   else filter.value = Object.assign(value);
-  emit(
-    "fetchWithFilters",
-    searchInput.value,
-    filter.value.state,
-    filter.value.order,
-    filter.value.asc
-  );
+  emit("fetchWithFilters", searchInput.value, filter.value.state, filter.value.order, filter.value.asc);
 };
 
 const clearFilter = () => {
@@ -50,7 +44,7 @@ const clearFilter = () => {
 </script>
 
 <template>
-  <div class="relative z-20 flex flex-col gap-3 mb-5 px-5">
+  <div class="relative z-20 mb-5 flex flex-col gap-3 px-5">
     <OrderSearch @search="fetchWithFilters" />
     <OrderFilter
       :ordersPerPage="props.ordersPerPage"

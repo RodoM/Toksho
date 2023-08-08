@@ -12,10 +12,7 @@ const searchInput = ref("");
       class="w-full p-2 focus:outline-none"
       @keyup.enter="$emit('search', searchInput)"
     />
-    <button
-      class="p-2 border-l-2 material-icons-outlined border-tertiary-dark bg-primary-light"
-      @click="$emit('search', searchInput)"
-    >
+    <button class="material-icons-outlined border-l-2 border-tertiary-dark bg-primary-light p-2" @click="$emit('search', searchInput)">
       search
     </button>
   </div>

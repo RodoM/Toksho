@@ -64,16 +64,10 @@ const clearFilter = () => {
 };
 </script>
 <template>
-  <div
-    class="flex justify-between p-3 border-2 bg-secondary-light border-tertiary-dark drop-shadow-items"
-  >
+  <div class="flex justify-between border-2 border-tertiary-dark bg-secondary-light p-3 drop-shadow-items">
     <span class="font-medium">
       {{ props.ordersInPage - props.ordersPerPage }} -
-      {{
-        props.ordersInPage < props.totalOrders
-          ? props.ordersInPage
-          : props.totalOrders
-      }}
+      {{ props.ordersInPage < props.totalOrders ? props.ordersInPage : props.totalOrders }}
       de {{ props.totalOrders }}
     </span>
     <div class="ml-auto">
@@ -81,10 +75,7 @@ const clearFilter = () => {
         <span class="font-medium">Ordenar</span>
         <span class="material-icons-outlined">sort</span>
       </button>
-      <div
-        v-if="openFilter"
-        class="absolute p-3 border-2 -right-[2px] top-16 bg-background border-tertiary-dark min-w-[300px]"
-      >
+      <div v-if="openFilter" class="absolute -right-[2px] top-16 min-w-[300px] border-2 border-tertiary-dark bg-background p-3">
         <form class="flex flex-col gap-3">
           <div>
             <label for="">Estado</label>
@@ -116,9 +107,7 @@ const clearFilter = () => {
             ></v-select>
           </div>
           <CustomButton primary @click="applyFilter()"> APLICAR </CustomButton>
-          <CustomButton secondary @click="clearFilter()">
-            LIMPIAR
-          </CustomButton>
+          <CustomButton secondary @click="clearFilter()"> LIMPIAR </CustomButton>
         </form>
       </div>
     </div>

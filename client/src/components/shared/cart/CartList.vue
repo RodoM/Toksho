@@ -28,36 +28,25 @@ const getPrice = (item) => {
     <li
       v-for="item in props.items"
       :key="item"
-      class="relative flex gap-3 p-4 border-2 bg-secondary-light border-tertiary-dark drop-shadow-items"
+      class="relative flex gap-3 border-2 border-tertiary-dark bg-secondary-light p-4 drop-shadow-items"
     >
-      <img
-        class="w-24 border-2 border-tertiary-dark"
-        :src="item.image"
-        :alt="item.name"
-        loading="lazy"
-      />
-      <div class="flex flex-col justify-between flex-grow">
+      <img class="w-24 border-2 border-tertiary-dark" :src="item.image" :alt="item.name" loading="lazy" />
+      <div class="flex flex-grow flex-col justify-between">
         <div class="flex flex-col gap-1">
           <span class="font-bold">{{ item.name }}</span>
           <span class="font-medium">{{ item.author }}</span>
         </div>
-        <div
-          class="flex flex-wrap justify-between px-2 py-1 border-2 bg-primary-light border-tertiary-dark drop-shadow-navlink"
-        >
+        <div class="flex flex-wrap justify-between border-2 border-tertiary-dark bg-primary-light px-2 py-1 drop-shadow-navlink">
           <div class="flex items-center gap-5">
-            <button class="material-icons-outlined" @click="lessAmount(item)">
-              arrow_drop_down
-            </button>
+            <button class="material-icons-outlined" @click="lessAmount(item)">arrow_drop_down</button>
             <span class="font-bold">{{ item.amount }}</span>
-            <button class="material-icons-outlined" @click="moreAmount(item)">
-              arrow_drop_up
-            </button>
+            <button class="material-icons-outlined" @click="moreAmount(item)">arrow_drop_up</button>
           </div>
           <span class="font-bold">${{ getPrice(item) }}</span>
         </div>
       </div>
       <button
-        class="absolute border-2 rounded-full -top-3 -right-3 bg-primary-light border-tertiary-dark drop-shadow-navlink material-icons-outlined"
+        class="material-icons-outlined absolute -top-3 -right-3 rounded-full border-2 border-tertiary-dark bg-primary-light drop-shadow-navlink"
         @click="$emit('deleteItem', item.id)"
       >
         close

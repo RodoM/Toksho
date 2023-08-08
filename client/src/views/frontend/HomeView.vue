@@ -37,11 +37,8 @@ onMounted(async () => {
     <LoadingSpinner v-if="loading" />
     <div v-else>
       <SliderComponent :slides="slides" />
-      <div class="container flex flex-col items-center mx-auto my-5 gap-y-20">
-        <div
-          v-if="novelties"
-          class="flex flex-col items-center w-full gap-y-10"
-        >
+      <div class="container mx-auto my-5 flex flex-col items-center gap-y-20">
+        <div v-if="novelties" class="flex w-full flex-col items-center gap-y-10">
           <header-title>
             <span class="text-2xl font-bold">NOVEDADES</span>
           </header-title>
@@ -53,20 +50,10 @@ onMounted(async () => {
           </header-title>
           <ProductList :products="presales" class="px-5" />
         </content-block>
-        <div
-          class="grid grid-cols-2 gap-3 mx-5 place-items-center md:grid-cols-4"
-        >
+        <div class="mx-5 grid grid-cols-2 place-items-center gap-3 md:grid-cols-4">
           <img src="@/assets/images/ivrea.png" alt="ivrea" class="grayscale" />
-          <img
-            src="@/assets/images/panini.png"
-            alt="panini"
-            class="grayscale"
-          />
-          <img
-            src="@/assets/images/planeta-comic.png"
-            alt="planeta-comic"
-            class="grayscale"
-          />
+          <img src="@/assets/images/panini.png" alt="panini" class="grayscale" />
+          <img src="@/assets/images/planeta-comic.png" alt="planeta-comic" class="grayscale" />
           <img src="@/assets/images/ovni.png" alt="ovni" class="grayscale" />
         </div>
         <div class="w-full px-5">
@@ -75,7 +62,7 @@ onMounted(async () => {
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3355.85120910867!2d-60.73914318441111!3d-32.74314138098227!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b65b5764fd94f3%3A0xf1c310865ef199a8!2sTOKSHO%20COMIC!5e0!3m2!1ses-419!2sar!4v1676674481705!5m2!1ses-419!2sar"
             allowfullscreen="false"
             referrerpolicy="no-referrer-when-downgrade"
-            class="w-full border-2 h-96 lg:h-[600px] border-tertiary-dark drop-shadow-items"
+            class="h-96 w-full border-2 border-tertiary-dark drop-shadow-items lg:h-[600px]"
           ></iframe>
         </div>
       </div>

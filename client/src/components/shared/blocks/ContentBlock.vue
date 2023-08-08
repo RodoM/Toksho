@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="container flex flex-col w-full py-5 mx-auto border-2 gap-y-10 bg-secondary-light border-tertiary-dark drop-shadow-items"
-  >
+  <div class="container mx-auto flex w-full flex-col gap-y-10 border-2 border-tertiary-dark bg-secondary-light py-5 drop-shadow-items">
     <slot></slot>
   </div>
 </template>

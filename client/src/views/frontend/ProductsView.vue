@@ -8,8 +8,7 @@ import ProductList from "@/components/shared/products/ProductList.vue";
 import PaginationComponent from "@/components/shared/PaginationComponent.vue";
 
 // Pagination
-const { loading, productsData, productsFunctions, pagination, pagesFunctions } =
-  useProductPagination();
+const { loading, productsData, productsFunctions, pagination, pagesFunctions } = useProductPagination();
 
 onMounted(async () => {
   loading.value = true;
@@ -21,7 +20,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container py-5 mx-auto">
+  <div class="container mx-auto py-5">
     <div class="mx-5">
       <SearchAndFilter
         v-show="!loading"
@@ -44,17 +43,10 @@ onMounted(async () => {
           @goToPage="pagesFunctions.goToPage"
         />
       </div>
-      <div
-        v-else
-        class="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-      >
-        <span class="material-icons-outlined !text-9xl text-primary">
-          search_off
-        </span>
+      <div v-else class="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+        <span class="material-icons-outlined !text-9xl text-primary"> search_off </span>
         <span class="text-xl font-medium">Sin resultados</span>
-        <span class="font-medium text-center min-w-[335px]"
-          >No se encontraron resultados con los datos especificados.</span
-        >
+        <span class="min-w-[335px] text-center font-medium">No se encontraron resultados con los datos especificados.</span>
       </div>
     </div>
   </div>

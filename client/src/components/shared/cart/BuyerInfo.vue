@@ -2,15 +2,7 @@
 import { reactive, computed, onMounted } from "vue";
 import { getUser } from "@/supabase/helpers.js";
 import { useVuelidate } from "@vuelidate/core";
-import {
-  required,
-  requiredIf,
-  email,
-  numeric,
-  minLength,
-  maxLength,
-  helpers,
-} from "@vuelidate/validators";
+import { required, requiredIf, email, numeric, minLength, maxLength, helpers } from "@vuelidate/validators";
 import { userStore } from "@/stores/index.js";
 
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
@@ -72,34 +64,19 @@ const rules = computed(() => {
       },
       address: {
         location: {
-          requiredIf: helpers.withMessage(
-            "Requerido",
-            requiredIf(state.shipment)
-          ),
+          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
         },
         postal_code: {
-          requiredIf: helpers.withMessage(
-            "Requerido",
-            requiredIf(state.shipment)
-          ),
+          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
         },
         province: {
-          requiredIf: helpers.withMessage(
-            "Requerido",
-            requiredIf(state.shipment)
-          ),
+          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
         },
         street_name: {
-          requiredIf: helpers.withMessage(
-            "Requerido",
-            requiredIf(state.shipment)
-          ),
+          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
         },
         street_number: {
-          requiredIf: helpers.withMessage(
-            "Requerido",
-            requiredIf(state.shipment)
-          ),
+          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
         },
       },
     },
@@ -122,9 +99,7 @@ defineExpose({
 
 onMounted(async () => {
   if (store.user?.id) {
-    const { first_name, last_name, email, phone, address } = await getUser(
-      store.user.id
-    );
+    const { first_name, last_name, email, phone, address } = await getUser(store.user.id);
     state.payer.name = first_name;
     state.payer.surname = last_name;
     state.payer.email = email;
@@ -154,7 +129,7 @@ onMounted(async () => {
             v-model="state.payer.name"
             type="text"
             placeholder="Nombre"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
 
@@ -169,7 +144,7 @@ onMounted(async () => {
             v-model="state.payer.surname"
             type="text"
             placeholder="Apellido"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
       </div>
@@ -185,7 +160,7 @@ onMounted(async () => {
           v-model="state.payer.email"
           type="email"
           placeholder="Email"
-          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+          class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
         />
       </div>
 
@@ -193,10 +168,7 @@ onMounted(async () => {
         <div class="w-full">
           <div>
             <label :for="state.payer.phone.area_code">Código de área</label>
-            <span
-              v-if="v$.payer.phone.area_code.$error"
-              class="pl-2 text-red-500"
-            >
+            <span v-if="v$.payer.phone.area_code.$error" class="pl-2 text-red-500">
               {{ v$.payer.phone.area_code.$errors[0].$message }}
             </span>
           </div>
@@ -204,7 +176,7 @@ onMounted(async () => {
             v-model="state.payer.phone.area_code"
             type="text"
             placeholder="Código de área"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
 
@@ -219,7 +191,7 @@ onMounted(async () => {
             v-model="state.payer.phone.number"
             type="number"
             placeholder="Código de área"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
       </div>
@@ -234,10 +206,7 @@ onMounted(async () => {
           <div class="w-full">
             <div>
               <label :for="state.payer.address.province">Provincia</label>
-              <span
-                v-if="v$.payer.address.province.$error"
-                class="pl-2 text-red-500"
-              >
+              <span v-if="v$.payer.address.province.$error" class="pl-2 text-red-500">
                 {{ v$.payer.address.province.$errors[0].$message }}
               </span>
             </div>
@@ -245,17 +214,14 @@ onMounted(async () => {
               v-model="state.payer.address.province"
               type="text"
               placeholder="Provincia"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
             />
           </div>
 
           <div class="w-full">
             <div>
               <label :for="state.payer.address.location">Ciudad</label>
-              <span
-                v-if="v$.payer.address.location.$error"
-                class="pl-2 text-red-500"
-              >
+              <span v-if="v$.payer.address.location.$error" class="pl-2 text-red-500">
                 {{ v$.payer.address.location.$errors[0].$message }}
               </span>
             </div>
@@ -263,7 +229,7 @@ onMounted(async () => {
               v-model="state.payer.address.location"
               type="text"
               placeholder="Ciudad"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
             />
           </div>
         </div>
@@ -271,13 +237,8 @@ onMounted(async () => {
         <div class="flex flex-col gap-5 md:flex-row">
           <div class="w-full">
             <div>
-              <label :for="state.payer.address.postal_code">
-                Código postal
-              </label>
-              <span
-                v-if="v$.payer.address.postal_code.$error"
-                class="pl-2 text-red-500"
-              >
+              <label :for="state.payer.address.postal_code"> Código postal </label>
+              <span v-if="v$.payer.address.postal_code.$error" class="pl-2 text-red-500">
                 {{ v$.payer.address.postal_code.$errors[0].$message }}
               </span>
             </div>
@@ -285,17 +246,14 @@ onMounted(async () => {
               v-model="state.payer.address.postal_code"
               type="number"
               placeholder="Código postal"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
             />
           </div>
 
           <div class="w-full">
             <div>
               <label :for="state.payer.address.street_name">Calle</label>
-              <span
-                v-if="v$.payer.address.street_name.$error"
-                class="pl-2 text-red-500"
-              >
+              <span v-if="v$.payer.address.street_name.$error" class="pl-2 text-red-500">
                 {{ v$.payer.address.street_name.$errors[0].$message }}
               </span>
             </div>
@@ -303,17 +261,14 @@ onMounted(async () => {
               v-model="state.payer.address.street_name"
               type="text"
               placeholder="Calle"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
             />
           </div>
 
           <div class="w-full">
             <div>
               <label :for="state.payer.address.street_number">Número</label>
-              <span
-                v-if="v$.payer.address.street_number.$error"
-                class="pl-2 text-red-500"
-              >
+              <span v-if="v$.payer.address.street_number.$error" class="pl-2 text-red-500">
                 {{ v$.payer.address.street_number.$errors[0].$message }}
               </span>
             </div>
@@ -321,7 +276,7 @@ onMounted(async () => {
               v-model="state.payer.address.street_number"
               type="number"
               placeholder="Número"
-              class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
             />
           </div>
         </div>

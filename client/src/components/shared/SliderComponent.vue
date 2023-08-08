@@ -27,26 +27,17 @@ const props = defineProps({
   >
     <SwiperSlide v-for="slide in props.slides" :key="slide.id">
       <div class="relative h-[350px] lg:h-[700px]">
-        <div
-          class="absolute z-50 flex flex-col w-3/4 text-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-        >
+        <div class="absolute top-1/2 left-1/2 z-50 flex w-3/4 -translate-x-1/2 -translate-y-1/2 flex-col text-center">
           <span
-            class="text-3xl font-extrabold uppercase text-stroke-2 text-secondary-light drop-shadow-navlink md:drop-shadow-items md:text-4xl"
+            class="text-stroke-2 text-3xl font-extrabold uppercase text-secondary-light drop-shadow-navlink md:text-4xl md:drop-shadow-items"
           >
             {{ slide.secondary_text }}
           </span>
-          <span
-            class="text-4xl font-extrabold uppercase sm:text-6xl text-stroke-2 text-primary-light drop-shadow-items md:text-8xl"
-          >
+          <span class="text-stroke-2 text-4xl font-extrabold uppercase text-primary-light drop-shadow-items sm:text-6xl md:text-8xl">
             {{ slide.primary_text }}
           </span>
         </div>
-        <img
-          :src="slide.image"
-          alt="noticia"
-          class="z-40 object-cover w-full h-full"
-          loading="lazy"
-        />
+        <img :src="slide.image" alt="noticia" class="z-40 h-full w-full object-cover" loading="lazy" />
       </div>
     </SwiperSlide>
   </Swiper>

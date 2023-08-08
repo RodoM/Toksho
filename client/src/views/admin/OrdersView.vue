@@ -8,8 +8,7 @@ import OrdersList from "@/components/shared/orders/OrdersList.vue";
 import PaginationComponent from "@/components/shared/PaginationComponent.vue";
 
 // Pagination
-const { loading, ordersData, ordersFunctions, pagination, pagesFunctions } =
-  useOrderPagination();
+const { loading, ordersData, ordersFunctions, pagination, pagesFunctions } = useOrderPagination();
 
 async function fetchOrders() {
   loading.value = true;
@@ -23,7 +22,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container py-5 mx-auto">
+  <div class="container mx-auto py-5">
     <LoadingSpinner v-if="loading" />
     <SearchAndFilter
       v-show="!loading"
@@ -33,10 +32,7 @@ onMounted(async () => {
       @fetchWithFilters="ordersFunctions.fetchOrders"
       @clearFilters="ordersFunctions.clearFilters"
     />
-    <OrdersList
-      v-if="!loading && ordersData.orders.value"
-      :orders="ordersData.orders.value"
-    />
+    <OrdersList v-if="!loading && ordersData.orders.value" :orders="ordersData.orders.value" />
     <PaginationComponent
       v-show="!loading && ordersData.count.value > 0"
       class="mt-10"
