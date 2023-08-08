@@ -3,7 +3,6 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { uploadFile, createProduct } from "@/supabase/helpers.js";
 import { initialState, resetForm, v$ } from "@/lib/composables/productHelper";
-import { showToast } from "@/lib/composables/toastHelper";
 import { getFile } from "@/lib/composables/imageHelper";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
@@ -24,19 +23,11 @@ const loading = ref(false);
 const addProduct = async () => {
   if (!loading.value) {
     loading.value = true;
-    try {
-      const { author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
+    const { author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
 
-      const imageURL = await uploadFile(author, name, image.image);
-      await createProduct(type, name, imageURL, size, author, editorial, getCategories(), price, discount, stock, description);
-
-      showToast("Se agregó correctamente el producto", "success");
-      router.push({ name: "Stock" });
-      resetForm();
-    } catch (error) {
-      console.log(error);
-      showToast("Error al cargar el producto", "error");
-    }
+    const imageURL = await uploadFile(author, name, image.image);
+    await createProduct(type, name, imageURL, size, author, editorial, getCategories(), price, discount, stock, description);
+    resetForm();
   }
 };
 

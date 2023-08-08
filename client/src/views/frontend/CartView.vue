@@ -2,14 +2,8 @@
 import { ref, onBeforeMount } from "vue";
 import { itemsStore } from "@/stores/shoppingCart.js";
 import { userStore } from "@/stores/index.js";
-import { useToast } from "vue-toast-notification";
-import {
-  getUserCart,
-  addToUserCart,
-  getCartItems,
-  getMaintenance,
-  getShippingPrice,
-} from "@/supabase/helpers.js";
+import { showToast } from "@/lib/composables/toastHelper";
+import { getUserCart, updateUserCart, getCartItems, getMaintenance, getShippingPrice } from "@/supabase/helpers.js";
 import mpService from "@/lib/services/mpService.js";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
@@ -20,7 +14,6 @@ import CustomButton from "@/lib/components/CustomButton.vue";
 
 const itemStore = itemsStore();
 const usersStore = userStore();
-const $toast = useToast();
 
 const loading = ref(false);
 const maintenance = ref();
@@ -30,36 +23,14 @@ const items = ref();
 const step1 = ref(true);
 
 const deleteItem = async (id) => {
-  try {
-    if (usersStore.user?.id) {
-      items.value.pop(items.value.find((x) => x.id === id));
-      const error = await addToUserCart(
-        items.value.map((x) => ({ id: x.id, amount: x.amount })),
-        usersStore.user.id
-      );
-      if (error) throw error;
-    } else {
-      itemStore.deleteItem(id);
-      items.value = await getCartItems(itemStore.items);
-    }
-    $toast.open({
-      position: "top-right",
-      message: "Se eliminó correctamente el producto al carrito",
-      type: "success",
-      duration: 5000,
-      dismissible: true,
-      pauseOnHover: true,
-    });
-  } catch (error) {
-    console.log(error);
-    $toast.open({
-      position: "top-right",
-      message: "Error al eliminar el producto del carrito",
-      type: "error",
-      duration: 5000,
-      dismissible: true,
-      pauseOnHover: true,
-    });
+  if (usersStore.user?.id) {
+    items.value.pop(items.value.find((x) => x.id === id));
+    const newItems = items.value.map((x) => ({ id: x.id, amount: x.amount }));
+    await updateUserCart(newItems, usersStore.user.id, true);
+  } else {
+    itemStore.deleteItem(id);
+    items.value = await getCartItems(itemStore.items);
+    showToast("Se eliminó el producto del carrito", "success");
   }
 };
 
@@ -146,83 +117,35 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="container p-5 mx-auto">
+  <div class="container mx-auto p-5">
     <LoadingSpinner v-if="loading" />
-    <div v-else-if="!loading && items.length > 0" class="flex flex-col h-full">
+    <div v-else-if="!loading && items.length > 0" class="flex h-full flex-col">
       <header-title>
         <span class="text-2xl font-bold">CARRITO</span>
       </header-title>
-      <div class="flex flex-col flex-grow gap-6 my-5 lg:gap-40 lg:flex-row">
+      <div class="my-5 flex flex-grow flex-col gap-6 lg:flex-row lg:gap-40">
         <div class="w-full">
           <CartList v-if="step1" :items="items" @deleteItem="deleteItem" />
-          <BuyerInfo
-            v-else
-            ref="state"
-            :shipmentPrice="shipmentPrice"
-            @validate="isValidated = true"
-          />
+          <BuyerInfo v-else ref="state" :shipmentPrice="shipmentPrice" @validate="isValidated = true" />
         </div>
         <div class="flex flex-col gap-5">
-          <CartSummary
-            :items="items"
-            :shipment="state?.state?.shipment"
-            :shipmentPrice="shipmentPrice"
-          />
+          <CartSummary :items="items" :shipment="state?.state?.shipment" :shipmentPrice="shipmentPrice" />
           <div v-if="preferenceId" id="wallet_container"></div>
-          <CustomButton
-            v-else-if="!maintenance && step1"
-            primary
-            @click="step1 = false"
-          >
-            CONTINUAR CON EL PEDIDO
+          <CustomButton v-else-if="!maintenance && step1" primary @click="step1 = false"> CONTINUAR CON EL PEDIDO </CustomButton>
+          <CustomButton v-else-if="!maintenance" primary class="flex justify-center" :loading="loadingBtn" @click="sendPreference">
+            CONTINUAR CON EL PAGO
           </CustomButton>
-          <CustomButton
-            v-else-if="!maintenance"
-            primary
-            class="flex justify-center"
-            @click="sendPreference"
-          >
-            <svg
-              v-if="loadingBtn"
-              aria-hidden="true"
-              class="w-5 h-5 text-tertiary-light animate-spin fill-primary"
-              viewBox="0 0 100 101"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                fill="currentColor"
-              />
-              <path
-                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                fill="currentFill"
-              />
-            </svg>
-            <span v-else> CONTINUAR CON EL PAGO </span>
-          </CustomButton>
-          <CustomButton v-if="!step1" secondary @click="stepBack()">
-            VOLVER AL PASO ANTERIOR
-          </CustomButton>
+          <CustomButton v-if="!step1" secondary @click="stepBack()"> VOLVER AL PASO ANTERIOR </CustomButton>
         </div>
       </div>
     </div>
-    <div
-      v-else
-      class="absolute flex flex-col items-center gap-3 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-    >
-      <span class="material-icons-outlined !text-9xl text-primary">
-        production_quantity_limits
-      </span>
+    <div v-else class="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-3">
+      <span class="material-icons-outlined !text-9xl text-primary"> production_quantity_limits </span>
       <span class="text-xl font-medium">Carrito vacío</span>
-      <span class="font-medium text-center min-w-[335px]">
-        No se encontraron productos en tu carrito, puedes revisar nuestro
-        catálogo y añadir productos al mismo.
+      <span class="min-w-[335px] text-center font-medium">
+        No se encontraron productos en tu carrito, puedes revisar nuestro catálogo y añadir productos al mismo.
       </span>
-      <router-link
-        to="/productos"
-        class="p-2 font-medium border-2 border-tertiary-dark bg-primary-light drop-shadow-items"
-      >
+      <router-link to="/productos" class="border-2 border-tertiary-dark bg-primary-light p-2 font-medium drop-shadow-items">
         VISITAR CATÁLOGO
       </router-link>
     </div>

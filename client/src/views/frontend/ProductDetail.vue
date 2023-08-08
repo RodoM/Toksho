@@ -3,14 +3,8 @@ import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 import { itemsStore } from "@/stores/shoppingCart.js";
 import { userStore } from "@/stores/index.js";
-import { useToast } from "vue-toast-notification";
-import {
-  getRelatedProducts,
-  getProductDetails,
-  getUserCart,
-  addToUserCart,
-  getMaintenance,
-} from "@/supabase/helpers.js";
+import { showToast } from "@/lib/composables/toastHelper";
+import { getRelatedProducts, getProductDetails, getUserCart, updateUserCart, getMaintenance } from "@/supabase/helpers.js";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
@@ -20,7 +14,6 @@ import CustomButton from "@/lib/components/CustomButton.vue";
 const route = useRoute();
 const itemStore = itemsStore();
 const usersStore = userStore();
-const $toast = useToast();
 
 const product = ref();
 const userCart = ref([]);
@@ -43,56 +36,21 @@ const moreAmount = () => {
 };
 
 const addProduct = async (id) => {
-  try {
-    if (
-      !userCart.value.find((x) => x.id === id) &&
-      !itemStore.items.find((x) => x.id === id)
-    ) {
-      if (usersStore.user?.id) {
-        userCart.value.push({ id: id, amount: amount.value });
-        const error = await addToUserCart(userCart.value, usersStore.user.id);
-        if (error) throw error;
-        else userCart.value = await getUserCart(usersStore.user.id);
-      } else {
-        itemStore.addItem(id, amount.value);
-      }
+  if (!userCart.value.find((x) => x.id === id) && !itemStore.items.find((x) => x.id === id)) {
+    if (usersStore.user?.id) {
+      userCart.value.push({ id: id, amount: amount.value });
+      await updateUserCart(userCart.value, usersStore.user.id);
+      userCart.value = await getUserCart(usersStore.user.id);
     } else {
-      $toast.open({
-        position: "top-right",
-        message: "El producto ya se encuentra en tu carrito",
-        type: "warning",
-        duration: 5000,
-        dismissible: true,
-        pauseOnHover: true,
-      });
-      return;
+      itemStore.addItem(id, amount.value);
     }
-    $toast.open({
-      position: "top-right",
-      message: "Se agregó correctamente el producto del carrito",
-      type: "success",
-      duration: 5000,
-      dismissible: true,
-      pauseOnHover: true,
-    });
-  } catch (error) {
-    console.log(error);
-    $toast.open({
-      position: "top-right",
-      message: "Error al agregar el producto a tu carrito",
-      type: "error",
-      duration: 5000,
-      dismissible: true,
-      pauseOnHover: true,
-    });
+  } else {
+    showToast("El producto ya se encuentra en tu carrito", "warning");
   }
 };
 
 async function relatedProducts() {
-  related.value = await getRelatedProducts(
-    product.value.categories,
-    product.value.name
-  );
+  related.value = await getRelatedProducts(product.value.categories, product.value.name);
 }
 
 onBeforeMount(async () => {
@@ -112,15 +70,15 @@ function newPrice(price, discount) {
 </script>
 
 <template>
-  <div class="container py-5 mx-auto">
+  <div class="container mx-auto py-5">
     <LoadingSpinner v-if="loading" />
-    <div v-if="!loading && product" class="flex flex-col gap-5 mx-5">
+    <div v-if="!loading && product" class="mx-5 flex flex-col gap-5">
       <div class="flex flex-col gap-5 lg:flex-row">
         <img
           :src="product.image"
           :alt="product.name"
           loading="lazy"
-          class="border-2 border-tertiary-dark drop-shadow-items lg:h-[685px] lg:min-w-[450px] lg:w-[450px]"
+          class="border-2 border-tertiary-dark drop-shadow-items lg:h-[685px] lg:w-[450px] lg:min-w-[450px]"
         />
         <div class="flex flex-col justify-between gap-3">
           <div class="flex flex-col gap-5">
@@ -130,25 +88,14 @@ function newPrice(price, discount) {
               </span>
             </header-title>
             <div>
-              <span
-                class="text-2xl font-bold"
-                :class="{ 'line-through': product.discount }"
-              >
-                ${{ product.price }}
-              </span>
-              <span v-if="product.discount" class="text-2xl font-bold">
-                ${{ newPrice(product.price, product.discount) }}
-              </span>
+              <span class="text-2xl font-bold" :class="{ 'line-through': product.discount }"> ${{ product.price }} </span>
+              <span v-if="product.discount" class="text-2xl font-bold"> ${{ newPrice(product.price, product.discount) }} </span>
             </div>
             <span>{{ product.description }}</span>
             <div>
               <span class="font-bold">Categorías: </span>
-              <span
-                v-for="(category, index) in product.categories"
-                :key="index"
-              >
-                {{ category
-                }}{{ index + 1 < product.categories.length ? ", " : "" }}
+              <span v-for="(category, index) in product.categories" :key="index">
+                {{ category }}{{ index + 1 < product.categories.length ? ", " : "" }}
               </span>
             </div>
             <span>
@@ -158,31 +105,16 @@ function newPrice(price, discount) {
           </div>
           <div v-if="!maintenance" class="flex flex-col gap-3 md:flex-row">
             <div class="flex drop-shadow-items">
-              <button
-                class="w-1/3 font-bold border-2 bg-primary-light border-tertiary-dark"
-                @click="lessAmount"
-              >
-                -
-              </button>
+              <button class="w-1/3 border-2 border-tertiary-dark bg-primary-light font-bold" @click="lessAmount">-</button>
               <input
                 v-model="amount"
                 type="number"
                 disabled
-                class="w-1/3 p-3 font-bold text-center bg-white border-y-2 border-tertiary-dark focus:outline-none"
+                class="w-1/3 border-y-2 border-tertiary-dark bg-white p-3 text-center font-bold focus:outline-none"
               />
-              <button
-                class="w-1/3 font-bold border-2 bg-primary-light border-tertiary-dark"
-                @click="moreAmount"
-              >
-                +
-              </button>
+              <button class="w-1/3 border-2 border-tertiary-dark bg-primary-light font-bold" @click="moreAmount">+</button>
             </div>
-            <CustomButton
-              primary
-              class="w-full"
-              :disabled="product.stock == 0"
-              @click="addProduct(product.id)"
-            >
+            <CustomButton primary class="w-full" :disabled="product.stock == 0" @click="addProduct(product.id)">
               {{ product.stock == 0 ? "SIN STOCK" : "AÑADIR AL CARRITO" }}
             </CustomButton>
           </div>
@@ -207,7 +139,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 </style>

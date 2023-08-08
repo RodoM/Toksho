@@ -11,9 +11,9 @@ import "material-icons/iconfont/material-icons.css";
 import "vue-toast-notification/dist/theme-sugar.css";
 import "vue-select/dist/vue-select.css";
 
+const pinia = createPinia();
 const app = createApp(App);
 
-const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 app.use(router);

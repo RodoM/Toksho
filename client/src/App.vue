@@ -20,9 +20,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="flex flex-col h-screen">
+  <main class="flex h-screen flex-col">
     <NavBar />
-    <router-view v-slot="{ Component }" class="flex-1 mt-[63px]">
+    <router-view v-slot="{ Component }" class="mt-[63px] flex-1">
       <transition name="fade" mode="out-in">
         <component :key="$route.path" :is="Component"></component>
       </transition>

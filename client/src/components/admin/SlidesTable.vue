@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
 import { deleteSlide } from "@/supabase/helpers.js";
-import { useToast } from "vue-toast-notification";
 
 const props = defineProps({
   slides: {
@@ -12,34 +11,11 @@ const props = defineProps({
 
 const emit = defineEmits(["deleted"]);
 
-const $toast = useToast();
-
 async function deleteSlideImage(slide) {
-  if (confirm("¿Esta seguro que desea eliminar esta diapositiva?"))
-    try {
-      const error = await deleteSlide(slide.id, slide.updated_at);
-      if (error) throw error;
-      else {
-        $toast.open({
-          position: "top-right",
-          message: "Se eliminó correctamente la diapositiva",
-          type: "success",
-          duration: 5000,
-          dismissible: true,
-          pauseOnHover: true,
-        });
-        emit("deleted");
-      }
-    } catch (error) {
-      $toast.open({
-        position: "top-right",
-        message: "Error al borrar la diapositiva",
-        type: "error",
-        duration: 5000,
-        dismissible: true,
-        pauseOnHover: true,
-      });
-    }
+  if (confirm("¿Esta seguro que desea eliminar esta diapositiva?")) {
+    await deleteSlide(slide.id, slide.updated_at);
+    emit("deleted");
+  }
 }
 
 const currentSlideImage = ref();

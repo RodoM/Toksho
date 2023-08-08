@@ -3,15 +3,12 @@ import { reactive, computed } from "vue";
 import { createSlide } from "@/supabase/helpers.js";
 import { useVuelidate } from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
-import { useToast } from "vue-toast-notification";
 
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const emit = defineEmits(["created"]);
-
-const $toast = useToast();
 
 const getFile = () => {
   const selectedFile = event.target.files[0];
@@ -42,30 +39,8 @@ const v$ = useVuelidate(rules, state);
 
 async function createSlideImage() {
   const { image, primaryText, secondaryText } = state;
-  try {
-    const error = await createSlide(image, primaryText, secondaryText);
-    if (error) throw error;
-    else {
-      $toast.open({
-        position: "top-right",
-        message: "Se creo correctamente la diapositiva",
-        type: "success",
-        duration: 5000,
-        dismissible: true,
-        pauseOnHover: true,
-      });
-      emit("created");
-    }
-  } catch (error) {
-    $toast.open({
-      position: "top-right",
-      message: "Error al crear la diapositiva",
-      type: "error",
-      duration: 5000,
-      dismissible: true,
-      pauseOnHover: true,
-    });
-  }
+  await createSlide(image, primaryText, secondaryText);
+  emit("created");
 }
 
 async function submitForm(event) {

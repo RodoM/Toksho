@@ -1,13 +1,10 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { getMaintenance, setMaintenance, getShippingPrice, setShippingPrice } from "@/supabase/helpers.js";
-import { useToast } from "vue-toast-notification";
 
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
-
-const $toast = useToast();
 
 const maintenance = ref();
 const shipmentPrice = ref();
@@ -17,34 +14,12 @@ const maintenanceOptions = ref([
   { label: "No", value: false },
 ]);
 
-async function updateSettings() {
+async function updateSettings(event) {
   event.preventDefault();
-  if (confirm("¿Actualizar configuraciones?"))
-    try {
-      const setMaintenanceErr = await setMaintenance(maintenance.value);
-      const setShippingPriceErr = await setShippingPrice(shipmentPrice.value);
-      if (setMaintenanceErr || setShippingPriceErr) {
-        throw setMaintenanceErr || setShippingPriceErr;
-      } else {
-        $toast.open({
-          position: "top-right",
-          message: "Se actualizaron las configuraciones",
-          type: "success",
-          duration: 5000,
-          dismissible: true,
-          pauseOnHover: true,
-        });
-      }
-    } catch (error) {
-      $toast.open({
-        position: "top-right",
-        message: "Error al actualizar las configuraciones",
-        type: "error",
-        duration: 5000,
-        dismissible: true,
-        pauseOnHover: true,
-      });
-    }
+  if (confirm("¿Actualizar configuraciones?")) {
+    await setMaintenance(maintenance.value);
+    await setShippingPrice(shipmentPrice.value);
+  }
 }
 
 onMounted(async () => {

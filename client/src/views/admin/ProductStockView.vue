@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted } from "vue";
-import { useToast } from "vue-toast-notification";
 import { deleteFile, deleteProduct, setAsNovelty, setAsPresale, handlePublish } from "@/supabase/helpers.js";
 import { getImagePath } from "@/lib/composables/imageHelper";
 import useProductPagination from "@/lib/composables/paginationHelper";
@@ -10,40 +9,15 @@ import SearchAndFilter from "@/components/shared/filters/SearchAndFilter.vue";
 import PaginationComponent from "@/components/shared/PaginationComponent.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
-const $toast = useToast();
-
 // Pagination
 const { loading, productsData, productsFunctions, pagination, pagesFunctions } = useProductPagination(true);
 
 const deleteProductFile = async (product) => {
-  if (confirm("¿Esta seguro que desea eliminar este producto?"))
-    try {
-      await deleteFile(getImagePath(product.image));
-      const error = await deleteProduct(product.id);
-      if (error) throw error;
-      else {
-        $toast.open({
-          position: "top-right",
-          message: "Se eliminó correctamente el producto",
-          type: "success",
-          duration: 5000,
-          dismissible: true,
-          pauseOnHover: true,
-        });
-        loading.value = true;
-        productsFunctions.fetchProducts();
-        loading.value = false;
-      }
-    } catch (error) {
-      $toast.open({
-        position: "top-right",
-        message: "Error al borrar el producto",
-        type: "error",
-        duration: 5000,
-        dismissible: true,
-        pauseOnHover: true,
-      });
-    }
+  if (confirm("¿Esta seguro que desea eliminar este producto?")) {
+    await deleteFile(getImagePath(product.image));
+    await deleteProduct(product.id);
+    productsFunctions.fetchProducts();
+  }
 };
 
 // Novelties and Presales setters

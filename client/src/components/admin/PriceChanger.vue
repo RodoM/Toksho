@@ -34,7 +34,7 @@ watch(
 );
 
 const setNewPrice = async () => {
-  if (!loading.value) {
+  if (!loading.value && confirm("¿Actualizar los precios?")) {
     loading.value = true;
     const { editorial, size, currentPrice, newPrice } = price.value;
     await changePrice(editorial, size, currentPrice, newPrice);

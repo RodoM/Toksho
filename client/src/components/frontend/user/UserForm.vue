@@ -3,7 +3,6 @@ import { onMounted, reactive, computed } from "vue";
 import { getUser, updateUser } from "@/supabase/helpers.js";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers, requiredIf } from "@vuelidate/validators";
-import { useToast } from "vue-toast-notification";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
@@ -46,48 +45,27 @@ const rules = computed(() => {
     },
     phone: {
       code: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.phone))
-        ),
+        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.phone))),
       },
       number: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.phone))
-        ),
+        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.phone))),
       },
     },
     address: {
       province: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
+        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
       },
       city: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
+        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
       },
       postalCode: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
+        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
       },
       street: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
+        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
       },
       number: {
-        requiredIf: helpers.withMessage(
-          "Requerido",
-          requiredIf(!isObjectEmpty(state.address))
-        ),
+        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
       },
     },
   };
@@ -104,32 +82,8 @@ function isObjectEmpty(object) {
   return true;
 }
 
-const $toast = useToast();
-
 async function updateUserData() {
-  try {
-    const error = await updateUser(props.userId, state);
-    if (error) throw error;
-    else {
-      $toast.open({
-        position: "top-right",
-        message: "Se actualizaron correctamente los datos",
-        type: "success",
-        duration: 5000,
-        dismissible: true,
-        pauseOnHover: true,
-      });
-    }
-  } catch (error) {
-    $toast.open({
-      position: "top-right",
-      message: "Error al actualizar los datos",
-      type: "error",
-      duration: 5000,
-      dismissible: true,
-      pauseOnHover: true,
-    });
-  }
+  await updateUser(props.userId, state);
 }
 
 async function submitForm() {
@@ -159,7 +113,7 @@ onMounted(async () => {
             v-model="state.first_name"
             type="text"
             placeholder="Nombre"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
 
@@ -174,7 +128,7 @@ onMounted(async () => {
             v-model="state.last_name"
             type="text"
             placeholder="Apellido"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
       </div>
@@ -190,7 +144,7 @@ onMounted(async () => {
           v-model="state.email"
           type="mail"
           placeholder="Email"
-          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+          class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
         />
       </div>
 
@@ -206,7 +160,7 @@ onMounted(async () => {
             v-model="state.phone.code"
             type="number"
             placeholder="Código de area"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
         <div class="w-full">
@@ -220,7 +174,7 @@ onMounted(async () => {
             v-model="state.phone.number"
             type="number"
             placeholder="Número de télefono"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
       </div>
@@ -236,7 +190,7 @@ onMounted(async () => {
           v-model="state.address.province"
           type="text"
           placeholder="Provincia"
-          class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+          class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
         />
       </div>
 
@@ -252,7 +206,7 @@ onMounted(async () => {
             v-model="state.address.city"
             type="text"
             placeholder="Ciudad"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
         <div class="w-full">
@@ -266,7 +220,7 @@ onMounted(async () => {
             v-model="state.address.postalCode"
             type="number"
             placeholder="Código postal"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
       </div>
@@ -283,7 +237,7 @@ onMounted(async () => {
             v-model="state.address.street"
             type="text"
             placeholder="Calle"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
         <div class="w-full">
@@ -297,18 +251,12 @@ onMounted(async () => {
             v-model="state.address.number"
             type="number"
             placeholder="Número de calle"
-            class="w-full p-3 border-2 border-tertiary-dark drop-shadow-navlink focus:outline-none"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>
       </div>
 
-      <CustomButton
-        class="w-full px-10 ml-auto lg:w-fit"
-        primary
-        @click="submitForm()"
-      >
-        ACTUALIZAR
-      </CustomButton>
+      <CustomButton class="ml-auto w-full px-10 lg:w-fit" primary @click="submitForm()"> ACTUALIZAR </CustomButton>
     </form>
   </content-block>
 </template>

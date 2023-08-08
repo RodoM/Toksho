@@ -53,18 +53,13 @@ const loading = ref(false);
 const editProduct = async () => {
   if (!loading.value) {
     loading.value = true;
-    try {
-      let { id, author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
-      if (image.image) {
-        await deleteFile(getImagePath(previousData.value.image));
-        image.imageURL = await uploadFile(author, name, image.image);
-      }
-      await updateProduct(id, type, name, image.imageURL, size, author, editorial, getCategories(), price, discount, stock, description);
-      resetForm();
-      router.push({ name: "Stock" });
-    } catch (error) {
-      console.log(error);
+    let { id, author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
+    if (image.image) {
+      await deleteFile(getImagePath(previousData.value.image));
+      image.imageURL = await uploadFile(author, name, image.image);
     }
+    await updateProduct(id, type, name, image.imageURL, size, author, editorial, getCategories(), price, discount, stock, description);
+    resetForm();
   }
 };
 
