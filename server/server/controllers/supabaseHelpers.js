@@ -19,7 +19,7 @@ async function createOrder(id, user_id, items, payer, created, updated, order, p
       payer_mp: payer_mp,
       payment_type: payment_type,
       status: status,
-      status_detail: status,
+      status_detail: status_detail,
       transaction_amount: transaction_amount,
       transaction_details: transaction_details,
     }])

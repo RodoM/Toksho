@@ -18,6 +18,12 @@ let preference = {
     cost: undefined,
     mode: "not_specified",
   },
+  "payment_methods": {
+    "installments": 1,
+    "excluded_payment_types": [
+      { "id": "ticket" }
+    ]
+  },
   back_urls: {
     "success": process.env.VITE_API_FONT_URL,
     "failure": `${process.env.VITE_API_FONT_URL}/carrito`,
@@ -38,22 +44,21 @@ exports.setData = (req, res) => {
     console.log(error);
     res.status(403).json({
       success: false,
-      message: "Error al recibir la preferencia"
+      message: error.message
     });
   }
 }
 
 exports.getData = (req, res) => {
-  mercadopago.preferences
-  .create(preference)
-  .then(function (response) {
-    res.json(response.body)
-  })
-  .catch(function (error) {
-    console.log(error);
-    res.status(403).json({
-      success: true,
-      message: "Error al generar el id de preferencia"
+  mercadopago.preferences.create(preference)
+    .then(function (response) {
+      res.json(response.body)
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(403).json({
+        success: true,
+        message: error.message
+      });
     });
-  });
 }
