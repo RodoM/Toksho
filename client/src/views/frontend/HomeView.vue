@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { itemsStore } from "@/stores/shoppingCart.js";
-import { getNovelties, getPresales, getSlides } from "@/supabase/helpers.js";
+import { getNovelties, getPresales, getSlides } from "@/supabase/helpers";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import SliderComponent from "../../components/shared/SliderComponent.vue";

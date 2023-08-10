@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, computed } from "vue";
-import { createSlide } from "@/supabase/helpers.js";
+import { createSlide } from "@/supabase/helpers";
 import { useVuelidate } from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 

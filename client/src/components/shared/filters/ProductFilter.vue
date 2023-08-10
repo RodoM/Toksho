@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from "vue";
-import { getAllAuthors, getAllCategories } from "@/supabase/helpers.js";
+import { getAllAuthors, getAllCategories } from "@/supabase/helpers";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 

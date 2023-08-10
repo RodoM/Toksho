@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { deleteSlide } from "@/supabase/helpers.js";
+import { deleteSlide } from "@/supabase/helpers";
 
 const props = defineProps({
   slides: {

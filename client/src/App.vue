@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from "vue";
 import { RouterView } from "vue-router";
-import { getSessionData } from "@/supabase/helpers.js";
+import { getSessionData } from "@/supabase/helpers";
 import { userStore } from "@/stores/index.js";
 
 import NavBar from "./components/frontend/layout/Navbar.vue";

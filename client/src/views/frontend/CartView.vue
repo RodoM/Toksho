@@ -3,7 +3,7 @@ import { ref, onBeforeMount } from "vue";
 import { itemsStore } from "@/stores/shoppingCart.js";
 import { userStore } from "@/stores/index.js";
 import { showToast } from "@/lib/composables/toastHelper";
-import { getUserCart, updateUserCart, getCartItems, getMaintenance, getShippingPrice } from "@/supabase/helpers.js";
+import { getUserCart, updateUserCart, getCartItems, getMaintenance, getShippingPrice } from "@/supabase/helpers";
 import mpService from "@/lib/services/mpService.js";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";

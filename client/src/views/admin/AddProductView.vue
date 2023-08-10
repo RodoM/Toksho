@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { uploadFile, createProduct } from "@/supabase/helpers.js";
+import { uploadFile, createProduct } from "@/supabase/helpers";
 import { initialState, resetForm, v$ } from "@/lib/composables/productHelper";
 import { getFile } from "@/lib/composables/imageHelper";
 

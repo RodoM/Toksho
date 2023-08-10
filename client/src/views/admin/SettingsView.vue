@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getSlides } from "@/supabase/helpers.js";
+import { getSlides } from "@/supabase/helpers";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import CommonSettings from "@/components/admin/CommonSettings.vue";

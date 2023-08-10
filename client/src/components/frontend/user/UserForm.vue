@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, reactive, computed } from "vue";
-import { getUser, updateUser } from "@/supabase/helpers.js";
+import { getUser, updateUser } from "@/supabase/helpers";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers, requiredIf } from "@vuelidate/validators";
 

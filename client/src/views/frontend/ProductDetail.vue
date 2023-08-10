@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import { itemsStore } from "@/stores/shoppingCart.js";
 import { userStore } from "@/stores/index.js";
 import { showToast } from "@/lib/composables/toastHelper";
-import { getRelatedProducts, getProductDetails, getUserCart, updateUserCart, getMaintenance } from "@/supabase/helpers.js";
+import { getRelatedProducts, getProductDetails, getUserCart, updateUserCart, getMaintenance } from "@/supabase/helpers";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getMaintenance, setMaintenance, getShippingPrice, setShippingPrice } from "@/supabase/helpers.js";
+import { getMaintenance, setMaintenance, getShippingPrice, setShippingPrice } from "@/supabase/helpers";
 
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";

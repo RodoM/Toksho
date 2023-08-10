@@ -4,7 +4,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, sameAs, helpers } from "@vuelidate/validators";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
-import { register } from ".@/supabase/helpers";
+import { register } from "@/supabase/helpers";
 
 const state = reactive({
   email: "",

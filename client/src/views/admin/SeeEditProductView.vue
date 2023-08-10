@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { uploadFile, deleteFile } from "@/supabase/helpers.js";
+import { uploadFile, deleteFile } from "@/supabase/helpers";
 import { initialState, resetForm, v$ } from "@/lib/composables/productHelper";
 import { getFile, getImagePath } from "@/lib/composables/imageHelper";
 import { useRouter, useRoute } from "vue-router";
-import { getProductDetails, updateProduct } from "@/supabase/helpers.js";
+import { getProductDetails, updateProduct } from "@/supabase/helpers";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";

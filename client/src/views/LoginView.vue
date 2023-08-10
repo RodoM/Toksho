@@ -3,7 +3,7 @@ import { ref, reactive, computed } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
 import { userStore } from "@/stores/index.js";
-import { getSessionData, login } from "@/supabase/helpers.js";
+import { getSessionData, login } from "@/supabase/helpers";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 

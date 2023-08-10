@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from "vue";
-import { deleteFile, deleteProduct, setAsNovelty, setAsPresale, handlePublish } from "@/supabase/helpers.js";
+import { deleteFile, deleteProduct, setAsNovelty, setAsPresale, handlePublish } from "@/supabase/helpers";
 import { getImagePath } from "@/lib/composables/imageHelper";
 import useProductPagination from "@/lib/composables/paginationHelper";
 

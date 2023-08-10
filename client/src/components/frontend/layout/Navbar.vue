@@ -2,7 +2,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { userStore } from "@/stores/index.js";
-import { getSessionData, logout } from "@/supabase/helpers.js";
+import { getSessionData, logout } from "@/supabase/helpers";
 
 const store = userStore();
 const user = computed(() => store.user);

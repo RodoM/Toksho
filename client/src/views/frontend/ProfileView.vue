@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getUserOrders } from "@/supabase/helpers.js";
+import { getUserOrders } from "@/supabase/helpers";
 import { userStore } from "@/stores/index.js";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
