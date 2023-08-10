@@ -18,7 +18,11 @@ export async function getSessionData() {
 export async function getCartItems(items) {
   try {
     const ids = items.map((item) => item.id);
-    const { data } = await supabase.from("Products").select("id, name, image, author, price, discount, stock").in("id", ids);
+    const { data } = await supabase
+      .from("Products")
+      .select("id, name, image, author, price, discount, stock")
+      .in("id", ids)
+      .gte("stock", 1);
     data.forEach((item) => {
       items.find((i) => {
         if (i.id === item.id) {
@@ -26,6 +30,9 @@ export async function getCartItems(items) {
         }
       });
     });
+    if (ids.length !== data.length) {
+      showToast("Uno o más productos fueron retirados de tu carrito debido a que no contaban con stock", "warning");
+    }
     return data;
   } catch (error) {
     showToast("Error al solicitar los productos del carrito", "error");
