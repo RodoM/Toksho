@@ -19,7 +19,8 @@ const moreAmount = (item) => {
 };
 
 const getPrice = (item) => {
-  return item.price * item.amount;
+  const { price, discount, amount } = item;
+  return (price - (discount / 100) * price) * amount;
 };
 </script>
 
@@ -35,6 +36,12 @@ const getPrice = (item) => {
         <div class="flex flex-col gap-1">
           <span class="font-bold">{{ item.name }}</span>
           <span class="font-medium">{{ item.author }}</span>
+          <span
+            v-if="item.discount"
+            class="w-fit rounded-full border-2 border-tertiary-dark bg-primary-light py-1 px-2 font-medium drop-shadow-navlink"
+          >
+            -{{ item.discount }}%
+          </span>
         </div>
         <div class="flex flex-wrap justify-between border-2 border-tertiary-dark bg-primary-light px-2 py-1 drop-shadow-navlink">
           <div class="flex items-center gap-5">
@@ -46,7 +53,8 @@ const getPrice = (item) => {
         </div>
       </div>
       <button
-        class="material-icons-outlined absolute -top-3 -right-3 rounded-full border-2 border-tertiary-dark bg-primary-light drop-shadow-navlink"
+        class="material-icons-outlined absolute -top-3 -right-3 rounded-full
+        border-2 border-tertiary-dark bg-primary-light drop-shadow-navlink"
         @click="$emit('deleteItem', item.id)"
       >
         close

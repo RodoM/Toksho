@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import placeholderImage from "@/assets/svgs/image-placeholder.svg";
 
 const props = defineProps({
@@ -9,9 +9,10 @@ const props = defineProps({
   },
 });
 
-function newPrice(price, discount) {
+const newPrice = computed(() => {
+  const { price, discount } = props.product;
   return price - (discount / 100) * price;
-}
+});
 
 const currentImage = ref(placeholderImage);
 
@@ -53,7 +54,7 @@ function loadImage(image) {
       <span class="max-w-[130px] text-center font-bold">{{ props.product.name }}</span>
       <div>
         <span class="font-medium" :class="{ 'line-through': props.product.discount }"> ${{ props.product.price }} </span>
-        <span v-if="props.product.discount" class="ml-2 font-medium"> ${{ newPrice(props.product.price, props.product.discount) }} </span>
+        <span v-if="props.product.discount" class="ml-2 font-medium"> ${{ newPrice }} </span>
       </div>
     </div>
   </router-link>

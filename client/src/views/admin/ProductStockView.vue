@@ -77,7 +77,7 @@ onMounted(async () => {
           <tr>
             <th class="px-5 text-start">NOMBRE</th>
             <th class="px-5 text-center">UNIDADES</th>
-            <th class="px-5 text-center">PRECIO</th>
+            <th class="px-5 text-center">PRECIO BASE</th>
             <th class="px-5 text-center">DESCUENTO</th>
             <th class="px-5 text-center">NOVEDAD</th>
             <th class="px-5 text-center">PREVENTA</th>
