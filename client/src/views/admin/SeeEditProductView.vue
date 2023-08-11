@@ -280,10 +280,6 @@ const submitForm = async (event) => {
 </template>
 
 <style scoped>
-input[disabled] {
-  background-color: #f8f9fa;
-}
-
 input[type="file"]::file-selector-button {
   cursor: pointer;
   background-color: #eeba5e;

@@ -129,9 +129,3 @@ function newPrice(price, discount) {
     </div>
   </div>
 </template>
-
-<style scoped>
-input[disabled] {
-  background-color: #f8f9fa;
-}
-</style>
