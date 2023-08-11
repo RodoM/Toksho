@@ -16,8 +16,8 @@ export const getFile = async (event, state) => {
 };
 
 const convertImage = async (file) => {
-  const width = 315;
-  const height = 500;
+  const width = 400;
+  const height = 550;
   const resizedBlob = await resizeImage(file, width, height);
 
   const convertedFile = new File([resizedBlob], "converted.webp", {
