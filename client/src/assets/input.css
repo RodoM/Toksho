@@ -7,9 +7,10 @@
 @tailwind components;
 @tailwind utilities;
 
-input {
+input, input[disabled] {
   -webkit-appearance: none;
   appearance: none;
+  border-radius: 0;
 }
 
 /* Chrome, Safari, Edge, Opera */
