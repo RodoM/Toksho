@@ -143,6 +143,7 @@ export async function getSlides() {
 export async function setMaintenance(active) {
   try {
     await supabase.from("Settings").update({ active: active }).eq("name", "maintenance").select();
+    showToast("Se actualizó el estado de mantenimiento de la página", "success");
   } catch (error) {
     showToast("Error al actualizar el estado de mantenimiento", "error");
   }
@@ -152,6 +153,7 @@ export async function setMaintenance(active) {
 export async function setShippingPrice(value) {
   try {
     await supabase.from("Settings").update({ value: value }).eq("name", "shipment_price").select();
+    showToast("Se actualizó el precio de los envios", "success");
   } catch (error) {
     showToast("Error al actualizar el precio de envío", "error");
   }
@@ -190,6 +192,8 @@ export async function deleteSlide(id, image) {
 
     const { error: deleteError } = await supabase.from("Slides").delete().eq("id", id);
     if (deleteError) throw new Error("Error al eliminar la slide");
+
+    showToast("Se eliminó correctamente la slide", "success");
   } catch (error) {
     showToast(error.message, "error");
   }

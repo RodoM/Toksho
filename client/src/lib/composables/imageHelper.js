@@ -1,4 +1,4 @@
-export const getFile = async (event, state) => {
+export const getFile = async (event, state, width, height) => {
   state.image = {
     image: null,
     imageReader: "",
@@ -6,7 +6,7 @@ export const getFile = async (event, state) => {
   };
 
   const selectedFile = event.target.files[0];
-  state.image.image = await convertImage(selectedFile);
+  state.image.image = await convertImage(selectedFile, width, height);
 
   const reader = new FileReader();
   reader.addEventListener("load", () => {
@@ -15,9 +15,7 @@ export const getFile = async (event, state) => {
   reader.readAsDataURL(selectedFile);
 };
 
-const convertImage = async (file) => {
-  const width = 400;
-  const height = 550;
+const convertImage = async (file, width, height) => {
   const resizedBlob = await resizeImage(file, width, height);
 
   const convertedFile = new File([resizedBlob], "converted.webp", {

@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed } from "vue";
+import { ref, reactive, computed } from "vue";
 import { createSlide } from "@/supabase/helpers";
 import { useVuelidate } from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
@@ -10,9 +10,40 @@ import CustomButton from "@/lib/components/CustomButton.vue";
 
 const emit = defineEmits(["created"]);
 
-const getFile = () => {
+const getFile = (event) => {
   const selectedFile = event.target.files[0];
   state.image = selectedFile;
+};
+
+const convertImage = async () => {
+  const width = 1280;
+  const height = 720;
+  const resizedBlob = await resizeImage(state.image, width, height);
+
+  const convertedFile = new File([resizedBlob], "converted.webp", {
+    type: "image/webp",
+  });
+  return convertedFile;
+};
+
+const resizeImage = (file, width, height) => {
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+
+  return new Promise((resolve) => {
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob((resizedBlob) => {
+        resolve(resizedBlob);
+      }, "image/webp");
+    };
+  });
 };
 
 const state = reactive({
@@ -37,10 +68,17 @@ const rules = computed(() => {
 
 const v$ = useVuelidate(rules, state);
 
+const loading = ref(false);
+
 async function createSlideImage() {
-  const { image, primaryText, secondaryText } = state;
-  await createSlide(image, primaryText, secondaryText);
-  emit("created");
+  if (!loading.value) {
+    loading.value = true;
+    const image = await convertImage();
+    const { primaryText, secondaryText } = state;
+    await createSlide(image, primaryText, secondaryText);
+    emit("created");
+  }
+  loading.value = false;
 }
 
 async function submitForm(event) {
@@ -80,7 +118,7 @@ async function submitForm(event) {
         <input
           v-model="state.primaryText"
           type="text"
-          placeholder="Texto primario"
+          placeholder="Texto grande"
           class="w-full border-2 border-tertiary-dark p-3 drop-shadow-items focus:outline-none"
         />
       </div>
@@ -94,12 +132,12 @@ async function submitForm(event) {
         <input
           v-model="state.secondaryText"
           type="text"
-          placeholder="Texto secundario"
+          placeholder="Texto pequeño"
           class="w-full border-2 border-tertiary-dark p-3 drop-shadow-items focus:outline-none"
         />
       </div>
     </form>
-    <CustomButton primary class="ml-auto w-full px-10 md:w-fit" @click="submitForm()"> AGREGAR </CustomButton>
+    <CustomButton primary class="ml-auto w-full px-10 md:w-fit" :loading="loading" @click="submitForm"> AGREGAR </CustomButton>
   </content-block>
 </template>
 

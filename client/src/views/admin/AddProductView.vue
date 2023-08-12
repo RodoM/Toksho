@@ -15,7 +15,7 @@ const getCategories = () => {
 };
 
 const getInputFile = (event) => {
-  getFile(event, initialState);
+  getFile(event, initialState, 400, 550);
 };
 
 const loading = ref(false);

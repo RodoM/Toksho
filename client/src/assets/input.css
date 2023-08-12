@@ -7,10 +7,18 @@
 @tailwind components;
 @tailwind utilities;
 
-input, input[disabled], textarea, textarea[disabled] {
+input[type="text"], input[type="number"], input[type="password"], input[type="email"], textarea, input[type="file"]::file-selector-button {
   -webkit-appearance: none;
   appearance: none;
   -webkit-text-fill-color: #0F0F0F;
+  border-radius: 0;
+  -webkit-opacity: 1;
+  opacity: 1;
+}
+
+input[disabled], textarea[disabled] {
+  -webkit-appearance: none;
+  appearance: none;
   border-radius: 0;
   -webkit-opacity: 1;
   opacity: 1;

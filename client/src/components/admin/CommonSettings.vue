@@ -14,12 +14,16 @@ const maintenanceOptions = ref([
   { label: "No", value: false },
 ]);
 
+const loading = ref(false);
+
 async function updateSettings(event) {
   event.preventDefault();
-  if (confirm("¿Actualizar configuraciones?")) {
+  if (!loading.value && confirm("¿Actualizar configuraciones?")) {
+    loading.value = true;
     await setMaintenance(maintenance.value);
     await setShippingPrice(shipmentPrice.value);
   }
+  loading.value = false;
 }
 
 onMounted(async () => {
@@ -56,6 +60,6 @@ onMounted(async () => {
         ></v-select>
       </div>
     </form>
-    <CustomButton class="ml-auto w-full px-10 md:w-fit" primary @click="updateSettings()"> ACTUALIZAR </CustomButton>
+    <CustomButton class="ml-auto w-full px-10 md:w-fit" primary :loading="loading" @click="updateSettings"> ACTUALIZAR </CustomButton>
   </content-block>
 </template>

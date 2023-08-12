@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { userStore } from "@/stores/index.js";
 import { getSessionData, logout } from "@/supabase/helpers";
 
@@ -29,6 +29,15 @@ const signOut = async () => {
   const res = await getSessionData();
   await store.setUser(res.session);
 };
+
+onMounted(() => {
+  document.addEventListener("click", (event) => {
+    const dropdownMenu = document.getElementById("dropdown");
+    if (!dropdownMenu.contains(event.target)) {
+      dropdown.value = false;
+    }
+  });
+});
 </script>
 
 <template>
@@ -53,6 +62,7 @@ const signOut = async () => {
         </li>
         <li v-if="user && user.isAdmin">
           <button
+            id="dropdown"
             class="flex items-center border-2 border-transparent p-1 font-medium transition-all duration-200 hover:border-tertiary-dark hover:bg-secondary-light hover:drop-shadow-navlink"
             :class="[dropdown ? ['bg-secondary-light', '!border-tertiary-dark', 'drop-shadow-navlink'] : '']"
             @click="dropdown = !dropdown"

@@ -45,7 +45,7 @@ const getCategories = () => {
 };
 
 const getInputFile = (event) => {
-  getFile(event, initialState);
+  getFile(event, initialState, 400, 550);
 };
 
 const loading = ref(false);
@@ -123,7 +123,7 @@ const submitForm = async (event) => {
           <div class="flex flex-col gap-4 md:flex-row">
             <div class="w-full">
               <div>
-                <label :for="initialState.image.image"> Imágen (No seleccionar nada si no se actualiza) </label>
+                <label :for="initialState.image.image"> Imágen (Solo si se actualiza) </label>
                 <span v-if="v$.image.image.$error" class="pl-2 text-red-500">
                   {{ v$.image.image.$errors[0].$message }}
                 </span>
