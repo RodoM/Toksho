@@ -35,12 +35,10 @@ const rules = computed(() => {
       }),
     },
     image: {
-      required: helpers.withMessage("Image is required when it's a string", (value) =>
-        typeof initialState.image === "string" ? true : required(value)
-      ),
+      required: helpers.withMessage("Requerido", (value) => (typeof initialState.image === "string" ? required(value) : true)),
       image: {
         required: helpers.withMessage(
-          "Image is required when image is an object",
+          "Requerido",
           requiredIf(() => {
             return typeof initialState.image === "object";
           })
