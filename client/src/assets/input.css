@@ -16,6 +16,12 @@ input[type="text"], input[type="number"], input[type="password"], input[type="em
   opacity: 1;
 }
 
+input[type="text"]::placeholder, input[type="number"]::placeholder,
+input[type="password"]::placeholder, input[type="email"]::placeholder,
+textarea::placeholder {
+  -webkit-text-fill-color: #979797;
+}
+
 input[disabled], textarea[disabled] {
   -webkit-appearance: none;
   appearance: none;

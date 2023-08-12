@@ -30,10 +30,12 @@ const signOut = async () => {
   await store.setUser(res.session);
 };
 
+const isMobile = ref(window.innerWidth < 1024);
+
 onMounted(() => {
   document.addEventListener("click", (event) => {
-    const dropdownMenu = document.getElementById("dropdown");
-    if (!dropdownMenu.contains(event.target)) {
+    const dropdownElement = isMobile.value ? document.getElementById("dropdown-mobile") : document.getElementById("dropdown-desktop");
+    if (!dropdownElement.contains(event.target)) {
       dropdown.value = false;
     }
   });
@@ -62,7 +64,7 @@ onMounted(() => {
         </li>
         <li v-if="user && user.isAdmin">
           <button
-            id="dropdown"
+            id="dropdown-desktop"
             class="flex items-center border-2 border-transparent p-1 font-medium transition-all duration-200 hover:border-tertiary-dark hover:bg-secondary-light hover:drop-shadow-navlink"
             :class="[dropdown ? ['bg-secondary-light', '!border-tertiary-dark', 'drop-shadow-navlink'] : '']"
             @click="dropdown = !dropdown"
@@ -117,6 +119,7 @@ onMounted(() => {
         </li>
         <li v-if="user && user.isAdmin">
           <button
+            id="dropdown-mobile"
             class="flex items-center gap-2 border-2 border-transparent p-1 text-start font-medium transition-all duration-200 hover:border-tertiary-dark hover:bg-secondary-light hover:drop-shadow-navlink"
             @click="dropdown = !dropdown"
           >
