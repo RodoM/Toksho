@@ -23,13 +23,15 @@ const loading = ref(false);
 const addProduct = async () => {
   if (!loading.value) {
     loading.value = true;
-    const { author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
+    let { author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
 
-    const imageURL = await uploadFile(author, name, image.image);
+    image.imageURL = await uploadFile(author, name, image.image);
+    image.imageSmallURL = await uploadFile(author, name + "-small", image.imageSmall);
     await createProduct(
       type,
       formatName(name),
-      imageURL,
+      image.imageURL,
+      image.imageSmallURL,
       size,
       formatAuthors(author),
       formatName(editorial),

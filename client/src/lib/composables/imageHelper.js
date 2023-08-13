@@ -1,12 +1,15 @@
 export const getFile = async (event, state, width, height) => {
   state.image = {
     image: null,
+    imageSmall: null,
     imageReader: "",
     imageURL: "",
+    imageSmallURL: "",
   };
 
   const selectedFile = event.target.files[0];
   state.image.image = await convertImage(selectedFile, width, height);
+  state.image.imageSmall = await convertImage(selectedFile, 180, 260);
 
   const reader = new FileReader();
   reader.addEventListener("load", () => {

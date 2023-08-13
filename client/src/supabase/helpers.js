@@ -273,7 +273,7 @@ export async function getAllProducts(offset, limit, filter) {
     const { name, type, author, categorie, order, asc } = filter.value;
     let query = supabase
       .from("Products")
-      .select("id, name, image, price, discount, stock", { count: "exact" })
+      .select("id, name, image, imageSmall, price, discount, stock", { count: "exact" })
       .eq("isPublished", true)
       .range(offset, limit);
     if (name) query = query.ilike("name", `%${name}%`);
@@ -294,7 +294,7 @@ export async function getAllProductsAdmin(offset, limit, filter) {
     const { name, type, author, categorie, order, asc } = filter.value;
     let query = supabase
       .from("Products")
-      .select("id, name, author, image, price, discount, stock, isNovelty, isPresale, isPublished", {
+      .select("id, name, author, image, imageSmall, price, discount, stock, isNovelty, isPresale, isPublished", {
         count: "exact",
       })
       .range(offset, limit);
@@ -466,11 +466,24 @@ export async function handlePublish(id, value) {
 }
 
 // Creates a new product
-export async function createProduct(type, name, image, size, author, editorial, categories, price, discount, stock, description) {
+export async function createProduct(
+  type,
+  name,
+  image,
+  imageSmall,
+  size,
+  author,
+  editorial,
+  categories,
+  price,
+  discount,
+  stock,
+  description
+) {
   try {
     await supabase
       .from("Products")
-      .insert([{ type, name, image, size, author, editorial, categories, price, discount, stock, description }]);
+      .insert([{ type, name, image, imageSmall, size, author, editorial, categories, price, discount, stock, description }]);
     showToast("Se agregó correctamente el producto", "success");
     router.push({ name: "Stock" });
   } catch (error) {
@@ -489,7 +502,21 @@ export async function deleteProduct(id) {
 }
 
 // Updates a product
-export async function updateProduct(id, type, name, image, size, author, editorial, categories, price, discount, stock, description) {
+export async function updateProduct(
+  id,
+  type,
+  name,
+  image,
+  imageSmall,
+  size,
+  author,
+  editorial,
+  categories,
+  price,
+  discount,
+  stock,
+  description
+) {
   try {
     await supabase
       .from("Products")
@@ -497,6 +524,7 @@ export async function updateProduct(id, type, name, image, size, author, editori
         type: type,
         name: name,
         image: image,
+        imageSmall: imageSmall,
         size: size,
         author: author,
         editorial: editorial,
@@ -523,7 +551,7 @@ export async function uploadFile(author, name, file) {
     const { error: uploadError } = await supabase.storage
       .from("products")
       .upload(`${author.toLowerCase()}/${name.toLowerCase()}-${time}`, file, {
-        cacheControl: "3600",
+        cacheControl: "31536000",
         upsert: false,
       });
     if (uploadError) throw new Error("Error al cargar la imágen");

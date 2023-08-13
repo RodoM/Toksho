@@ -16,8 +16,9 @@ const newPrice = computed(() => {
 
 const currentImage = ref(placeholderImage);
 
-function loadImage(image) {
-  currentImage.value = image;
+function loadImage() {
+  const { image, imageSmall } = props.product;
+  currentImage.value = imageSmall ? imageSmall : image;
 }
 </script>
 
@@ -33,8 +34,10 @@ function loadImage(image) {
       <div class="border-2 border-tertiary-dark drop-shadow-items">
         <img
           :src="currentImage"
-          @load="loadImage(props.product.image)"
-          class="h-56 object-cover md:h-64"
+          @load="loadImage()"
+          height="260"
+          width="180"
+          class="object-cover"
           :alt="props.product.name"
           loading="lazy"
         />

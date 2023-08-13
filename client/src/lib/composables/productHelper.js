@@ -9,8 +9,10 @@ export const initialState = reactive({
   name: "",
   image: {
     image: null,
+    imageSmall: null,
     imageReader: placeholderImage,
     imageURL: "",
+    imageSmallURL: "",
   },
   size: undefined,
   author: "",
@@ -88,8 +90,10 @@ const resetInitialState = () => {
     name: "",
     image: {
       image: null,
+      imageSmall: null,
       imageReader: "/src/assets/images/image-placeholder.jpg",
       imageURL: "",
+      imageSmallURL: "",
     },
     size: undefined,
     author: "",
@@ -113,7 +117,6 @@ export const formatName = (input) => {
 export const formatAuthors = (input) => {
   const authors = input.split(", ");
   const formattedAuthors = authors.map((name) => {
-    console.log(name);
     const words = name.trim().split(/\s+/);
     const capitalizedWords = words.map((word) => {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
