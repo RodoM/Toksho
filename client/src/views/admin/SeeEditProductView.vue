@@ -57,7 +57,7 @@ const editProduct = async () => {
     let { id, author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
     if (image.image) {
       await deleteFile(getImagePath(previousData.value.image));
-      await deleteFile(getImagePath(previousData.value.imageSmall));
+      if (previousData.value.imageSmall) await deleteFile(getImagePath(previousData.value.imageSmall));
       image.imageURL = await uploadFile(author, name, image.image);
       image.imageSmallURL = await uploadFile(author, name + "-small", image.imageSmall);
     }
