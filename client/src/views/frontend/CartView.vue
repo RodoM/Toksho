@@ -38,7 +38,7 @@ const loadingBtn = ref(false);
 const preferenceId = ref();
 
 // eslint-disable-next-line no-undef
-const mp = new MercadoPago("TEST-cab18a95-856f-4543-9a06-6b58364829a9", {
+const mp = new MercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
   locale: "es-AR",
 });
 // eslint-disable-next-line no-unused-vars

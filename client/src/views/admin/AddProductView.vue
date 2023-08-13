@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { uploadFile, createProduct } from "@/supabase/helpers";
-import { initialState, resetForm, v$ } from "@/lib/composables/productHelper";
+import { initialState, formatName, formatAuthors, resetForm, v$ } from "@/lib/composables/productHelper";
 import { getFile } from "@/lib/composables/imageHelper";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
@@ -26,7 +26,19 @@ const addProduct = async () => {
     const { author, name, image, type, size, editorial, price, discount, stock, description } = initialState;
 
     const imageURL = await uploadFile(author, name, image.image);
-    await createProduct(type, name, imageURL, size, author, editorial, getCategories(), price, discount, stock, description);
+    await createProduct(
+      type,
+      formatName(name),
+      imageURL,
+      size,
+      formatAuthors(author),
+      formatName(editorial),
+      getCategories(),
+      price,
+      discount,
+      stock,
+      description
+    );
     resetForm();
   }
 };

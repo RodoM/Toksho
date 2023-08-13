@@ -35,7 +35,7 @@ const isMobile = ref(window.innerWidth < 1024);
 onMounted(() => {
   document.addEventListener("click", (event) => {
     const dropdownElement = isMobile.value ? document.getElementById("dropdown-mobile") : document.getElementById("dropdown-desktop");
-    if (!dropdownElement.contains(event.target)) {
+    if (!dropdownElement?.contains(event.target)) {
       dropdown.value = false;
     }
   });

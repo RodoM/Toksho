@@ -35,7 +35,6 @@ const rules = computed(() => {
       }),
     },
     image: {
-      required: helpers.withMessage("Requerido", (value) => (typeof initialState.image === "string" ? required(value) : true)),
       image: {
         required: helpers.withMessage(
           "Requerido",
@@ -101,4 +100,25 @@ const resetInitialState = () => {
     description: "",
     stock: "",
   });
+};
+
+export const formatName = (input) => {
+  const words = input.trim().split(/\s+/);
+  const formattedName = words.map((word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
+  return formattedName.join(" ");
+};
+
+export const formatAuthors = (input) => {
+  const authors = input.split(", ");
+  const formattedAuthors = authors.map((name) => {
+    console.log(name);
+    const words = name.trim().split(/\s+/);
+    const capitalizedWords = words.map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
+    return capitalizedWords.join(" ");
+  });
+  return formattedAuthors.join(", ");
 };

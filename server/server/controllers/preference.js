@@ -18,7 +18,7 @@ let preference = {
     cost: undefined,
     mode: "not_specified",
   },
-  "payment_methods": {
+  payment_methods: {
     "installments": 1,
     "excluded_payment_types": [
       { "id": "ticket" }

@@ -12,6 +12,12 @@ const orderState = (state) => {
   else if (state === "rejected") return "RECHAZADO";
 };
 
+const shippingPrice = () => {
+  const { items, transaction_details } = props.order;
+  const itemsTotalPrice = items.reduce((total, item) => total + parseInt(item.unit_price), 0);
+  return transaction_details.total_paid_amount - itemsTotalPrice;
+};
+
 const formatedDate = (date) => {
   return `${date.slice(8, 10)}/${date.slice(5, 7)}/${date.slice(0, 4)}`;
 };
@@ -22,7 +28,7 @@ const formatedDate = (date) => {
     <div class="flex justify-between">
       <span class="w-fit border-2 border-tertiary-dark bg-primary p-2 text-sm font-bold drop-shadow-navlink"> #{{ props.order.id }} </span>
       <span class="w-fit border-2 border-tertiary-dark bg-primary p-2 text-sm font-bold drop-shadow-navlink">
-        ESTADO: {{ orderState(props.order.status_detail) }}
+        ESTADO: {{ orderState(props.order.status) }}
       </span>
     </div>
     <div class="flex flex-col gap-2 md:flex-row">
@@ -47,7 +53,7 @@ const formatedDate = (date) => {
         <span v-for="item in props.order.items" :key="item.id" class="font-medium">
           x{{ item.quantity }} - {{ item.title }} - ${{ item.unit_price * item.quantity }}
         </span>
-        <span v-if="props.order.payer.address.postal_code" class="font-medium"> x1 - Envio - $500 </span>
+        <span v-if="props.order.payer.address.postal_code" class="font-medium"> x1 - Envio - ${{ shippingPrice() }} </span>
       </div>
     </div>
     <div class="flex justify-between border-2 border-tertiary-dark bg-primary p-2 font-medium drop-shadow-navlink">

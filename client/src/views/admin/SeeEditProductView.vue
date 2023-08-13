@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { uploadFile, deleteFile } from "@/supabase/helpers";
-import { initialState, resetForm, v$ } from "@/lib/composables/productHelper";
+import { initialState, formatName, formatAuthors, resetForm, v$ } from "@/lib/composables/productHelper";
 import { getFile, getImagePath } from "@/lib/composables/imageHelper";
 import { useRouter, useRoute } from "vue-router";
 import { getProductDetails, updateProduct } from "@/supabase/helpers";
@@ -58,7 +58,20 @@ const editProduct = async () => {
       await deleteFile(getImagePath(previousData.value.image));
       image.imageURL = await uploadFile(author, name, image.image);
     }
-    await updateProduct(id, type, name, image.imageURL, size, author, editorial, getCategories(), price, discount, stock, description);
+    await updateProduct(
+      id,
+      type,
+      formatName(name),
+      image.imageURL,
+      size,
+      formatAuthors(author),
+      formatName(editorial),
+      getCategories(),
+      price,
+      discount,
+      stock,
+      description
+    );
     resetForm();
   }
 };

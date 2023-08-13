@@ -32,6 +32,11 @@ const shippingPrice = () => {
   return transaction_details.total_paid_amount - itemsTotalPrice;
 };
 
+const mpCommission = () => {
+  const { installment_amount, net_received_amount } = currentOrder.value.transaction_details;
+  return Number.parseFloat(installment_amount - net_received_amount).toFixed(2);
+};
+
 function closeDialog() {
   currentOrder.value = undefined;
   const dialog = document.getElementById("dialog");
@@ -57,12 +62,12 @@ function closeDialog() {
           <tr v-for="(order, i) in props.orders" :key="order.id" :class="[i % 2 === 0 ? 'bg-secondary-light' : 'bg-secondary']">
             <td class="px-5 font-medium">#{{ order.id }}</td>
             <td class="px-5 text-center font-medium">{{ order.payer.name }} {{ order.payer.surname }}</td>
-            <td class="px-5 text-center font-medium">${{ order.transaction_details.total_paid_amount }}</td>
+            <td class="px-5 text-center font-medium">${{ order.transaction_details.net_received_amount }}</td>
             <td class="px-5 text-center font-medium">
               {{ formatedDate(order.date_created.slice(0, 10)) }}
             </td>
             <td class="px-5 text-center font-medium">
-              {{ orderState(order.status_detail) }}
+              {{ orderState(order.status) }}
             </td>
             <td class="flex justify-center gap-3 px-5 py-2">
               <button
@@ -92,7 +97,7 @@ function closeDialog() {
             #{{ currentOrder.id }}
           </span>
           <span class="w-fit border-2 border-tertiary-dark bg-primary p-2 text-sm font-bold drop-shadow-navlink">
-            ESTADO: {{ orderState(currentOrder.status_detail) }}
+            ESTADO: {{ orderState(currentOrder.status) }}
           </span>
         </div>
         <div class="flex flex-col gap-2 md:flex-row">
@@ -115,14 +120,16 @@ function closeDialog() {
           <div class="border-b-2 border-r-2 border-tertiary-dark"></div>
           <div class="flex flex-col gap-1 px-2 md:w-1/2">
             <span v-for="item in currentOrder.items" :key="item.id" class="font-medium">
-              x{{ item.quantity }} - {{ item.title }} - ${{ item.unit_price * item.quantity }}
+              x{{ item.quantity }} - {{ item.title }}: ${{ item.unit_price * item.quantity }}
             </span>
             <span v-if="currentOrder.payer.address.postal_code" class="font-medium"> x1 - Envio - ${{ shippingPrice() }} </span>
+            <span class="font-medium">Subtotal ${{ currentOrder.transaction_details.installment_amount }}</span>
+            <span class="font-medium">Comisión Mercado Pago ${{ mpCommission() }}</span>
           </div>
         </div>
         <div class="flex justify-between border-2 border-tertiary-dark bg-primary p-2 font-medium drop-shadow-navlink">
           <span>{{ formatedDate(currentOrder.date_created.slice(0, 10)) }}</span>
-          <span class="font-bold"> TOTAL: ${{ currentOrder.transaction_details.total_paid_amount }} </span>
+          <span class="font-bold"> TOTAL: ${{ currentOrder.transaction_details.net_received_amount }} </span>
         </div>
       </div>
     </div>
