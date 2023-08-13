@@ -15,7 +15,7 @@ const { loading, productsData, productsFunctions, pagination, pagesFunctions } =
 const deleteProductFile = async (product) => {
   if (confirm("¿Esta seguro que desea eliminar este producto?")) {
     await deleteFile(getImagePath(product.image));
-    await deleteFile(getImagePath(product.imageSmall));
+    if (product.small) await deleteFile(getImagePath(product.imageSmall));
     await deleteProduct(product.id);
     productsFunctions.fetchProducts();
   }
