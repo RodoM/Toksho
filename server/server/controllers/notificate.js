@@ -1,5 +1,5 @@
 require("dotenv").config();
-const {createOrder, clearUserCart, getShippingPrice} = require("./supabaseHelpers");
+const {createOrder, updateItemsStock, clearUserCart, getShippingPrice} = require("./supabaseHelpers");
 const mailer = require("./mailer");
 
 const mercadopago = require("mercadopago");
@@ -18,9 +18,10 @@ exports.getNotification = async (req, res) => {
         additional_info, date_created, date_last_updated, id, order, payer, metadata, payment_type_id, status, status_detail, transaction_amount, transaction_details
       } = res.body;
   
-      createOrder(id, metadata.user_id, additional_info.items, metadata.payer, date_created, date_last_updated, order, payer, payment_type_id, status, status_detail, transaction_amount, transaction_details);
+      await createOrder(id, metadata.user_id, additional_info.items, metadata.payer, date_created, date_last_updated, order, payer, payment_type_id, status, status_detail, transaction_amount, transaction_details);
       if (status === "approved" || status === "pending") {
-        clearUserCart(metadata.user_id);
+        await updateItemsStock(additional_info.items);
+        await clearUserCart(metadata.user_id);
         mailer.mail(id, metadata.payer.name, metadata.payer.email, additional_info.items, metadata.payer.address, shippingPrice);
       }
     }
