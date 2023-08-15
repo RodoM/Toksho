@@ -38,13 +38,13 @@ onMounted(async () => {
     <div v-else>
       <SliderComponent :slides="slides" />
       <div class="container mx-auto my-5 flex flex-col items-center gap-y-20">
-        <div v-if="novelties" class="flex w-full flex-col items-center gap-y-10">
+        <div v-if="novelties?.length > 0" class="flex w-full flex-col items-center gap-y-10">
           <header-title>
             <span class="text-2xl font-bold">NOVEDADES</span>
           </header-title>
           <ProductList :products="novelties" class="px-5" />
         </div>
-        <content-block v-if="presales">
+        <content-block v-if="presales?.length > 0">
           <header-title class="self-center">
             <span class="text-2xl font-bold">PREVENTA</span>
           </header-title>

@@ -49,7 +49,6 @@ watch(openFilter, async () => {
 const filterOptions = [
   { label: "Mangas", value: "Manga" },
   { label: "Comics", value: "Comic" },
-  { label: "Indumentaria", value: "Indumentaria" },
   { label: "Todos", value: "all" },
 ];
 
@@ -108,22 +107,22 @@ const clearFilter = () => {
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
-          <div v-if="filter.type == 'Manga' || filter.type == 'Comic'">
+          <div>
             <label for="">Autor</label>
             <v-select
               v-model="filter.author"
               :placeholder="'Autor'"
-              :options="authors.sort()"
+              :options="authors?.sort()"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
-          <div v-if="filter.type == 'Manga' || filter.type == 'Comic'">
+          <div>
             <label for="">Categoría</label>
             <v-select
               v-model="filter.categorie"
               :placeholder="'Categoría'"
-              :options="categories.sort()"
+              :options="categories?.sort()"
               :clearSearchOnSelect="false"
               class="border-2 border-tertiary-dark"
             ></v-select>

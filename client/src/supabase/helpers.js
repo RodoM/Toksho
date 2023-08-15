@@ -351,7 +351,11 @@ export async function searchProducts(value) {
 // Gets the products that are novelties.
 export async function getNovelties() {
   try {
-    const { data } = await supabase.from("Products").select("id, name, image, price, discount, stock").eq("isNovelty", true);
+    const { data } = await supabase
+      .from("Products")
+      .select("id, name, image, price, discount, stock")
+      .eq("isNovelty", true)
+      .eq("isPublished", true);
     return data;
   } catch (error) {
     showToast("Se produjó un error inesperado", "error");
@@ -361,7 +365,11 @@ export async function getNovelties() {
 // Gets the products that are presales.
 export async function getPresales() {
   try {
-    const { data } = await supabase.from("Products").select("id, name, image, price, discount, stock").eq("isPresale", true);
+    const { data } = await supabase
+      .from("Products")
+      .select("id, name, image, price, discount, stock")
+      .eq("isPresale", true)
+      .eq("isPublished", true);
     return data;
   } catch (error) {
     showToast("Se produjó un error inesperado", "error");

@@ -82,7 +82,7 @@ const submitForm = async (e) => {
             <v-select
               v-model="initialState.type"
               :placeholder="'Tipo de producto'"
-              :options="['Manga', 'Comic', 'Indumentaria']"
+              :options="['Manga', 'Comic']"
               :clearSearchOnSelect="false"
               class="w-full border-2 border-tertiary-dark bg-background p-1 drop-shadow-items focus:outline-none"
             ></v-select>
