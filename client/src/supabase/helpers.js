@@ -250,6 +250,7 @@ export async function updateUser(id, data) {
       .from("users")
       .update({ first_name: data.first_name, last_name: data.last_name, email: data.email, phone: data.phone, address: data.address })
       .eq("id", id);
+    showToast("Datos actualizados con éxito", "success");
   } catch (error) {
     showToast("Error al actualizar los datos del usuario", "error");
   }
