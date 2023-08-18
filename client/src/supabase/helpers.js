@@ -471,7 +471,8 @@ export async function changePrice(editorial, size, oldPrice, newPrice) {
 export async function setAsNovelty(id, value) {
   try {
     supabase.from("Products").update({ isNovelty: value }).eq("id", id);
-    showToast("Producto establecido como novedad", "success");
+    if (value) showToast("Producto establecido como novedad", "success");
+    else showToast("Producto quitado de novedades", "success");
   } catch (error) {
     showToast("Error al establecer producto como novedad", "error");
   }
@@ -481,7 +482,8 @@ export async function setAsNovelty(id, value) {
 export async function setAsPresale(id, value) {
   try {
     await supabase.from("Products").update({ isPresale: value }).eq("id", id);
-    showToast("Producto establecido como preventa", "success");
+    if (value) showToast("Producto establecido como preventa", "success");
+    else showToast("Producto quitado de preventas", "success");
   } catch (error) {
     showToast("Error al establecer producto como preventa", "error");
   }
@@ -491,7 +493,8 @@ export async function setAsPresale(id, value) {
 export async function handlePublish(id, value) {
   try {
     await supabase.from("Products").update({ isPublished: value }).eq("id", id);
-    showToast("Producto establecido como público", "success");
+    if (value) showToast("Producto establecido como público", "success");
+    else showToast("Producto establecido como privado", "success");
   } catch (error) {
     showToast("Error al establecer producto como público", "error");
   }
