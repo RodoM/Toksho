@@ -35,7 +35,7 @@ const getPrice = (item) => {
       <div class="flex flex-grow flex-col justify-between">
         <div class="flex flex-col gap-1">
           <span class="font-bold">{{ item.name }}</span>
-          <span class="font-medium">{{ item.author }}</span>
+          <span class="font-medium">{{ item.author.join(", ") }}</span>
           <span
             v-if="item.discount"
             class="w-fit rounded-full border-2 border-tertiary-dark bg-primary-light py-1 px-2 font-medium drop-shadow-navlink"

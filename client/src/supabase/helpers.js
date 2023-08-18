@@ -22,7 +22,8 @@ export async function getCartItems(items) {
       .from("Products")
       .select("id, name, image, author, price, discount, stock")
       .in("id", ids)
-      .gte("stock", 1);
+      .gte("stock", 1)
+      .eq("isPublished", true);
     data.forEach((item) => {
       items.find((i) => {
         if (i.id === item.id) {

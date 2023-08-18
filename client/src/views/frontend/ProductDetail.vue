@@ -43,6 +43,7 @@ const addProduct = async (id) => {
       userCart.value = await getUserCart(usersStore.user.id);
     } else {
       itemStore.addItem(id, amount.value);
+      showToast("Se agregó el producto al carrito", "success");
     }
   } else {
     showToast("El producto ya se encuentra en tu carrito", "warning");
