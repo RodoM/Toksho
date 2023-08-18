@@ -278,7 +278,7 @@ export async function getAllProducts(offset, limit, filter) {
       .range(offset, limit);
     if (name) query = query.ilike("name", `%${name}%`);
     if (type) query = query.eq("type", type);
-    if (author) query = query.eq("author", author);
+    if (author) query = query.overlaps("author", [author]);
     if (categorie) query = query.overlaps("categories", [categorie]);
     if (order) query = query.order(order, { ascending: asc });
     const { data, count } = await query;
@@ -300,7 +300,7 @@ export async function getAllProductsAdmin(offset, limit, filter) {
       .range(offset, limit);
     if (name) query = query.ilike("name", `%${name}%`);
     if (type && type !== "all") query = query.eq("type", type);
-    if (author) query = query.eq("author", author);
+    if (author) query = query.overlaps("author", [author]);
     if (categorie) query = query.overlaps("categories", [categorie]);
     if (order) query = query.order(order, { ascending: asc });
     const { data, count } = await query;
@@ -327,6 +327,7 @@ export async function getRelatedProducts(categories, name) {
       .from("Products")
       .select("id, name, image, price, discount, stock")
       .overlaps("categories", categories)
+      .eq("isPublished", true)
       .neq("name", name);
     let res = data.slice(0, 30).sort(() => Math.random() - 0.5);
     return res.slice(0, 6);

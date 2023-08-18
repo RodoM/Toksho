@@ -51,9 +51,7 @@ const rules = computed(() => {
     },
     author: {
       required: helpers.withMessage("Requerido", required),
-      noSlash: helpers.withMessage("No se permiten '/'", () => {
-        return !initialState.author.includes("/");
-      }),
+      specialCharacters: helpers.withMessage("No se permiten caracteres especiales", () => /^[a-zA-Z,\s]*$/.test(initialState.author)),
     },
     editorial: {
       required: helpers.withMessage("Requerido", required),
@@ -123,5 +121,5 @@ export const formatAuthors = (input) => {
     });
     return capitalizedWords.join(" ");
   });
-  return formattedAuthors.join(", ");
+  return formattedAuthors.join(", ").split(/\s*,\s*/);
 };

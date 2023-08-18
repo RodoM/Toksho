@@ -99,8 +99,8 @@ function newPrice(price, discount) {
               </span>
             </div>
             <span>
-              <span class="font-bold">Autor: </span>
-              {{ product.author }}
+              <span class="font-bold">{{ product.author.length > 1 ? "Autores:" : "Autor:" }} </span>
+              {{ product.author.join(", ") }}
             </span>
           </div>
           <div v-if="!maintenance" class="flex flex-col gap-3 md:flex-row">
@@ -120,7 +120,7 @@ function newPrice(price, discount) {
           </div>
         </div>
       </div>
-      <div class="flex flex-col gap-y-5">
+      <div v-if="related.length > 0" class="flex flex-col gap-y-5">
         <header-title class="">
           <span class="text-2xl font-bold uppercase">RELACIONADOS</span>
         </header-title>

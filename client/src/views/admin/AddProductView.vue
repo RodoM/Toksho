@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { uploadFile, createProduct } from "@/supabase/helpers";
-import { initialState, formatName, formatAuthors, resetForm, v$ } from "@/lib/composables/productHelper";
+import { initialState, formatName, formatAuthors, v$ } from "@/lib/composables/productHelper";
 import { getFile } from "@/lib/composables/imageHelper";
 
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
@@ -41,13 +41,11 @@ const addProduct = async () => {
       stock,
       description
     );
-    resetForm();
   }
 };
 
 const goBack = (e) => {
   e.preventDefault();
-  resetForm();
   router.push({ name: "Stock" });
 };
 
@@ -133,7 +131,7 @@ const submitForm = async (e) => {
           </div>
           <div class="w-full">
             <div>
-              <label :for="initialState.author">Autor</label>
+              <label :for="initialState.author">Autor/es</label>
               <span v-if="v$.author.$error" class="pl-2 text-red-500">
                 {{ v$.author.$errors[0].$message }}
               </span>
@@ -141,7 +139,7 @@ const submitForm = async (e) => {
             <input
               v-model="initialState.author"
               type="text"
-              placeholder="Autor"
+              placeholder="Autor1, Autor2, Autor3, ..."
               class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
           </div>
@@ -161,7 +159,7 @@ const submitForm = async (e) => {
           </div>
           <div>
             <div>
-              <label :for="initialState.categories"> Categorías (separadas por comas) </label>
+              <label :for="initialState.categories">Categorías</label>
               <span v-if="v$.categories.$error" class="pl-2 text-red-500">
                 {{ v$.categories.$errors[0].$message }}
               </span>
@@ -169,7 +167,7 @@ const submitForm = async (e) => {
             <input
               v-model="initialState.categories"
               type="text"
-              placeholder="Categorías"
+              placeholder="Categoría1, Categoría2, Categoría3, ..."
               class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
           </div>
@@ -189,9 +187,7 @@ const submitForm = async (e) => {
               />
             </div>
             <div class="w-full">
-              <div>
-                <label :for="initialState.discount">Descuento (opcional)</label>
-              </div>
+              <label :for="initialState.discount">Descuento</label>
               <input
                 v-model="initialState.discount"
                 type="number"

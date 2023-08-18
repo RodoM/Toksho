@@ -3,6 +3,7 @@ import { onMounted } from "vue";
 import { deleteFile, deleteProduct, setAsNovelty, setAsPresale, handlePublish } from "@/supabase/helpers";
 import { getImagePath } from "@/lib/composables/imageHelper";
 import useProductPagination from "@/lib/composables/paginationHelper";
+import { resetForm } from "@/lib/composables/productHelper";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import SearchAndFilter from "@/components/shared/filters/SearchAndFilter.vue";
@@ -15,7 +16,7 @@ const { loading, productsData, productsFunctions, pagination, pagesFunctions } =
 const deleteProductFile = async (product) => {
   if (confirm("¿Esta seguro que desea eliminar este producto?")) {
     await deleteFile(getImagePath(product.image));
-    if (product.small) await deleteFile(getImagePath(product.imageSmall));
+    if (product.imageSmall) await deleteFile(getImagePath(product.imageSmall));
     await deleteProduct(product.id);
     productsFunctions.fetchProducts();
   }
@@ -54,6 +55,7 @@ async function fetchProducts() {
 
 onMounted(async () => {
   await fetchProducts();
+  resetForm();
 });
 </script>
 

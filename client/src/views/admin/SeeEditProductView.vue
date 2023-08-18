@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { uploadFile, deleteFile } from "@/supabase/helpers";
-import { initialState, formatName, formatAuthors, resetForm, v$ } from "@/lib/composables/productHelper";
+import { initialState, formatName, formatAuthors, v$ } from "@/lib/composables/productHelper";
 import { getFile, getImagePath } from "@/lib/composables/imageHelper";
 import { useRouter, useRoute } from "vue-router";
 import { getProductDetails, updateProduct } from "@/supabase/helpers";
@@ -24,6 +24,8 @@ const previousData = ref();
 
 const loadData = (product) => {
   Object.assign(initialState, product);
+  initialState.author = product.author.join(", ");
+  initialState.categories = product.categories.join(", ");
 };
 
 onMounted(async () => {
@@ -31,18 +33,14 @@ onMounted(async () => {
   loadData(product);
   previousData.value = {
     name: product.name,
-    author: product.author,
+    author: product.author.join("-"),
     image: product.image,
     imageSmall: product.imageSmall,
   };
 });
 
 const getCategories = () => {
-  const { categories } = initialState;
-  if (typeof categories === "object") {
-    return categories;
-  }
-  return categories.split(/\s*,\s*/);
+  return initialState.categories.split(/\s*,\s*/);
 };
 
 const getInputFile = (event) => {
@@ -76,7 +74,6 @@ const editProduct = async () => {
       stock,
       description
     );
-    resetForm();
   }
 };
 
@@ -173,7 +170,7 @@ const submitForm = async (event) => {
           </div>
           <div class="w-full">
             <div>
-              <label :for="initialState.author">Autor</label>
+              <label :for="initialState.author">Autor/es</label>
               <span v-if="v$.author.$error" class="pl-2 text-red-500">
                 {{ v$.author.$errors[0].$message }}
               </span>
@@ -182,7 +179,7 @@ const submitForm = async (event) => {
               v-model="initialState.author"
               :disabled="!isEditing"
               type="text"
-              placeholder="Autor"
+              placeholder="Autor1, Autor2, Autor3, ..."
               :class="{ 'bg-disabled': !isEditing }"
               class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
@@ -205,7 +202,7 @@ const submitForm = async (event) => {
           </div>
           <div>
             <div>
-              <label :for="initialState.categories"> Categorías (separadas por comas) </label>
+              <label :for="initialState.categories">Categorías</label>
               <span v-if="v$.categories.$error" class="pl-2 text-red-500">
                 {{ v$.categories.$errors[0].$message }}
               </span>
@@ -214,7 +211,7 @@ const submitForm = async (event) => {
               v-model="initialState.categories"
               :disabled="!isEditing"
               type="text"
-              placeholder="Categorías"
+              placeholder="Categoría1, Categoría2, Categoría3, ..."
               :class="{ 'bg-disabled': !isEditing }"
               class="w-full border-2 border-tertiary-dark p-2 drop-shadow-items focus:outline-none"
             />
@@ -238,7 +235,7 @@ const submitForm = async (event) => {
             </div>
             <div class="w-full">
               <div>
-                <label :for="initialState.discount">Descuento (opcional)</label>
+                <label :for="initialState.discount">Descuento</label>
                 <span v-if="v$.discount.$error" class="pl-2 text-red-500">
                   {{ v$.discount.$errors[0].$message }}
                 </span>
