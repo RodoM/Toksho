@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from "vue";
-import { getAllAuthors, getAllCategories } from "@/supabase/helpers";
+import { useRoute } from "vue-router";
+import { getAllAuthors, getAllPublishedAuthors, getAllCategories, getAllPublishedCategories } from "@/supabase/helpers";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 
@@ -21,6 +22,8 @@ const props = defineProps({
   },
 });
 
+const route = useRoute();
+
 // Filter
 const openFilter = ref(false);
 
@@ -37,10 +40,20 @@ const categories = ref();
 
 const alreadyFetched = ref(false);
 
+const authorsQuery = () => {
+  if (route.path.includes("/admin")) return getAllAuthors();
+  else return getAllPublishedAuthors();
+};
+
+const categoriesQuery = () => {
+  if (route.path.includes("/admin")) return getAllCategories();
+  else return getAllPublishedCategories();
+};
+
 watch(openFilter, async () => {
   if (!alreadyFetched.value) {
-    authors.value = await getAllAuthors();
-    categories.value = await getAllCategories();
+    authors.value = await authorsQuery();
+    categories.value = await categoriesQuery();
     alreadyFetched.value = true;
   }
 });
@@ -103,7 +116,7 @@ const clearFilter = () => {
               :placeholder="'Tipo de producto'"
               :options="filterOptions"
               :reduce="(opt) => opt.value"
-              :clearSearchOnSelect="false"
+              :clearable="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
@@ -113,7 +126,7 @@ const clearFilter = () => {
               v-model="filter.author"
               :placeholder="'Autor'"
               :options="authors?.sort()"
-              :clearSearchOnSelect="false"
+              :clearable="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
@@ -123,7 +136,7 @@ const clearFilter = () => {
               v-model="filter.categorie"
               :placeholder="'Categoría'"
               :options="categories?.sort()"
-              :clearSearchOnSelect="false"
+              :clearable="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
@@ -133,6 +146,7 @@ const clearFilter = () => {
               v-model="filter.order"
               :options="orderOptions"
               :reduce="(opt) => opt.value"
+              :clearable="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>
@@ -142,7 +156,7 @@ const clearFilter = () => {
               v-model="filter.asc"
               :options="isAscending"
               :reduce="(opt) => opt.value"
-              :clearSearchOnSelect="false"
+              :clearable="false"
               class="border-2 border-tertiary-dark"
             ></v-select>
           </div>

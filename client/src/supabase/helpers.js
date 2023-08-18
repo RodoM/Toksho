@@ -388,10 +388,32 @@ export async function getAllAuthors() {
   }
 }
 
+// Gets all the published products authors.
+export async function getAllPublishedAuthors() {
+  try {
+    const { data } = await supabase.from("Products").select("author").eq("isPublished", true);
+    const authors = data.flatMap((author) => author.author);
+    return [...new Set(authors)];
+  } catch (error) {
+    showToast("Se produjó un error inesperado", "error");
+  }
+}
+
 // Gets all the products categories.
 export async function getAllCategories() {
   try {
     const { data } = await supabase.from("Products").select("categories");
+    const categories = data.flatMap((categorie) => categorie.categories);
+    return [...new Set(categories)];
+  } catch (error) {
+    showToast("Se produjó un error inesperado", "error");
+  }
+}
+
+// Gets all the published products categories.
+export async function getAllPublishedCategories() {
+  try {
+    const { data } = await supabase.from("Products").select("categories").eq("isPublished", true);
     const categories = data.flatMap((categorie) => categorie.categories);
     return [...new Set(categories)];
   } catch (error) {
