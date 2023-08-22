@@ -11,8 +11,8 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
           <span class="text-2xl font-bold">¿HACEN ENVIOS?</span>
         </header-title>
         <span class="font-medium">
-          De momento no contamos con envios, en caso de realizar una compra se le reservara el/los productos y deberá retirarlos en el
-          local.
+          Si, al momento de realizar una compra se debe indicar que se solicita envio. Al confirmarse al misma le enviaremos por mail el
+          código de seguimiento una vez lo tengamos.
         </span>
       </content-block>
       <content-block class="px-5">
@@ -23,9 +23,9 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
       </content-block>
       <content-block class="px-5">
         <header-title class="">
-          <span class="text-2xl font-bold">¿HAY DESCUENTOS?</span>
+          <span class="text-2xl font-bold">¿ACEPTAN DEVOLUCIONES?</span>
         </header-title>
-        <span class="font-medium"> jajajajaja. </span>
+        <span class="font-medium"> En caso de querer una devolución contactarse a nuestro instagram o acercarse al local. </span>
       </content-block>
     </div>
   </div>
