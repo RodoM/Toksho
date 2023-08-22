@@ -2,7 +2,7 @@
 import { onMounted, reactive, computed } from "vue";
 import { getUser, updateUser } from "@/supabase/helpers";
 import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers, requiredIf } from "@vuelidate/validators";
+import { required, email, minLength, maxLength, helpers, requiredIf } from "@vuelidate/validators";
 
 import CustomButton from "@/lib/components/CustomButton.vue";
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
@@ -46,9 +46,13 @@ const rules = computed(() => {
     phone: {
       code: {
         requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.phone))),
+        minLength: helpers.withMessage("Mínimo 3 dígitos", minLength(3)),
+        maxLength: helpers.withMessage("Máximo 4 dígitos", maxLength(4)),
       },
       number: {
         requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.phone))),
+        minLength: helpers.withMessage("Mínimo 6 dígitos", minLength(6)),
+        maxLength: helpers.withMessage("Máximo 7 dígitos", maxLength(7)),
       },
     },
     address: {
