@@ -471,7 +471,7 @@ export async function changePrice(editorial, size, oldPrice, newPrice) {
 // Sets the product as a novelty.
 export async function setAsNovelty(id, value) {
   try {
-    supabase.from("Products").update({ isNovelty: value }).eq("id", id);
+    await supabase.from("Products").update({ isNovelty: value }).eq("id", id);
     if (value) showToast("Producto establecido como novedad", "success");
     else showToast("Producto quitado de novedades", "success");
   } catch (error) {
