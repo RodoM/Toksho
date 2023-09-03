@@ -37,7 +37,6 @@ async function updateItemsStock(items) {
         quantity: parseInt(item.quantity, 10)
       };
     });
-    console.log(formatedItems);
     await supabase.rpc('update_product_stock', { p_products: formatedItems });
   } catch (error) {
     console.log(error);

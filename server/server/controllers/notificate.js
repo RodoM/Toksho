@@ -22,7 +22,6 @@ exports.getNotification = async (req, res) => {
       if (status === "approved" || status === "pending") {
         await updateItemsStock(additional_info.items);
         await clearUserCart(metadata.user_id);
-        localStorage.removeItem("items");
         mailer.mail(id, metadata.payer.name, metadata.payer.email, additional_info.items, metadata.payer.address, shippingPrice);
       }
     }
