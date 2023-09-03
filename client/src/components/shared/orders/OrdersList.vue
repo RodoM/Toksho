@@ -1,5 +1,10 @@
 <script setup>
-import { ref } from "vue";
+import { ref, reactive, computed } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import { required, helpers } from "@vuelidate/validators";
+import { showToast } from "@/lib/composables/toastHelper";
+import trackingCodeService from "@/lib/services/trackingCodeService.js";
+import CustomButton from "@/lib/components/CustomButton.vue";
 
 const props = defineProps({
   orders: {
@@ -22,7 +27,7 @@ const currentOrder = ref();
 
 function orderDetails(order) {
   currentOrder.value = order;
-  const dialog = document.getElementById("dialog");
+  const dialog = document.getElementById("detailsDialog");
   dialog.showModal();
 }
 
@@ -33,14 +38,55 @@ const shippingPrice = () => {
 };
 
 const mpCommission = () => {
-  const { installment_amount, net_received_amount } = currentOrder.value.transaction_details;
-  return Number.parseFloat(installment_amount - net_received_amount).toFixed(2);
+  const { total_paid_amount, net_received_amount } = currentOrder.value.transaction_details;
+  return Number.parseFloat(total_paid_amount - net_received_amount).toFixed(2);
 };
 
 function closeDialog() {
   currentOrder.value = undefined;
-  const dialog = document.getElementById("dialog");
+  const dialog = document.getElementById("detailsDialog");
   dialog.close();
+}
+
+const state = reactive({
+  currentEmail: undefined,
+  trackingCode: undefined,
+});
+
+const rules = computed(() => {
+  return {
+    trackingCode: {
+      required: helpers.withMessage("Requerido", required),
+    },
+  };
+});
+
+const v$ = useVuelidate(rules, state);
+
+function openEmailDialog(email) {
+  state.currentEmail = email;
+  const dialog = document.getElementById("emailDialog");
+  dialog.showModal();
+}
+
+function closeEmailDialog() {
+  state.currentEmail = undefined;
+  state.trackingCode = undefined;
+  const dialog = document.getElementById("emailDialog");
+  dialog.close();
+}
+
+async function sendTrackingCode() {
+  const result = await v$.value.$validate();
+  if (result) {
+    try {
+      await trackingCodeService.sendTrackingCode(state.currentEmail, state.trackingCode);
+      showToast("Se envió correctamente el código de seguimiento", "success");
+      closeEmailDialog();
+    } catch (error) {
+      showToast("Error al enviar el código de seguimiento", "error");
+    }
+  }
 }
 </script>
 
@@ -55,7 +101,7 @@ function closeDialog() {
             <th class="px-5 text-center">MONTO</th>
             <th class="px-5 text-center">FECHA</th>
             <th class="px-5 text-center">ESTADO</th>
-            <th class="px-5 text-center">DETALLE</th>
+            <th class="px-5 text-center">ACCIONES</th>
           </tr>
         </thead>
         <tbody class="border-2 border-tertiary-dark">
@@ -76,6 +122,14 @@ function closeDialog() {
               >
                 visibility
               </button>
+              <button
+                class="material-icons-outlined border-2 border-tertiary-dark bg-primary-light p-1 drop-shadow-navlink"
+                :class="[order.payer.address.location ? '' : 'opacity-0']"
+                :disabled="!order.payer.address.location"
+                @click="openEmailDialog(order.payer.email)"
+              >
+                email
+              </button>
             </td>
           </tr>
         </tbody>
@@ -88,7 +142,7 @@ function closeDialog() {
     </div>
   </div>
 
-  <dialog id="dialog" class="border-2 border-tertiary-dark bg-secondary-light md:w-[800px]">
+  <dialog id="detailsDialog" class="border-2 border-tertiary-dark bg-secondary-light md:w-[800px]">
     <div class="flex flex-col gap-3">
       <button class="material-icons-outlined ml-auto" @click="closeDialog()">close</button>
       <div v-if="currentOrder" class="flex flex-col gap-3">
@@ -123,7 +177,7 @@ function closeDialog() {
               x{{ item.quantity }} - {{ item.title }}: ${{ item.unit_price * item.quantity }}
             </span>
             <span v-if="currentOrder.payer.address.postal_code" class="font-medium"> x1 - Envio - ${{ shippingPrice() }} </span>
-            <span class="font-medium">Subtotal ${{ currentOrder.transaction_details.installment_amount }}</span>
+            <span class="font-medium">Subtotal ${{ currentOrder.transaction_details.total_paid_amount }}</span>
             <span class="font-medium">Comisión Mercado Pago ${{ mpCommission() }}</span>
           </div>
         </div>
@@ -131,6 +185,29 @@ function closeDialog() {
           <span>{{ formatedDate(currentOrder.date_created.slice(0, 10)) }}</span>
           <span class="font-bold"> TOTAL: ${{ currentOrder.transaction_details.net_received_amount }} </span>
         </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="emailDialog" class="border-2 border-tertiary-dark bg-secondary-light md:w-[500px]">
+    <div class="flex flex-col gap-3">
+      <button class="material-icons-outlined ml-auto" @click="closeEmailDialog()">close</button>
+      <div class="flex flex-col gap-3">
+        <div>
+          <div>
+            <label :for="state.trackingCode">Código de seguimiento</label>
+            <span v-if="v$.trackingCode.$error" class="pl-2 text-red-500">
+              {{ v$.trackingCode.$errors[0].$message }}
+            </span>
+          </div>
+          <input
+            v-model="state.trackingCode"
+            type="text"
+            placeholder="Código de seguimiento"
+            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-items focus:outline-none"
+          />
+        </div>
+        <CustomButton class="flex justify-center" primary @click="sendTrackingCode"> ENVIAR EMAIL </CustomButton>
       </div>
     </div>
   </dialog>

@@ -41,19 +41,23 @@ const preferenceId = ref();
 const mp = new MercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, {
   locale: "es-AR",
 });
-// eslint-disable-next-line no-unused-vars
-const bricksBuilder = mp.bricks();
+
+const showError = ref(false);
 
 const receivePreference = async () => {
-  const res = await mpService.getPreference();
-  preferenceId.value = res.id;
-  mp.bricks().create("wallet", "wallet_container", {
-    initialization: {
-      preferenceId: preferenceId.value,
-      redirectMode: "modal",
-    },
-  });
-  loadingBtn.value = false;
+  try {
+    const res = await mpService.getPreference();
+    preferenceId.value = res.id;
+    mp.bricks().create("wallet", "wallet_container", {
+      initialization: {
+        preferenceId: preferenceId.value,
+        redirectMode: "modal",
+      },
+    });
+    loadingBtn.value = false;
+  } catch (error) {
+    showError.value = true;
+  }
 };
 
 // Agregar datos del comprador y si tiene envio
@@ -132,9 +136,12 @@ onBeforeMount(async () => {
           <CartSummary :items="items" :shipment="state?.state?.shipment" :shipmentPrice="shipmentPrice" />
           <div v-if="preferenceId" id="wallet_container"></div>
           <CustomButton v-else-if="!maintenance && step1" primary @click="step1 = false"> CONTINUAR CON EL PEDIDO </CustomButton>
-          <CustomButton v-else-if="!maintenance" primary class="flex justify-center" :loading="loadingBtn" @click="sendPreference">
-            CONTINUAR CON EL PAGO
-          </CustomButton>
+          <div v-else-if="!maintenance" class="flex flex-col items-center gap-2">
+            <CustomButton primary class="flex w-full justify-center" :loading="loadingBtn" @click="sendPreference">
+              CONTINUAR CON EL PAGO
+            </CustomButton>
+            <span v-if="showError" class="text-xs text-red-600"> Ocurrió un error, recargue la página y vuelva a intentarlo. </span>
+          </div>
           <CustomButton v-if="!step1" secondary @click="stepBack()"> VOLVER AL PASO ANTERIOR </CustomButton>
         </div>
       </div>

@@ -1,6 +1,6 @@
 require("dotenv").config();
-const {createOrder, updateItemsStock, clearUserCart, getShippingPrice} = require("./supabaseHelpers");
-const mailer = require("./mailer");
+const {createOrder, updateItemsStock, clearUserCart, getShippingPrice} = require("../helpers/supabaseHelpers");
+const mailer = require("../mails/orderTemplate");
 
 const mercadopago = require("mercadopago");
 

@@ -27,6 +27,12 @@ import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
         </header-title>
         <span class="font-medium"> En caso de querer una devolución contactarse a nuestro instagram o acercarse al local. </span>
       </content-block>
+      <content-block class="px-5">
+        <header-title class="">
+          <span class="text-2xl font-bold">¿ACEPTAN BILLETERA SANTA FE?</span>
+        </header-title>
+        <span class="font-medium"> Si, solo válida los días lunes, martes y miércoles para compras en el local. </span>
+      </content-block>
     </div>
   </div>
 </template>
