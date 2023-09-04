@@ -319,6 +319,7 @@ export async function getProductDetails(id) {
     return data[0];
   } catch (error) {
     showToast("Se produjó un error inesperado", "error");
+    router.push({ name: "Products" });
   }
 }
 
