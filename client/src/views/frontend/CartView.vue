@@ -3,7 +3,7 @@ import { ref, onBeforeMount } from "vue";
 import { itemsStore } from "@/stores/shoppingCart.js";
 import { userStore } from "@/stores/index.js";
 import { showToast } from "@/lib/composables/toastHelper";
-import { getUserCart, updateUserCart, getCartItems, getMaintenance, getShippingPrice } from "@/supabase/helpers";
+import { getUserCart, updateUserCart, getCartItems, getMaintenance } from "@/supabase/helpers";
 import mpService from "@/lib/services/mpService.js";
 import LoadingSpinner from "@/components/shared/LoadingSpinner.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
@@ -17,7 +17,6 @@ const usersStore = userStore();
 
 const loading = ref(false);
 const maintenance = ref();
-const shipmentPrice = ref();
 const items = ref();
 
 const step1 = ref(true);
@@ -72,13 +71,10 @@ const formatPreference = () => {
       unit_price: item.price - (item.discount / 100) * item.price,
     });
   });
-  if (!state.value.state.shipment) {
-    state.value.state.payer.address = {};
-  }
   return {
     items: preferenceItems,
     payer: state.value.state.payer,
-    shipment: state.value.state.shipment ? shipmentPrice.value : 0,
+    shipment: state.value.state.shipment,
   };
 };
 
@@ -109,7 +105,6 @@ const userCart = ref([]);
 onBeforeMount(async () => {
   loading.value = true;
   maintenance.value = await getMaintenance();
-  shipmentPrice.value = await getShippingPrice();
   if (usersStore.user?.id) {
     userCart.value = await getUserCart(usersStore.user.id);
     items.value = await getCartItems(userCart.value);
@@ -130,10 +125,10 @@ onBeforeMount(async () => {
       <div class="my-5 flex flex-grow flex-col gap-6 lg:flex-row lg:gap-40">
         <div class="w-full">
           <CartList v-if="step1" :items="items" @deleteItem="deleteItem" />
-          <BuyerInfo v-else ref="state" :shipmentPrice="shipmentPrice" @validate="isValidated = true" />
+          <BuyerInfo v-else ref="state" @validate="isValidated = true" />
         </div>
         <div class="flex flex-col gap-5">
-          <CartSummary :items="items" :shipment="state?.state?.shipment" :shipmentPrice="shipmentPrice" />
+          <CartSummary :items="items" />
           <div v-if="preferenceId" id="wallet_container"></div>
           <CustomButton v-else-if="!maintenance && step1" primary @click="step1 = false"> CONTINUAR CON EL PEDIDO </CustomButton>
           <div v-else-if="!maintenance" class="flex flex-col items-center gap-2">

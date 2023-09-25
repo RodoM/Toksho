@@ -32,7 +32,7 @@ onMounted(async () => {
       @fetchWithFilters="ordersFunctions.fetchOrders"
       @clearFilters="ordersFunctions.clearFilters"
     />
-    <OrdersList v-if="!loading && ordersData.orders.value" :orders="ordersData.orders.value" />
+    <OrdersList v-if="!loading && ordersData.orders.value" :orders="ordersData.orders.value" @update="fetchOrders()" />
     <PaginationComponent
       v-show="!loading && ordersData.count.value > 0"
       class="mt-10"

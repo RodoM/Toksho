@@ -40,11 +40,7 @@ const useProductPagination = (isAdmin) => {
 
     const fetchFunction = isAdmin ? getAllProductsAdmin : getAllProducts;
 
-    const res = await fetchFunction(
-      pagination.value.offset,
-      pagination.value.limit,
-      filter
-    );
+    const res = await fetchFunction(pagination.value.offset, pagination.value.limit, filter);
 
     products.value = res.data;
     count.value = res.count;
@@ -73,8 +69,7 @@ const useProductPagination = (isAdmin) => {
   });
 
   const pages = () => {
-    const { productsPerPage, currentPage, limitPages, offsetPages } =
-      pagination.value;
+    const { productsPerPage, currentPage, limitPages, offsetPages } = pagination.value;
     const totalPages = Math.ceil(count.value / productsPerPage);
     if (totalPages < 5) {
       pagination.value.limitPages = totalPages;
@@ -131,8 +126,7 @@ const useProductPagination = (isAdmin) => {
       if (productsPerPage * (page - 1) > count.value) {
         pagination.value.limit = count.value;
       } else {
-        pagination.value.limit =
-          productsPerPage + (productsPerPage + 1) * (page - 1);
+        pagination.value.limit = productsPerPage + (productsPerPage + 1) * (page - 1);
       }
     }
     pagination.value.currentPage = page;

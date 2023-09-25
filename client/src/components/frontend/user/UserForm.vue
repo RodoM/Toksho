@@ -22,13 +22,6 @@ let state = reactive({
     code: "",
     number: "",
   },
-  address: {
-    province: "",
-    city: "",
-    postalCode: "",
-    street: "",
-    number: "",
-  },
 });
 
 const rules = computed(() => {
@@ -53,23 +46,6 @@ const rules = computed(() => {
         requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.phone))),
         minLength: helpers.withMessage("Mínimo 6 dígitos", minLength(6)),
         maxLength: helpers.withMessage("Máximo 7 dígitos", maxLength(7)),
-      },
-    },
-    address: {
-      province: {
-        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
-      },
-      city: {
-        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
-      },
-      postalCode: {
-        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
-      },
-      street: {
-        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
-      },
-      number: {
-        requiredIf: helpers.withMessage("Requerido", requiredIf(!isObjectEmpty(state.address))),
       },
     },
   };
@@ -178,83 +154,6 @@ onMounted(async () => {
             v-model="state.phone.number"
             type="number"
             placeholder="Número de télefono"
-            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-          />
-        </div>
-      </div>
-
-      <div class="w-full">
-        <div>
-          <label :for="state.address.province">Provincia</label>
-          <span v-if="v$.address.province.$error" class="pl-2 text-red-500">
-            {{ v$.address.province.$errors[0].$message }}
-          </span>
-        </div>
-        <input
-          v-model="state.address.province"
-          type="text"
-          placeholder="Provincia"
-          class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-        />
-      </div>
-
-      <div class="flex flex-col gap-3 xl:flex-row">
-        <div class="w-full">
-          <div>
-            <label :for="state.address.city">Ciudad</label>
-            <span v-if="v$.address.city.$error" class="pl-2 text-red-500">
-              {{ v$.address.city.$errors[0].$message }}
-            </span>
-          </div>
-          <input
-            v-model="state.address.city"
-            type="text"
-            placeholder="Ciudad"
-            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-          />
-        </div>
-        <div class="w-full">
-          <div>
-            <label :for="state.address.postalCode">Código postal</label>
-            <span v-if="v$.address.postalCode.$error" class="pl-2 text-red-500">
-              {{ v$.address.postalCode.$errors[0].$message }}
-            </span>
-          </div>
-          <input
-            v-model="state.address.postalCode"
-            type="number"
-            placeholder="Código postal"
-            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-          />
-        </div>
-      </div>
-
-      <div class="flex flex-col gap-3 xl:flex-row">
-        <div class="w-full">
-          <div>
-            <label :for="state.address.street">Calle</label>
-            <span v-if="v$.address.street.$error" class="pl-2 text-red-500">
-              {{ v$.address.street.$errors[0].$message }}
-            </span>
-          </div>
-          <input
-            v-model="state.address.street"
-            type="text"
-            placeholder="Calle"
-            class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-          />
-        </div>
-        <div class="w-full">
-          <div>
-            <label :for="state.address.number">Número</label>
-            <span v-if="v$.address.number.$error" class="pl-2 text-red-500">
-              {{ v$.address.number.$errors[0].$message }}
-            </span>
-          </div>
-          <input
-            v-model="state.address.number"
-            type="number"
-            placeholder="Número de calle"
             class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
           />
         </div>

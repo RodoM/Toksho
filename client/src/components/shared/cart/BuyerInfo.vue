@@ -2,18 +2,12 @@
 import { reactive, computed, onMounted } from "vue";
 import { getUser } from "@/supabase/helpers";
 import { useVuelidate } from "@vuelidate/core";
-import { required, requiredIf, email, numeric, minLength, maxLength, helpers } from "@vuelidate/validators";
+import { required, email, numeric, minLength, maxLength, helpers } from "@vuelidate/validators";
 import { userStore } from "@/stores/index.js";
 
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 
 const store = userStore();
-
-const props = defineProps({
-  shipmentPrice: {
-    type: Number,
-  },
-});
 
 const state = reactive({
   payer: {
@@ -24,13 +18,6 @@ const state = reactive({
     phone: {
       area_code: undefined,
       number: undefined,
-    },
-    address: {
-      location: undefined,
-      postal_code: undefined,
-      province: undefined,
-      street_name: undefined,
-      street_number: undefined,
     },
   },
   shipment: false,
@@ -62,23 +49,6 @@ const rules = computed(() => {
           maxLength: helpers.withMessage("Máximo 7 dígitos", maxLength(7)),
         },
       },
-      address: {
-        location: {
-          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
-        },
-        postal_code: {
-          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
-        },
-        province: {
-          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
-        },
-        street_name: {
-          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
-        },
-        street_number: {
-          requiredIf: helpers.withMessage("Requerido", requiredIf(state.shipment)),
-        },
-      },
     },
   };
 });
@@ -99,17 +69,12 @@ defineExpose({
 
 onMounted(async () => {
   if (store.user?.id) {
-    const { first_name, last_name, email, phone, address } = await getUser(store.user.id);
+    const { first_name, last_name, email, phone } = await getUser(store.user.id);
     state.payer.name = first_name;
     state.payer.surname = last_name;
     state.payer.email = email;
     state.payer.phone.area_code = String(phone.code);
     state.payer.phone.number = phone.number;
-    state.payer.address.province = address.province;
-    state.payer.address.location = address.city;
-    state.payer.address.postal_code = address.postalCode;
-    state.payer.address.street_name = address.street;
-    state.payer.address.street_number = address.number;
   }
 });
 </script>
@@ -198,88 +163,14 @@ onMounted(async () => {
 
       <div class="flex gap-3">
         <input v-model="state.shipment" type="checkbox" />
-        <span>Envio ${{ props.shipmentPrice }}</span>
+        <span>Envio</span>
       </div>
 
       <div v-if="state.shipment" class="flex flex-col gap-5">
-        <div class="flex flex-col gap-5 md:flex-row">
-          <div class="w-full">
-            <div>
-              <label :for="state.payer.address.province">Provincia</label>
-              <span v-if="v$.payer.address.province.$error" class="pl-2 text-red-500">
-                {{ v$.payer.address.province.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.payer.address.province"
-              type="text"
-              placeholder="Provincia"
-              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-            />
-          </div>
-
-          <div class="w-full">
-            <div>
-              <label :for="state.payer.address.location">Ciudad</label>
-              <span v-if="v$.payer.address.location.$error" class="pl-2 text-red-500">
-                {{ v$.payer.address.location.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.payer.address.location"
-              type="text"
-              placeholder="Ciudad"
-              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-5 md:flex-row">
-          <div class="w-full">
-            <div>
-              <label :for="state.payer.address.postal_code"> Código postal </label>
-              <span v-if="v$.payer.address.postal_code.$error" class="pl-2 text-red-500">
-                {{ v$.payer.address.postal_code.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.payer.address.postal_code"
-              type="number"
-              placeholder="Código postal"
-              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-            />
-          </div>
-
-          <div class="w-full">
-            <div>
-              <label :for="state.payer.address.street_name">Calle</label>
-              <span v-if="v$.payer.address.street_name.$error" class="pl-2 text-red-500">
-                {{ v$.payer.address.street_name.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.payer.address.street_name"
-              type="text"
-              placeholder="Calle"
-              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-            />
-          </div>
-
-          <div class="w-full">
-            <div>
-              <label :for="state.payer.address.street_number">Número</label>
-              <span v-if="v$.payer.address.street_number.$error" class="pl-2 text-red-500">
-                {{ v$.payer.address.street_number.$errors[0].$message }}
-              </span>
-            </div>
-            <input
-              v-model="state.payer.address.street_number"
-              type="number"
-              placeholder="Número"
-              class="w-full border-2 border-tertiary-dark p-3 drop-shadow-navlink focus:outline-none"
-            />
-          </div>
-        </div>
+        <p class="border-2 border-tertiary-dark bg-primary p-3 drop-shadow-navlink">
+          Una vez confirmada tu compra se te enviará un link de <span class="font-medium">Andreani Envios</span> a tu email para que
+          completes con tus datos personales y elijas la forma de envío. Una vez pagado el mismo se te enviará el código de seguimiento.
+        </p>
       </div>
     </form>
   </content-block>

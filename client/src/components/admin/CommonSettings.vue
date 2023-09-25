@@ -1,13 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getMaintenance, setMaintenance, getShippingPrice, setShippingPrice } from "@/supabase/helpers";
+import { getMaintenance, setMaintenance } from "@/supabase/helpers";
 
 import ContentBlock from "@/components/shared/blocks/ContentBlock.vue";
 import HeaderTitle from "@/components/frontend/headers/HeaderTitle.vue";
 import CustomButton from "@/lib/components/CustomButton.vue";
 
 const maintenance = ref();
-const shipmentPrice = ref();
 
 const maintenanceOptions = ref([
   { label: "Si", value: true },
@@ -18,17 +17,15 @@ const loading = ref(false);
 
 async function updateSettings(event) {
   event.preventDefault();
-  if (!loading.value && confirm("¿Actualizar configuraciones?")) {
+  if (!loading.value && confirm("¿Actualizar estado de la página?")) {
     loading.value = true;
     await setMaintenance(maintenance.value);
-    await setShippingPrice(shipmentPrice.value);
   }
   loading.value = false;
 }
 
 onMounted(async () => {
   maintenance.value = await getMaintenance();
-  shipmentPrice.value = await getShippingPrice();
 });
 </script>
 
@@ -38,16 +35,6 @@ onMounted(async () => {
       <span class="text-2xl font-bold">CONFIGURACIONES</span>
     </header-title>
     <form class="flex flex-col gap-4 md:flex-row">
-      <div class="w-full">
-        <label>Precio de envios</label>
-        <input
-          v-model="shipmentPrice"
-          type="number"
-          placeholder="Precio"
-          class="w-full border-2 border-tertiary-dark p-3 drop-shadow-items focus:outline-none"
-        />
-      </div>
-
       <div class="z-10 w-full">
         <label>Página en mantenimiento</label>
         <v-select

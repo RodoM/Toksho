@@ -12,9 +12,6 @@ app.use(preferenceRoute);
 const notificateRoute = require("./routes/notificate");
 app.use(notificateRoute);
 
-const trackingCodeRoute = require("./routes/sendTrackingCode");
-app.use(trackingCodeRoute);
-
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {

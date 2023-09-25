@@ -12,12 +12,6 @@ const orderState = (state) => {
   else if (state === "rejected") return "RECHAZADO";
 };
 
-const shippingPrice = () => {
-  const { items, transaction_details } = props.order;
-  const itemsTotalPrice = items.reduce((total, item) => total + parseInt(item.unit_price), 0);
-  return transaction_details.total_paid_amount - itemsTotalPrice;
-};
-
 const formatedDate = (date) => {
   return `${date.slice(8, 10)}/${date.slice(5, 7)}/${date.slice(0, 4)}`;
 };
@@ -39,21 +33,12 @@ const formatedDate = (date) => {
         </span>
         <span class="font-medium"> Teléfono: {{ props.order.payer.phone.area_code }}-{{ props.order.payer.phone.number }} </span>
         <span class="font-medium"> Email: {{ props.order.payer.email }} </span>
-        <span v-if="props.order.payer.address.location" class="font-medium">
-          Localidad: {{ props.order.payer.address.location }} {{ `(CP: ${props.order.payer.address.postal_code})` }},
-          {{ props.order.payer.address.province }}
-        </span>
-        <span v-if="props.order.payer.address.street_name" class="font-medium">
-          Dirección: {{ props.order.payer.address.street_name }}
-          {{ props.order.payer.address.street_number }}
-        </span>
       </div>
       <div class="border-b-2 border-r-2 border-tertiary-dark"></div>
       <div class="flex flex-col gap-1 px-2 md:w-1/2">
         <span v-for="item in props.order.items" :key="item.id" class="font-medium">
           x{{ item.quantity }} - {{ item.title }} - ${{ item.unit_price * item.quantity }}
         </span>
-        <span v-if="props.order.payer.address.postal_code" class="font-medium"> x1 - Envio - ${{ shippingPrice() }} </span>
       </div>
     </div>
     <div class="flex justify-between border-2 border-tertiary-dark bg-primary p-2 font-medium drop-shadow-navlink">

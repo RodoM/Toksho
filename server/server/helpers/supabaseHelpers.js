@@ -5,7 +5,7 @@ const supabaseAnonKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
 
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseAnonKey);
 
-async function createOrder(id, user_id, items, payer, created, updated, order, payer_mp, payment_type, status, status_detail, transaction_amount, transaction_details) {
+async function createOrder(id, user_id, items, payer, shipping, created, updated, order, payer_mp, payment_type, status, status_detail, transaction_amount, transaction_details) {
   try {
     await supabase
       .from('Orders')
@@ -14,6 +14,7 @@ async function createOrder(id, user_id, items, payer, created, updated, order, p
         user_id: user_id,
         items: items,
         payer: payer,
+        has_shipping: shipping,
         date_created: created,
         date_last_updated: updated,
         order: order,
@@ -51,13 +52,4 @@ async function clearUserCart(id) {
   }
 }
 
-async function getShippingPrice() {
-  try {
-    const { data } = await supabase.from("Settings").select("value").eq("name", "shipment_price");
-    return data[0].value;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-module.exports = {createOrder, updateItemsStock, clearUserCart, getShippingPrice}
+module.exports = {createOrder, updateItemsStock, clearUserCart}

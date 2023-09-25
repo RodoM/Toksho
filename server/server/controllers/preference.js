@@ -12,11 +12,8 @@ let preference = {
   payer: undefined,
   metadata: {
     payer: undefined,
+    shipping: undefined,
     user_id: undefined,
-  },
-  shipments:{
-    cost: undefined,
-    mode: "not_specified",
   },
   payment_methods: {
     "installments": 1,
@@ -37,8 +34,8 @@ exports.setData = (req, res) => {
     preference.items = req.body.items;
     preference.payer = req.body.payer;
     preference.metadata.payer = req.body.payer;
+    preference.metadata.shipping = req.body.shipment;
     preference.metadata.user_id = req.body.payer.id;
-    preference.shipments.cost = req.body.shipment;
     res.status(200).send({succes: true, message: "Preferencia recibida con éxito"});
   } catch(error) {
     console.log(error);

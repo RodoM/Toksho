@@ -119,16 +119,6 @@ export async function getMaintenance() {
   }
 }
 
-// Gets the shipping price.
-export async function getShippingPrice() {
-  try {
-    const { data } = await supabase.from("Settings").select("value").eq("name", "shipment_price");
-    return data[0].value;
-  } catch (error) {
-    showToast("Se produjó un error inesperado", "error");
-  }
-}
-
 // Gets the slides for the carrousel.
 export async function getSlides() {
   try {
@@ -147,16 +137,6 @@ export async function setMaintenance(active) {
     showToast("Se actualizó el estado de mantenimiento de la página", "success");
   } catch (error) {
     showToast("Error al actualizar el estado de mantenimiento", "error");
-  }
-}
-
-// Sets the shipping price.
-export async function setShippingPrice(value) {
-  try {
-    await supabase.from("Settings").update({ value: value }).eq("name", "shipment_price").select();
-    showToast("Se actualizó el precio de los envios", "success");
-  } catch (error) {
-    showToast("Error al actualizar el precio de envío", "error");
   }
 }
 
@@ -205,7 +185,7 @@ export async function deleteSlide(id, image) {
 // Gets the user data.
 export async function getUser(id) {
   try {
-    const { data } = await supabase.from("users").select("first_name, last_name, email, phone, address").eq("id", id);
+    const { data } = await supabase.from("users").select("first_name, last_name, email, phone").eq("id", id);
     return data[0];
   } catch (error) {
     showToast("Se produjó un error inesperado", "error");
@@ -248,7 +228,7 @@ export async function updateUser(id, data) {
   try {
     await supabase
       .from("users")
-      .update({ first_name: data.first_name, last_name: data.last_name, email: data.email, phone: data.phone, address: data.address })
+      .update({ first_name: data.first_name, last_name: data.last_name, email: data.email, phone: data.phone })
       .eq("id", id);
     showToast("Datos actualizados con éxito", "success");
   } catch (error) {
@@ -631,5 +611,15 @@ export async function getAllOrders(offset, limit, filter) {
     return { data, count };
   } catch (error) {
     console.log(error);
+  }
+}
+
+// SET functions
+export async function updateOrderShipment(id, state) {
+  try {
+    await supabase.from("Orders").update({ updated_shipment: state }).eq("id", id);
+    showToast("Se actualizó correctamente el estado del envío", "success");
+  } catch (error) {
+    showToast("Error al actualizar el estado del envío", "error");
   }
 }
