@@ -227,7 +227,7 @@ const submitForm = async (e) => {
         />
       </div>
       <div class="flex flex-col justify-between gap-3 md:flex-row">
-        <CustomButton class="md:order-2 md:px-36" primary :loading="loading" @click="submitForm"> AGREGAR </CustomButton>
+        <CustomButton class="md:order-2 md:px-36" primary @click="submitForm"> AGREGAR </CustomButton>
         <CustomButton class="md:order-1 md:px-36" secondary @click="goBack"> VOLVER </CustomButton>
       </div>
     </form>
