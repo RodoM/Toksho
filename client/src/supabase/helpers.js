@@ -502,7 +502,7 @@ export async function createProduct(
       .from("Products")
       .insert([{ type, name, image, imageSmall, size, author, editorial, categories, price, discount, stock, description }]);
     showToast("Se agregó correctamente el producto", "success");
-    router.push({ name: "Stock" });
+    // router.push({ name: "Stock" });
   } catch (error) {
     showToast("Error al agregar el producto", "error");
   }
